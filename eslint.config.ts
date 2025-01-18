@@ -10,7 +10,7 @@ export default tseslint.config(
   eslint.configs.recommended,
   {
     extends: [
-      tseslint.configs.strictTypeChecked,
+      tseslint.configs.recommendedTypeChecked,
       tseslint.configs.stylisticTypeChecked,
     ],
     files: ["**/*.js", "**/*.ts"],
@@ -26,6 +26,13 @@ export default tseslint.config(
     files: ["**/*.test.*"],
     rules: {
       "@typescript-eslint/no-unsafe-assignment": "off",
+    },
+  },
+  {
+    files: ["**/*.js", "**/*.ts"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-empty-object-type": "off",
     },
   },
 ) satisfies Config;

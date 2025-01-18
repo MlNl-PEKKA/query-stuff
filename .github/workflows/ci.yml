@@ -42,7 +42,7 @@ jobs:
       - uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          slug: MlNl-PEKKA/some-stuff
+          slug: MlNl-PEKKA/query-stuff
 
   type_check:
     name: Type Check
