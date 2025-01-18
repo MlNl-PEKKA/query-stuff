@@ -1,5 +1,4 @@
-import { describe } from "node:test";
-import { expect, expectTypeOf, it } from "vitest";
+import { describe, expect, expectTypeOf, it } from "vitest";
 import {
   mutationNode,
   queryNodeWithInput,

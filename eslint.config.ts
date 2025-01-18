@@ -25,15 +25,18 @@ export default tseslint.config(
     extends: [vitest.configs.recommended],
     files: ["**/*.test.*"],
     rules: {
-      "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/consistent-type-definitions": ["warn", "type"],
+      "@typescript-eslint/ban-ts-comment": "off",
+      "@typescript-eslint/no-empty-function": "off",
+      "@typescript-eslint/no-explicit-any": "off",
     },
   },
   {
-    files: ["**/*.js", "**/*.ts"],
+    files: ["**/*.js", "**/!(*.test).ts"],
     rules: {
-      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/consistent-type-definitions": ["warn", "type"],
       "@typescript-eslint/no-empty-object-type": "off",
-      "@typescript-eslint/consistent-type-definitions": ["warn", ["type"]],
+      "@typescript-eslint/no-explicit-any": "off",
     },
   },
 ) satisfies Config;
