@@ -1,7 +1,7 @@
 {
   "name": "query-stuff",
   "description": "Type-safe query/mutation option factories for Tanstack/react-query",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": false,
   "publishConfig": {
     "access": "public"
