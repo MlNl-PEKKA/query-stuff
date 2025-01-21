@@ -5,7 +5,7 @@ import {
   isNode,
   isNodeFunction,
   isQueryNode,
-  isQueryNodeWithoutInput,
+  isQueryNodeUndefinedInput,
   isString,
 } from "./utils.js";
 
@@ -44,7 +44,7 @@ export const createProxyNode = <T extends Node>(
       const nextKeys = [...keys];
       if (
         argArray[0] &&
-        !(isMutationNode(nextTarget) || isQueryNodeWithoutInput(nextTarget))
+        !(isMutationNode(nextTarget) || isQueryNodeUndefinedInput(nextTarget))
       ) {
         nextKeys.push(argArray[0]);
       }

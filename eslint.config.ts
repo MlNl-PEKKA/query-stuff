@@ -29,6 +29,7 @@ export default tseslint.config(
       "@typescript-eslint/ban-ts-comment": "off",
       "@typescript-eslint/no-empty-function": "off",
       "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/require-await": "off",
     },
   },
   {
@@ -37,6 +38,7 @@ export default tseslint.config(
       "@typescript-eslint/consistent-type-definitions": ["warn", "type"],
       "@typescript-eslint/no-empty-object-type": "off",
       "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/require-await": "off",
     },
   },
 ) satisfies Config;

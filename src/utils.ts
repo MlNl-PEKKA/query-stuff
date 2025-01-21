@@ -19,13 +19,13 @@ export const isNodeObject = (target: unknown): target is Node => {
   return target !== null && typeof target === "object";
 };
 
-export const isQueryNodeWithoutInput = (
+export const isQueryNodeUndefinedInput = (
   target: unknown,
 ): target is QQueryOptionsOut => {
   return isNodeObject(target) && queryNodeUndefinedInput in target;
 };
 
-export const isQueryNodeWithInput = (
+export const isQueryNodeDefinedInput = (
   target: unknown,
 ): target is QQueryOptionsOut => {
   return isNodeObject(target) && queryNodeDefinedInput in target;
@@ -34,7 +34,7 @@ export const isQueryNodeWithInput = (
 export const isQueryNode = (target: unknown): target is QQueryOptionsOut => {
   return (
     isNodeObject(target) &&
-    (isQueryNodeWithInput(target) || isQueryNodeWithoutInput(target))
+    (isQueryNodeDefinedInput(target) || isQueryNodeUndefinedInput(target))
   );
 };
 
