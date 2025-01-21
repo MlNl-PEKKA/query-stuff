@@ -21,19 +21,19 @@ export type UnknownRecord = Record<PropertyKey, unknown>;
 
 export type Prettify<T> = { [key in keyof T]: T[key] } & {};
 
-type SimpleMerge<Destination, Source> = {
+export type SimpleMerge<Destination, Source> = {
   [Key in keyof Destination as Key extends keyof Source
     ? never
     : Key]: Destination[Key];
 } & Source;
 
-type PickIndexSignature<ObjectType> = {
+export type PickIndexSignature<ObjectType> = {
   [KeyType in keyof ObjectType as {} extends Record<KeyType, unknown>
     ? KeyType
     : never]: ObjectType[KeyType];
 };
 
-type OmitIndexSignature<ObjectType> = {
+export type OmitIndexSignature<ObjectType> = {
   [KeyType in keyof ObjectType as {} extends Record<KeyType, unknown>
     ? never
     : KeyType]: ObjectType[KeyType];
@@ -52,12 +52,12 @@ export type Node = {
       ) => Node | QAnyQueryOptionsOut | QAnyMutationOptionsOut);
 };
 
-type QBaseQueryOptions<T extends AnyUseQueryOptions> = OmitKeyof<
+export type QBaseQueryOptions<T extends AnyUseQueryOptions> = OmitKeyof<
   T,
   "queryFn" | "queryKey"
 >;
 
-type QueryKeyTag<
+export type QueryKeyTag<
   TQueryKey extends QueryKey = QueryKey,
   TQueryFnData = unknown,
   TError = DefaultError,
@@ -65,7 +65,7 @@ type QueryKeyTag<
   queryKey: DataTag<TQueryKey, TQueryFnData, TError>;
 };
 
-type QBaseQueryOptionsOut<
+export type QBaseQueryOptionsOut<
   T extends AnyUseQueryOptions,
   TQueryFnData = unknown,
   TError = DefaultError,
@@ -168,7 +168,7 @@ export type QQueryOptionsIn<
   | QUnusedSkipTokenOptionsIn<TQueryFnData, TError, TData, TQueryKey>
   | QUndefinedInitialDataOptionsIn<TQueryFnData, TError, TData, TQueryKey>;
 
-type QAnyQueryOptionsIn = QQueryOptionsIn<any, any, any, any>;
+export type QAnyQueryOptionsIn = QQueryOptionsIn<any, any, any, any>;
 
 export type QQueryOptionsOut<
   TQueryFnData = unknown,
@@ -182,16 +182,16 @@ export type QQueryOptionsOut<
 
 export type QAnyQueryOptionsOut = QQueryOptionsOut<any, any, any, any>;
 
-type QBaseMutationOptions<T extends AnyUseMutationOptions> = OmitKeyof<
+export type QBaseMutationOptions<T extends AnyUseMutationOptions> = OmitKeyof<
   T,
   "mutationFn" | "mutationKey"
 >;
 
-type MutationKeyTag<TMutationKey extends MutationKey = MutationKey> = {
+export type MutationKeyTag<TMutationKey extends MutationKey = MutationKey> = {
   mutationKey: TMutationKey;
 };
 
-type QBaseMutationOptionsOut<T extends AnyUseMutationOptions> = Merge<
+export type QBaseMutationOptionsOut<T extends AnyUseMutationOptions> = Merge<
   T,
   MutationKeyTag
 > & { [mutationNode]: unknown };
@@ -216,7 +216,7 @@ export type QMutationOptionsOut<
 
 export type QAnyMutationOptionsOut = QMutationOptionsOut<any, any, any, any>;
 
-type ProxyKeyTag<TKey extends QueryKey = []> = {
+export type ProxyKeyTag<TKey extends QueryKey = []> = {
   _key: TKey;
 };
 
@@ -228,7 +228,7 @@ export type ProxyNode<T extends Node, TQueryKey extends QueryKey = []> = {
         ) => Merge<
           S,
           QueryKeyTag<
-            R[0] extends QAnyQueryOptionsIn | undefined
+            R[0] extends QAnyQueryOptionsIn | void
               ? [...TQueryKey, key]
               : [...TQueryKey, key, R[0]],
             TQueryFnData,

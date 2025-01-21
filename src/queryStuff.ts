@@ -32,26 +32,33 @@ abstract class QueryStuffRoot<TInput = {}> {
   constructor(protected _input: TInput = {} as TInput) {}
 }
 
-export class QueryStuff<
-  TInput extends UnknownRecord = {},
-> extends QueryStuffRoot<TInput> {
-  factory<T extends Node>(
-    fn: (q: QueryStuffWithoutInput<TInput>) => T,
+export class QueryStuff {
+  static factory<T extends Node, TInput extends UnknownRecord = {}>(
+    fn: (q: QueryStuffUndefinedInput<TInput>) => T,
   ): ProxyNode<T> {
-    return createProxyNode(fn(new QueryStuffWithoutInput(this._input)));
+    return createProxyNode(fn(new QueryStuffUndefinedInput<TInput>()));
   }
 }
 
-class QueryStuffWithoutInput<TInput> extends QueryStuffRoot<TInput> {
-  module<T extends Node>(fn: (q: QueryStuffWithoutInput<TInput>) => T): T {
-    return fn(new QueryStuffWithoutInput(this._input));
+export class QueryStuffUndefinedInput<TInput> extends QueryStuffRoot<TInput> {
+  module<T extends Node>(fn: (q: QueryStuffUndefinedInput<TInput>) => T): T {
+    return fn(new QueryStuffUndefinedInput(this._input));
   }
   input<
-    T extends Prettify<UnknownRecord & { [key in keyof TInput]?: never }>,
+    T extends Prettify<
+      UnknownRecord & { [key in keyof TInput]?: never }
+    > | void = void,
   >() {
-    return new QueryStuffWithInput<TInput, Prettify<Omit<T, keyof TInput>>>(
-      this._input,
-    );
+    return new QueryStuffDefinedInput<
+      TInput,
+      Prettify<
+        Omit<T, keyof TInput> extends infer R
+          ? keyof R extends never
+            ? void
+            : R
+          : never
+      >
+    >(this._input);
   }
   query<TData = unknown, TError = DefaultError>(
     queryFn: (input: TInput) => TData,
@@ -115,13 +122,16 @@ class QueryStuffWithoutInput<TInput> extends QueryStuffRoot<TInput> {
   }
 }
 
-class QueryStuffWithInput<TInput, TInputIn> extends QueryStuffRoot<TInput> {
+export class QueryStuffDefinedInput<
+  TInput,
+  TInputIn,
+> extends QueryStuffRoot<TInput> {
   module<T extends Node>(
-    fn: (q: QueryStuffWithoutInput<Merge<TInput, TInputIn>>) => T,
+    fn: (q: QueryStuffUndefinedInput<Merge<TInput, TInputIn>>) => T,
   ): (input: TInputIn) => T {
     return (input) =>
       fn(
-        new QueryStuffWithoutInput<Merge<TInput, TInputIn>>({
+        new QueryStuffUndefinedInput<Merge<TInput, TInputIn>>({
           ...this._input,
           ...input,
         }),

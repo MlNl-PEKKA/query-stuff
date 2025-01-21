@@ -1,1 +1,1 @@
-export * from "./queryStuff.js";
+export { QueryStuff } from "./queryStuff.js";
