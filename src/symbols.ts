@@ -1,5 +1,5 @@
-export const queryNodeWithoutInput = Symbol("queryNodeWithoutInput");
+export const queryNodeUndefinedInput = Symbol("queryNodeUndefinedInput");
 
-export const queryNodeWithInput = Symbol("queryNodeWithInput");
+export const queryNodeDefinedInput = Symbol("queryNodeDefinedInput");
 
 export const mutationNode = Symbol("mutationNode");

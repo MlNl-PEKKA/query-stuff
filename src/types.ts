@@ -13,8 +13,8 @@ import type {
 } from "@tanstack/react-query";
 import type {
   mutationNode,
-  queryNodeWithInput,
-  queryNodeWithoutInput,
+  queryNodeDefinedInput,
+  queryNodeUndefinedInput,
 } from "./symbols.js";
 
 export type UnknownRecord = Record<PropertyKey, unknown>;
@@ -75,10 +75,10 @@ export type QBaseQueryOptionsOut<
     QueryKeyTag<TQueryKey, TQueryFnData, TError> &
     (
       | {
-          [queryNodeWithInput]: unknown;
+          [queryNodeDefinedInput]: unknown;
         }
       | {
-          [queryNodeWithoutInput]: unknown;
+          [queryNodeUndefinedInput]: unknown;
         }
     )
 >;

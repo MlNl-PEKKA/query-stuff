@@ -1,7 +1,7 @@
 import {
   mutationNode,
-  queryNodeWithInput,
-  queryNodeWithoutInput,
+  queryNodeDefinedInput,
+  queryNodeUndefinedInput,
 } from "./symbols.js";
 import type {
   Node,
@@ -22,13 +22,13 @@ export const isNodeObject = (target: unknown): target is Node => {
 export const isQueryNodeWithoutInput = (
   target: unknown,
 ): target is QQueryOptionsOut => {
-  return isNodeObject(target) && queryNodeWithoutInput in target;
+  return isNodeObject(target) && queryNodeUndefinedInput in target;
 };
 
 export const isQueryNodeWithInput = (
   target: unknown,
 ): target is QQueryOptionsOut => {
-  return isNodeObject(target) && queryNodeWithInput in target;
+  return isNodeObject(target) && queryNodeDefinedInput in target;
 };
 
 export const isQueryNode = (target: unknown): target is QQueryOptionsOut => {

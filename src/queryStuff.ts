@@ -6,8 +6,8 @@ import type {
 import { queryOptions } from "@tanstack/react-query";
 import {
   mutationNode,
-  queryNodeWithInput,
-  queryNodeWithoutInput,
+  queryNodeDefinedInput,
+  queryNodeUndefinedInput,
 } from "./symbols.js";
 import type {
   Merge,
@@ -93,7 +93,7 @@ export class QueryStuffUndefinedInput<TInput> extends QueryStuffRoot<TInput> {
         queryKey: [],
         queryFn: () => queryFn(this._input),
       }),
-      [queryNodeWithoutInput]: {},
+      [queryNodeUndefinedInput]: {},
     });
   }
   mutation<TData = unknown, TError = DefaultError, TContext = unknown>(
@@ -174,7 +174,7 @@ export class QueryStuffDefinedInput<
         queryKey: [],
         queryFn: () => queryFn({ ...this._input, ...input }),
       }),
-      [queryNodeWithInput]: {},
+      [queryNodeDefinedInput]: {},
     });
   }
   mutation<TData = unknown, TError = DefaultError, TContext = unknown>(
