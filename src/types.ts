@@ -191,10 +191,10 @@ export type MutationKeyTag<TMutationKey extends MutationKey = MutationKey> = {
   mutationKey: TMutationKey;
 };
 
-export type QBaseMutationOptionsOut<T extends AnyUseMutationOptions> = Merge<
-  T,
-  MutationKeyTag
-> & { [mutationNode]: unknown };
+export type QBaseMutationOptionsOut<
+  T extends AnyUseMutationOptions,
+  TMutationKey extends MutationKey = MutationKey,
+> = Merge<T, MutationKeyTag<TMutationKey>> & { [mutationNode]: unknown };
 
 export type QMutationOptionsIn<
   TData = unknown,
@@ -210,8 +210,10 @@ export type QMutationOptionsOut<
   TError = DefaultError,
   TVariables = unknown,
   TContext = unknown,
+  TMutationKey extends MutationKey = MutationKey,
 > = QBaseMutationOptionsOut<
-  UseMutationOptions<TData, TError, TVariables, TContext>
+  UseMutationOptions<TData, TError, TVariables, TContext>,
+  TMutationKey
 >;
 
 export type QAnyMutationOptionsOut = QMutationOptionsOut<any, any, any, any>;
