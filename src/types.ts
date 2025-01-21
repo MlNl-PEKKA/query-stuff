@@ -19,6 +19,10 @@ import type {
 
 export type UnknownRecord = Record<PropertyKey, unknown>;
 
+export type SafePrettify<T> = T extends UnknownRecord
+  ? { [key in keyof T]: T[key] } & {}
+  : T;
+
 export type Prettify<T> = { [key in keyof T]: T[key] } & {};
 
 export type SimpleMerge<Destination, Source> = {

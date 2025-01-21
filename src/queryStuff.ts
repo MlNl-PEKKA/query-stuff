@@ -24,6 +24,7 @@ import type {
   QUndefinedInitialDataOptionsOut,
   QUnusedSkipTokenOptionsIn,
   QUnusedSkipTokenOptionsOut,
+  SafePrettify,
   UnknownRecord,
 } from "./types.js";
 import { createProxyNode } from "./createProxyNode.js";
@@ -51,7 +52,7 @@ export class QueryStuffUndefinedInput<TInput> extends QueryStuffRoot<TInput> {
   >() {
     return new QueryStuffDefinedInput<
       TInput,
-      Prettify<
+      SafePrettify<
         Omit<T, keyof TInput> extends infer R
           ? keyof R extends never
             ? void
