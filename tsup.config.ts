@@ -4,7 +4,7 @@ export default defineConfig({
   bundle: false,
   clean: true,
   dts: true,
-  entry: ["src/index.ts"],
+  entry: ["src/*.ts", "!src/*.test.ts", "!src/fixtures.ts"],
   format: ["cjs", "esm"],
   outDir: "lib",
   sourcemap: true,
