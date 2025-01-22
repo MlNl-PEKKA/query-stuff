@@ -2,14 +2,14 @@ import {
   mutationNode,
   queryNodeDefinedInput,
   queryNodeUndefinedInput,
-} from "./symbols.js";
+} from "./symbols.ts";
 import type {
   Node,
   QAnyMutationOptionsOut,
   QAnyQueryOptionsOut,
   QMutationOptionsOut,
   QQueryOptionsOut,
-} from "./types.js";
+} from "./types.ts";
 
 export const isString = (p: string | symbol): p is string => {
   return typeof p === "string";

@@ -1,10 +1,11 @@
-import { QueryStuff, QueryStuffUndefinedInput } from "./queryStuff.js";
+import { QueryStuff, QueryStuffUndefinedInput } from "./queryStuff.ts";
 import type * as _ from "../node_modules/.pnpm/@tanstack+query-core@5.64.1/node_modules/@tanstack/query-core/build/modern/hydration-DpBMnFDT.js";
 import { test } from "vitest";
-import { createProxyNode } from "./createProxyNode.js";
-import { ProxyNode } from "./types.js";
+import { createProxyNode } from "./createProxyNode.ts";
+import { ProxyNode } from "./types.ts";
+import "./symbols.ts";
 
-const q = new QueryStuffUndefinedInput().module((q) => ({
+export const n = new QueryStuffUndefinedInput().module((q) => ({
   a: q.query(() => ({ a: 1 })),
   b: q.mutation(async () => ({ b: 2 })),
   c: q.input().query(() => ({ c: 3 })),
@@ -30,9 +31,9 @@ const q = new QueryStuffUndefinedInput().module((q) => ({
 }));
 
 export const queryStuffTest = test.extend<{
-  q: typeof q;
-  queryFactories: [ProxyNode<typeof q>, ProxyNode<typeof q>];
+  q: ProxyNode<typeof n>;
+  queryFactories: [ProxyNode<typeof n>, ProxyNode<typeof n>];
 }>({
-  q,
-  queryFactories: [createProxyNode(q), QueryStuff.factory(() => q)],
+  q: QueryStuff.factory(() => n),
+  queryFactories: [createProxyNode(n), QueryStuff.factory(() => n)],
 });

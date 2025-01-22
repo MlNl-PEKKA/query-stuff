@@ -1,17 +1,17 @@
 import { describe, expect, expectTypeOf } from "vitest";
-import { queryStuffTest } from "./fixtures.js";
+import { n, queryStuffTest } from "./fixtures.ts";
 import {
   mutationNode,
   queryNodeDefinedInput,
   queryNodeUndefinedInput,
-} from "./symbols.js";
+} from "./symbols.ts";
 import {
   Node,
   QAnyMutationOptionsOut,
   QAnyQueryOptionsOut,
   QMutationOptionsOut,
   QQueryOptionsOut,
-} from "./types.js";
+} from "./types.ts";
 import {
   isMutationNode,
   isNode,
@@ -21,7 +21,7 @@ import {
   isQueryNodeDefinedInput,
   isQueryNodeUndefinedInput,
   isString,
-} from "./utils.js";
+} from "./utils.ts";
 
 describe("utils", () => {
   describe("isString", () => {
@@ -58,27 +58,27 @@ describe("utils", () => {
     );
     queryStuffTest(
       "returns true for nodes and asserts target type as Node Object",
-      ({ q }) => {
+      () => {
         [
-          q,
-          q.a(),
-          q.b(),
-          q.c(),
-          q.d(),
-          q.e({ e: 5 }),
-          q.f(),
-          q.g.a(),
-          q.g.b(),
-          q.g.c(),
-          q.g.d(),
-          q.g.e({ e: 5 }),
-          q.g.f(),
-          q.h({ h: 8 }).a(),
-          q.h({ h: 8 }).b(),
-          q.h({ h: 8 }).c(),
-          q.h({ h: 8 }).d(),
-          q.h({ h: 8 }).e({ e: 5 }),
-          q.h({ h: 8 }).f(),
+          n,
+          n.a(),
+          n.b(),
+          n.c(),
+          n.d(),
+          n.e({ e: 5 }),
+          n.f(),
+          n.g.a(),
+          n.g.b(),
+          n.g.c(),
+          n.g.d(),
+          n.g.e({ e: 5 }),
+          n.g.f(),
+          n.h({ h: 8 }).a(),
+          n.h({ h: 8 }).b(),
+          n.h({ h: 8 }).c(),
+          n.h({ h: 8 }).d(),
+          n.h({ h: 8 }).e({ e: 5 }),
+          n.h({ h: 8 }).f(),
         ].forEach((target: unknown) => {
           const value = isNodeObject(target);
           expect(value).toBe(true);
@@ -110,8 +110,8 @@ describe("utils", () => {
     );
     queryStuffTest(
       "returns true for QueryNodeUndefinedInput and asserts target type as QQueryOptionsOut",
-      ({ q }) => {
-        [q.a(), q.g.a(), q.h({ h: 8 }).a()].forEach((target: unknown) => {
+      () => {
+        [n.a(), n.g.a(), n.h({ h: 8 }).a()].forEach((target: unknown) => {
           const value = isQueryNodeUndefinedInput(target);
           expect(value).toBe(true);
           if (value) expectTypeOf(target).toEqualTypeOf<QQueryOptionsOut>();
@@ -142,14 +142,14 @@ describe("utils", () => {
     );
     queryStuffTest(
       "returns true for QueryNodeDefinedInput and asserts target type as QQueryOptionsOut",
-      ({ q }) => {
+      () => {
         [
-          q.c(),
-          q.e({ e: 5 }),
-          q.g.c(),
-          q.g.e({ e: 5 }),
-          q.h({ h: 8 }).c(),
-          q.h({ h: 8 }).e({ e: 5 }),
+          n.c(),
+          n.e({ e: 5 }),
+          n.g.c(),
+          n.g.e({ e: 5 }),
+          n.h({ h: 8 }).c(),
+          n.h({ h: 8 }).e({ e: 5 }),
         ].forEach((target: unknown) => {
           const value = isQueryNodeDefinedInput(target);
           expect(value).toBe(true);
@@ -190,17 +190,17 @@ describe("utils", () => {
     );
     queryStuffTest(
       "returns true for QueryNode and asserts target type as QQueryOptionsOut",
-      ({ q }) => {
+      () => {
         [
-          q.a(),
-          q.g.a(),
-          q.h({ h: 8 }).a(),
-          q.c(),
-          q.e({ e: 5 }),
-          q.g.c(),
-          q.g.e({ e: 5 }),
-          q.h({ h: 8 }).c(),
-          q.h({ h: 8 }).e({ e: 5 }),
+          n.a(),
+          n.g.a(),
+          n.h({ h: 8 }).a(),
+          n.c(),
+          n.e({ e: 5 }),
+          n.g.c(),
+          n.g.e({ e: 5 }),
+          n.h({ h: 8 }).c(),
+          n.h({ h: 8 }).e({ e: 5 }),
         ].forEach((target: unknown) => {
           const value = isQueryNode(target);
           expect(value).toBe(true);
@@ -234,14 +234,14 @@ describe("utils", () => {
     );
     queryStuffTest(
       "returns true for mutationNode and asserts type QQueryOptionsOut, for objects with the mutationNode symbol",
-      ({ q }) => {
+      () => {
         [
-          q.b(),
-          q.d(),
-          q.g.b(),
-          q.g.d(),
-          q.h({ h: 8 }).b(),
-          q.h({ h: 8 }).d(),
+          n.b(),
+          n.d(),
+          n.g.b(),
+          n.g.d(),
+          n.h({ h: 8 }).b(),
+          n.h({ h: 8 }).d(),
         ].forEach((target: unknown) => {
           const value = isMutationNode(target);
           expect(value).toBe(true);
@@ -277,27 +277,27 @@ describe("utils", () => {
     );
     queryStuffTest(
       "returns true for NodeFunctions and asserts target type as node function i.e., (...input: unknown[]) => Node | QAnyQueryOptionsOut | QAnyMutationOptionsOut",
-      ({ q }) => {
+      () => {
         [
-          q.a,
-          q.b,
-          q.c,
-          q.d,
-          q.e,
-          q.f,
-          q.g.a,
-          q.g.b,
-          q.g.c,
-          q.g.d,
-          q.g.e,
-          q.g.f,
-          q.h,
-          q.h({ h: 8 }).a,
-          q.h({ h: 8 }).b,
-          q.h({ h: 8 }).c,
-          q.h({ h: 8 }).d,
-          q.h({ h: 8 }).e,
-          q.h({ h: 8 }).f,
+          n.a,
+          n.b,
+          n.c,
+          n.d,
+          n.e,
+          n.f,
+          n.g.a,
+          n.g.b,
+          n.g.c,
+          n.g.d,
+          n.g.e,
+          n.g.f,
+          n.h,
+          n.h({ h: 8 }).a,
+          n.h({ h: 8 }).b,
+          n.h({ h: 8 }).c,
+          n.h({ h: 8 }).d,
+          n.h({ h: 8 }).e,
+          n.h({ h: 8 }).f,
         ].forEach((target: unknown) => {
           const value = isNodeFunction(target);
           expect(value).toBe(true);
@@ -378,46 +378,46 @@ describe("utils", () => {
     );
     queryStuffTest(
       "returns true for Nodes and NodeFunctions and asserts target type as Node",
-      ({ q }) => {
+      () => {
         [
-          q,
-          q.a(),
-          q.b(),
-          q.c(),
-          q.d(),
-          q.e({ e: 5 }),
-          q.f(),
-          q.g.a(),
-          q.g.b(),
-          q.g.c(),
-          q.g.d(),
-          q.g.e({ e: 5 }),
-          q.g.f(),
-          q.h({ h: 8 }).a(),
-          q.h({ h: 8 }).b(),
-          q.h({ h: 8 }).c(),
-          q.h({ h: 8 }).d(),
-          q.h({ h: 8 }).e({ e: 5 }),
-          q.h({ h: 8 }).f(),
-          q.a,
-          q.b,
-          q.c,
-          q.d,
-          q.e,
-          q.f,
-          q.g.a,
-          q.g.b,
-          q.g.c,
-          q.g.d,
-          q.g.e,
-          q.g.f,
-          q.h,
-          q.h({ h: 8 }).a,
-          q.h({ h: 8 }).b,
-          q.h({ h: 8 }).c,
-          q.h({ h: 8 }).d,
-          q.h({ h: 8 }).e,
-          q.h({ h: 8 }).f,
+          n,
+          n.a(),
+          n.b(),
+          n.c(),
+          n.d(),
+          n.e({ e: 5 }),
+          n.f(),
+          n.g.a(),
+          n.g.b(),
+          n.g.c(),
+          n.g.d(),
+          n.g.e({ e: 5 }),
+          n.g.f(),
+          n.h({ h: 8 }).a(),
+          n.h({ h: 8 }).b(),
+          n.h({ h: 8 }).c(),
+          n.h({ h: 8 }).d(),
+          n.h({ h: 8 }).e({ e: 5 }),
+          n.h({ h: 8 }).f(),
+          n.a,
+          n.b,
+          n.c,
+          n.d,
+          n.e,
+          n.f,
+          n.g.a,
+          n.g.b,
+          n.g.c,
+          n.g.d,
+          n.g.e,
+          n.g.f,
+          n.h,
+          n.h({ h: 8 }).a,
+          n.h({ h: 8 }).b,
+          n.h({ h: 8 }).c,
+          n.h({ h: 8 }).d,
+          n.h({ h: 8 }).e,
+          n.h({ h: 8 }).f,
         ].forEach(
           (
             target:

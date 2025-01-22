@@ -15,7 +15,7 @@ import type {
   mutationNode,
   queryNodeDefinedInput,
   queryNodeUndefinedInput,
-} from "./symbols.js";
+} from "./symbols.ts";
 
 export type UnknownRecord = Record<PropertyKey, unknown>;
 

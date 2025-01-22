@@ -8,7 +8,7 @@ import {
   mutationNode,
   queryNodeDefinedInput,
   queryNodeUndefinedInput,
-} from "./symbols.js";
+} from "./symbols.ts";
 import type {
   Merge,
   Node,
@@ -26,8 +26,8 @@ import type {
   QUnusedSkipTokenOptionsOut,
   SafePrettify,
   UnknownRecord,
-} from "./types.js";
-import { createProxyNode } from "./createProxyNode.js";
+} from "./types.ts";
+import { createProxyNode } from "./createProxyNode.ts";
 
 abstract class QueryStuffRoot<TInput = {}> {
   constructor(protected _input: TInput = {} as TInput) {}

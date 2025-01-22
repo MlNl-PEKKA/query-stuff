@@ -1,1 +1,1 @@
-export { QueryStuff } from "./queryStuff.js";
+export { QueryStuff } from "./queryStuff.ts";
