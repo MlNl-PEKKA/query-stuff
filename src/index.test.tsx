@@ -8,8 +8,8 @@ import {
 } from "@tanstack/react-query";
 import { renderHook as rH, waitFor } from "@testing-library/react";
 import type { PropsWithChildren } from "react";
-import { describe, expect } from "vitest";
-import { queryStuffTest } from "./fixtures.js";
+import { describe, expect, it } from "vitest";
+import { queries } from "./fixtures.ts";
 
 const createTestQueryClient = () =>
   new QueryClient({
@@ -37,122 +37,124 @@ const renderHook = <T,>(
   wrapper: ReturnType<typeof createWrapper> = createWrapper(),
 ) => rH<T, unknown>(fn, { wrapper });
 
-describe("QueryStuff hooks", () => {
-  describe("q.a: query", () => {
-    describe("q.a: useQuery, getQueryData, getQueriesData", () => {
-      const wrapper = createWrapper();
-      queryStuffTest("q.a: useQuery", async ({ q }) => {
-        const { result: query } = renderHook(() => useQuery(q.a()), wrapper);
-        await waitFor(() => expect(query.current.isSuccess).toBe(true));
-        expect(query.current.data).toStrictEqual({ a: 1 });
+describe(`QueryStuff hooks`, () => {
+  queries.forEach(([q, { name, response, queryKey }]) => {
+    describe(`${name}: query`, () => {
+      describe(`${name}: useQuery, getQueryData, getQueriesData`, () => {
+        const wrapper = createWrapper();
+        it(`${name}: useQuery`, async () => {
+          const { result: query } = renderHook(() => useQuery(q), wrapper);
+          await waitFor(() => expect(query.current.isSuccess).toBe(true));
+          expect(query.current.data).toStrictEqual(response);
+        });
+        it(`${name}: getQueryData`, async () => {
+          const { result } = renderHook(
+            () => useQueryClient().getQueryData(q.queryKey),
+            wrapper,
+          );
+          expect(result.current).toStrictEqual(response);
+        });
+        it(`${name}: getQueriesData`, async () => {
+          const { result } = renderHook(
+            () => useQueryClient().getQueriesData({ queryKey: q.queryKey }),
+            wrapper,
+          );
+          expect(result.current).toStrictEqual([[queryKey, response]]);
+        });
       });
-      queryStuffTest("q.a: getQueryData", async ({ q }) => {
+      describe(`${name}: useQueries, getQueryData`, () => {
+        const wrapper = createWrapper();
+        it(`${name}: useQueries`, async () => {
+          const { result: query } = renderHook(
+            () =>
+              useQueries({
+                queries: [q],
+              }),
+            wrapper,
+          );
+          await waitFor(() => expect(query.current[0].isSuccess).toBe(true));
+          expect(query.current[0].data).toStrictEqual(response);
+        });
+        it(`${name}: getQueryData`, async () => {
+          const { result } = renderHook(
+            () => useQueryClient().getQueryData(q.queryKey),
+            wrapper,
+          );
+          expect(result.current).toStrictEqual(response);
+        });
+      });
+      describe(`${name}: setQueryData, refetchQueries, removeQueries`, () => {
+        const wrapper = createWrapper();
+        it(`${name}: setQueryData`, async () => {
+          renderHook(
+            () =>
+              useQueryClient().setQueryData(q.queryKey, (data) => {
+                expect(data).toBe(undefined);
+                return response;
+              }),
+            wrapper,
+          );
+          const { result: getQueryData } = renderHook(
+            () => useQueryClient().getQueryData(q.queryKey),
+            wrapper,
+          );
+          expect(getQueryData.current).toStrictEqual(response);
+        });
+        it(`${name}: refetchQueries`, async () => {
+          const { result: refetchQueries } = renderHook(
+            () => useQueryClient().refetchQueries({ queryKey: q.queryKey }),
+            wrapper,
+          );
+          await waitFor(() => expect(refetchQueries.current).resolves);
+          const { result } = renderHook(
+            () => useQueryClient().getQueryData(q.queryKey),
+            wrapper,
+          );
+          expect(result.current).toStrictEqual(response);
+        });
+        it(`${name}: removeQueries`, async () => {
+          const { result: getQueryData } = renderHook(
+            () => useQueryClient().getQueryData(q.queryKey),
+            wrapper,
+          );
+          expect(getQueryData.current).toStrictEqual(response);
+          renderHook(
+            () => useQueryClient().removeQueries({ queryKey: q.queryKey }),
+            wrapper,
+          );
+          const { result } = renderHook(
+            () => useQueryClient().getQueryData(q.queryKey),
+            wrapper,
+          );
+          expect(result.current).toBe(undefined);
+        });
+      });
+      it(`${name}: fetchQuery`, async () => {
+        const wrapper = createWrapper();
+        const { result: fetchQuery } = renderHook(
+          () => useQueryClient().fetchQuery(q),
+          wrapper,
+        );
+        await waitFor(() => expect(fetchQuery.current).resolves);
         const { result } = renderHook(
-          () => useQueryClient().getQueryData(q.a().queryKey),
+          () => useQueryClient().getQueryData(q.queryKey),
           wrapper,
         );
-        expect(result.current).toStrictEqual({ a: 1 });
+        expect(result.current).toStrictEqual(response);
       });
-      queryStuffTest("q.a: getQueriesData", async ({ q }) => {
+      it(`${name}: ensureQueryData`, async () => {
+        const wrapper = createWrapper();
+        const { result: fetchQuery } = renderHook(
+          () => useQueryClient().ensureQueryData(q),
+          wrapper,
+        );
+        await waitFor(() => expect(fetchQuery.current).resolves);
         const { result } = renderHook(
-          () => useQueryClient().getQueriesData({ queryKey: q.a().queryKey }),
+          () => useQueryClient().getQueryData(q.queryKey),
           wrapper,
         );
-        expect(result.current).toStrictEqual([[["a"], { a: 1 }]]);
+        expect(result.current).toStrictEqual(response);
       });
-    });
-    describe("q.a: useQueries, getQueryData", () => {
-      const wrapper = createWrapper();
-      queryStuffTest("q.a: useQueries", async ({ q }) => {
-        const { result: query } = renderHook(
-          () =>
-            useQueries({
-              queries: [q.a()],
-            }),
-          wrapper,
-        );
-        await waitFor(() => expect(query.current[0].isSuccess).toBe(true));
-        expect(query.current[0].data).toStrictEqual({ a: 1 });
-      });
-      queryStuffTest("q.a: getQueryData", async ({ q }) => {
-        const { result } = renderHook(
-          () => useQueryClient().getQueryData(q.a().queryKey),
-          wrapper,
-        );
-        expect(result.current).toStrictEqual({ a: 1 });
-      });
-    });
-    describe("q.a: setQueryData, refetchQueries, removeQueries", () => {
-      const wrapper = createWrapper();
-      queryStuffTest("q.a: setQueryData", async ({ q }) => {
-        renderHook(
-          () =>
-            useQueryClient().setQueryData(q.a().queryKey, (data) => {
-              expect(data).toBe(undefined);
-              return { a: 1 };
-            }),
-          wrapper,
-        );
-        const { result: getQueryData } = renderHook(
-          () => useQueryClient().getQueryData(q.a().queryKey),
-          wrapper,
-        );
-        expect(getQueryData.current).toStrictEqual({ a: 1 });
-      });
-      queryStuffTest("q.a: refetchQueries", async ({ q }) => {
-        const { result: refetchQueries } = renderHook(
-          () => useQueryClient().refetchQueries({ queryKey: q.a().queryKey }),
-          wrapper,
-        );
-        await waitFor(() => expect(refetchQueries.current).resolves);
-        const { result } = renderHook(
-          () => useQueryClient().getQueryData(q.a().queryKey),
-          wrapper,
-        );
-        expect(result.current).toStrictEqual({ a: 1 });
-      });
-      queryStuffTest("q.a: removeQueries", async ({ q }) => {
-        const { result: getQueryData } = renderHook(
-          () => useQueryClient().getQueryData(q.a().queryKey),
-          wrapper,
-        );
-        expect(getQueryData.current).toStrictEqual({ a: 1 });
-        renderHook(
-          () => useQueryClient().removeQueries({ queryKey: q.a().queryKey }),
-          wrapper,
-        );
-        const { result } = renderHook(
-          () => useQueryClient().getQueryData(q.a().queryKey),
-          wrapper,
-        );
-        expect(result.current).toBe(undefined);
-      });
-    });
-    queryStuffTest("q.a: fetchQuery", async ({ q }) => {
-      const wrapper = createWrapper();
-      const { result: fetchQuery } = renderHook(
-        () => useQueryClient().fetchQuery(q.a()),
-        wrapper,
-      );
-      await waitFor(() => expect(fetchQuery.current).resolves);
-      const { result } = renderHook(
-        () => useQueryClient().getQueryData(q.a().queryKey),
-        wrapper,
-      );
-      expect(result.current).toStrictEqual({ a: 1 });
-    });
-    queryStuffTest("q.a: ensureQueryData", async ({ q }) => {
-      const wrapper = createWrapper();
-      const { result: fetchQuery } = renderHook(
-        () => useQueryClient().ensureQueryData(q.a()),
-        wrapper,
-      );
-      await waitFor(() => expect(fetchQuery.current).resolves);
-      const { result } = renderHook(
-        () => useQueryClient().getQueryData(q.a().queryKey),
-        wrapper,
-      );
-      expect(result.current).toStrictEqual({ a: 1 });
     });
   });
 });

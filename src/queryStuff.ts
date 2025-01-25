@@ -4,11 +4,6 @@ import type {
   OmitKeyof,
 } from "@tanstack/react-query";
 import { queryOptions } from "@tanstack/react-query";
-import {
-  mutationNode,
-  queryNodeDefinedInput,
-  queryNodeUndefinedInput,
-} from "./symbols.ts";
 import type {
   Merge,
   Node,
@@ -99,7 +94,7 @@ export class QueryStuffUndefinedInput<
         queryKey: [],
         queryFn: () => queryFn(this._input),
       }),
-      [queryNodeUndefinedInput]: {},
+      queryNodeUndefinedInput: {},
     });
   }
   mutation<TData = unknown, TError = DefaultError, TContext = unknown>(
@@ -123,7 +118,7 @@ export class QueryStuffUndefinedInput<
         overrideOptions.onError?.(error, this._input, context),
       onSettled: (data, error, _, context) =>
         overrideOptions.onSettled?.(data, error, this._input, context),
-      [mutationNode]: {},
+      mutationNode: {},
     });
   }
 }
@@ -180,7 +175,7 @@ export class QueryStuffDefinedInput<
         queryKey: [],
         queryFn: () => queryFn({ ...this._input, ...input }),
       }),
-      [queryNodeDefinedInput]: {},
+      queryNodeDefinedInput: {},
     });
   }
   mutation<TData = unknown, TError = DefaultError, TContext = unknown>(
@@ -219,7 +214,7 @@ export class QueryStuffDefinedInput<
           { ...this._input, ...input },
           context,
         ),
-      [mutationNode]: {},
+      mutationNode: {},
     });
   }
 }

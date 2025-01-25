@@ -1,10 +1,8 @@
+import { createProxyNode } from "./createProxyNode.ts";
 import { QueryStuff, QueryStuffUndefinedInput } from "./queryStuff.ts";
 import type * as _ from "../node_modules/.pnpm/@tanstack+query-core@5.64.1/node_modules/@tanstack/query-core/build/modern/hydration-DpBMnFDT.js";
-import { test } from "vitest";
-import { createProxyNode } from "./createProxyNode.ts";
-import type { ProxyNode } from "./types.ts";
 
-export const n = new QueryStuffUndefinedInput().module((q) => ({
+export const nodes = new QueryStuffUndefinedInput().module((q) => ({
   a: q.query(() => ({ a: 1 })),
   b: q.mutation(async () => ({ b: 2 })),
   c: q.input().query(() => ({ c: 3 })),
@@ -29,10 +27,80 @@ export const n = new QueryStuffUndefinedInput().module((q) => ({
   })),
 }));
 
-export const queryStuffTest = test.extend<{
-  q: ProxyNode<typeof n>;
-  queryFactories: [ProxyNode<typeof n>, ProxyNode<typeof n>];
-}>({
-  q: QueryStuff.factory(() => n),
-  queryFactories: [createProxyNode(n), QueryStuff.factory(() => n)],
-});
+const queryFactory = QueryStuff.factory(() => nodes);
+
+export const queryFactories = [
+  [createProxyNode(nodes), "createProxyNode"],
+  [queryFactory, "QueryStuff.factory"],
+] as const;
+
+const baseQuery = [
+  [
+    queryFactory.a(),
+    {
+      name: "q.a",
+      response: { a: 1 },
+      queryKey: ["a"],
+    },
+  ],
+] as const;
+
+export const queries = [
+  ...baseQuery,
+  [
+    queryFactory.c(),
+    {
+      name: "q.c",
+      response: { c: 3 },
+      queryKey: ["c"],
+    },
+  ],
+  [
+    queryFactory.e({ e: 5 }),
+    {
+      name: "q.e",
+      response: { e: 5 },
+      queryKey: ["e", { e: 5 }],
+    },
+  ],
+  [
+    queryFactory.g.a(),
+    {
+      name: "q.g.a",
+      response: { a: 1 },
+      queryKey: ["g", "a"],
+    },
+  ],
+  [
+    queryFactory.g.c(),
+    {
+      name: "q.g.c",
+      response: { c: 3 },
+      queryKey: ["g", "c"],
+    },
+  ],
+  [
+    queryFactory.h({ h: 7 }).a(),
+    {
+      name: "q.h.a",
+      response: { a: 1, h: 7 },
+      queryKey: ["h", { h: 7 }, "a"],
+    },
+  ],
+  [
+    queryFactory.h({ h: 7 }).c(),
+    {
+      name: "q.h.c",
+      response: { c: 3, h: 7 },
+      queryKey: ["h", { h: 7 }, "c"],
+    },
+  ],
+  [
+    queryFactory.h({ h: 7 }).e({ e: 5 }),
+    {
+      name: "q.h.e",
+      response: { e: 5, h: 7 },
+      queryKey: ["h", { h: 7 }, "e", { e: 5 }],
+    },
+  ],
+] as unknown as typeof baseQuery;
