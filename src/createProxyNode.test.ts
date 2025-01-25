@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 import { describe, expect, it } from "vitest";
-import { nodes, queryFactories } from "./fixtures.ts";
+import { nodes, queryFactories } from "./fixtures.js";
 
 const getQueryKey = <T>() => {
   return <U extends readonly unknown[]>(key: U) =>

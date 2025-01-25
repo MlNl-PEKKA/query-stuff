@@ -1,12 +1,12 @@
-import { createProxyNode } from "./createProxyNode.ts";
-import { QueryStuffUndefinedInput } from "./queryStuff.ts";
-import { QueryStuff } from "./index.ts";
+import { createProxyNode } from "./createProxyNode.js";
+import { QueryStuffUndefinedInput } from "./queryStuff.js";
+import { QueryStuff } from "./index.js";
 import type * as _ from "../node_modules/.pnpm/@tanstack+query-core@5.64.1/node_modules/@tanstack/query-core/build/modern/hydration-DpBMnFDT.js";
 import {
   QAnyMutationOptionsOut,
   QAnyQueryOptionsOut,
   UnknownRecord,
-} from "./types.ts";
+} from "./types.js";
 import { MutationKey, QueryKey } from "@tanstack/react-query";
 
 export const nodes = new QueryStuffUndefinedInput().module((q) => ({

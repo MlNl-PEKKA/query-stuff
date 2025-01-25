@@ -22,7 +22,7 @@ import type {
   SafePrettify,
   UnknownRecord,
 } from "./types.ts";
-import { createProxyNode } from "./createProxyNode.ts";
+import { createProxyNode } from "./createProxyNode.js";
 
 abstract class QueryStuffRoot<TInput = {}> {
   constructor(protected _input: TInput = {} as TInput) {}

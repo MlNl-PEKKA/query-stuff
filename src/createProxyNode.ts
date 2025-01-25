@@ -7,7 +7,7 @@ import {
   isQueryNode,
   isQueryNodeUndefinedInput,
   isString,
-} from "./utils.ts";
+} from "./utils.js";
 
 export const createProxyNode = <T extends Node>(
   node: T,

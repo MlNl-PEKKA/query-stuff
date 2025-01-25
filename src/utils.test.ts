@@ -1,12 +1,12 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
-import { nodes } from "./fixtures.ts";
+import { nodes } from "./fixtures.js";
 import {
   Node,
   QAnyMutationOptionsOut,
   QAnyQueryOptionsOut,
   QMutationOptionsOut,
   QQueryOptionsOut,
-} from "./types.ts";
+} from "./types.js";
 import {
   isMutationNode,
   isNode,
@@ -16,7 +16,7 @@ import {
   isQueryNodeDefinedInput,
   isQueryNodeUndefinedInput,
   isString,
-} from "./utils.ts";
+} from "./utils.js";
 
 describe("utils", () => {
   describe("isString", () => {

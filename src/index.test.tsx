@@ -11,7 +11,7 @@ import {
 import { renderHook as rH, waitFor } from "@testing-library/react";
 import type { PropsWithChildren } from "react";
 import { describe, expect, it, vi } from "vitest";
-import { mutations, queries } from "./fixtures.ts";
+import { mutations, queries } from "./fixtures.js";
 
 const createTestQueryClient = () =>
   new QueryClient({
