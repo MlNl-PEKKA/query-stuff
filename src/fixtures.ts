@@ -2,8 +2,7 @@ import { QueryStuff, QueryStuffUndefinedInput } from "./queryStuff.ts";
 import type * as _ from "../node_modules/.pnpm/@tanstack+query-core@5.64.1/node_modules/@tanstack/query-core/build/modern/hydration-DpBMnFDT.js";
 import { test } from "vitest";
 import { createProxyNode } from "./createProxyNode.ts";
-import { ProxyNode } from "./types.ts";
-import "./symbols.ts";
+import type { ProxyNode } from "./types.ts";
 
 export const n = new QueryStuffUndefinedInput().module((q) => ({
   a: q.query(() => ({ a: 1 })),

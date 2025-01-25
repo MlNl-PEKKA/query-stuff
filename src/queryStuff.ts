@@ -35,13 +35,13 @@ abstract class QueryStuffRoot<TInput = {}> {
 
 export class QueryStuff {
   static factory<T extends Node, TInput extends UnknownRecord = {}>(
-    fn: (q: QueryStuffUndefinedInput<TInput>) => T,
+    fn: (q: QueryStuffUndefinedBase<TInput>) => T,
   ): ProxyNode<T> {
-    return createProxyNode(fn(new QueryStuffUndefinedInput<TInput>()));
+    return createProxyNode(fn(new QueryStuffUndefinedBase<TInput>()));
   }
 }
 
-export class QueryStuffUndefinedInput<TInput> extends QueryStuffRoot<TInput> {
+class QueryStuffUndefinedBase<TInput> extends QueryStuffRoot<TInput> {
   module<T extends Node>(fn: (q: QueryStuffUndefinedInput<TInput>) => T): T {
     return fn(new QueryStuffUndefinedInput(this._input));
   }
@@ -61,6 +61,11 @@ export class QueryStuffUndefinedInput<TInput> extends QueryStuffRoot<TInput> {
       >
     >(this._input);
   }
+}
+
+export class QueryStuffUndefinedInput<
+  TInput,
+> extends QueryStuffUndefinedBase<TInput> {
   query<TData = unknown, TError = DefaultError>(
     queryFn: (input: TInput) => TData,
     options?: QDefinedInitialDataOptionsIn<TData, TError>,
