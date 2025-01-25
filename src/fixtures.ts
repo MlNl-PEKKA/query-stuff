@@ -1,6 +1,13 @@
 import { createProxyNode } from "./createProxyNode.ts";
-import { QueryStuff, QueryStuffUndefinedInput } from "./queryStuff.ts";
+import { QueryStuffUndefinedInput } from "./queryStuff.ts";
+import { QueryStuff } from "./index.ts";
 import type * as _ from "../node_modules/.pnpm/@tanstack+query-core@5.64.1/node_modules/@tanstack/query-core/build/modern/hydration-DpBMnFDT.js";
+import {
+  QAnyMutationOptionsOut,
+  QAnyQueryOptionsOut,
+  UnknownRecord,
+} from "./types.ts";
+import { MutationKey, QueryKey } from "@tanstack/react-query";
 
 export const nodes = new QueryStuffUndefinedInput().module((q) => ({
   a: q.query(() => ({ a: 1 })),
@@ -34,21 +41,26 @@ export const queryFactories = [
   [queryFactory, "QueryStuff.factory"],
 ] as const;
 
+type Queries = [
+  (...input: any[]) => QAnyQueryOptionsOut,
+  { name: string; response: UnknownRecord; queryKey: QueryKey },
+][];
+
 const baseQuery = [
   [
-    queryFactory.a(),
+    queryFactory.a,
     {
       name: "q.a",
       response: { a: 1 },
       queryKey: ["a"],
     },
   ],
-] as const;
+] as const satisfies Queries;
 
 export const queries = [
   ...baseQuery,
   [
-    queryFactory.c(),
+    queryFactory.c,
     {
       name: "q.c",
       response: { c: 3 },
@@ -56,7 +68,7 @@ export const queries = [
     },
   ],
   [
-    queryFactory.e({ e: 5 }),
+    () => queryFactory.e({ e: 5 }),
     {
       name: "q.e",
       response: { e: 5 },
@@ -64,7 +76,7 @@ export const queries = [
     },
   ],
   [
-    queryFactory.g.a(),
+    queryFactory.g.a,
     {
       name: "q.g.a",
       response: { a: 1 },
@@ -72,7 +84,7 @@ export const queries = [
     },
   ],
   [
-    queryFactory.g.c(),
+    queryFactory.g.c,
     {
       name: "q.g.c",
       response: { c: 3 },
@@ -80,7 +92,7 @@ export const queries = [
     },
   ],
   [
-    queryFactory.h({ h: 7 }).a(),
+    queryFactory.h({ h: 7 }).a,
     {
       name: "q.h.a",
       response: { a: 1, h: 7 },
@@ -88,7 +100,7 @@ export const queries = [
     },
   ],
   [
-    queryFactory.h({ h: 7 }).c(),
+    queryFactory.h({ h: 7 }).c,
     {
       name: "q.h.c",
       response: { c: 3, h: 7 },
@@ -96,11 +108,109 @@ export const queries = [
     },
   ],
   [
-    queryFactory.h({ h: 7 }).e({ e: 5 }),
+    () => queryFactory.h({ h: 7 }).e({ e: 5 }),
     {
       name: "q.h.e",
       response: { e: 5, h: 7 },
       queryKey: ["h", { h: 7 }, "e", { e: 5 }],
     },
   ],
-] as unknown as typeof baseQuery;
+] satisfies Queries as unknown as typeof baseQuery;
+
+type Mutations = [
+  (...input: any[]) => QAnyMutationOptionsOut,
+  {
+    name: string;
+    input: undefined | UnknownRecord;
+    response: UnknownRecord;
+    mutationKey: MutationKey;
+  },
+][];
+
+const baseMutation = [
+  [
+    queryFactory.b,
+    {
+      name: "q.b",
+      input: undefined,
+      response: { b: 2 },
+      mutationKey: ["b"],
+    },
+  ],
+] as const satisfies Mutations;
+
+export const mutations = [
+  ...baseMutation,
+  [
+    queryFactory.d,
+    {
+      name: "q.d",
+      input: undefined,
+      response: { d: 4 },
+      mutationKey: ["d"],
+    },
+  ],
+  [
+    queryFactory.f,
+    {
+      name: "q.f",
+      input: { f: 6 },
+      response: { f: 6 },
+      mutationKey: ["f"],
+    },
+  ],
+  [
+    queryFactory.g.b,
+    {
+      name: "q.g.b",
+      input: undefined,
+      response: { b: 2 },
+      mutationKey: ["g", "b"],
+    },
+  ],
+  [
+    queryFactory.g.d,
+    {
+      name: "q.g.d",
+      input: undefined,
+      response: { d: 4 },
+      mutationKey: ["g", "d"],
+    },
+  ],
+  [
+    queryFactory.g.f,
+    {
+      name: "q.g.f",
+      input: { f: 6 },
+      response: { f: 6 },
+      mutationKey: ["g", "f"],
+    },
+  ],
+  [
+    queryFactory.h({ h: 8 }).b,
+    {
+      name: "q.h.b",
+      input: undefined,
+      response: { b: 2, h: 8 },
+      mutationKey: ["h", { h: 8 }, "b"],
+    },
+  ],
+  [
+    queryFactory.h({ h: 8 }).d,
+    {
+      name: "q.h.d",
+      input: undefined,
+      response: { d: 4, h: 8 },
+      mutationKey: ["h", { h: 8 }, "d"],
+    },
+  ],
+  [
+    queryFactory.h({ h: 8 }).f,
+    {
+      name: "q.h.f",
+      input: { f: 6 },
+      response: { f: 6, h: 8 },
+      mutationKey: ["h", { h: 8 }, "f"],
+    },
+  ],
+] satisfies Mutations as unknown as typeof baseMutation;
