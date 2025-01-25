@@ -120,7 +120,7 @@ describe(`QueryStuff hooks`, () => {
             () => useQueryClient().refetchQueries({ queryKey: q().queryKey }),
             wrapper,
           );
-          await waitFor(() => expect(refetchQueries.current).resolves);
+          await waitFor(() => refetchQueries.current);
           const { result } = renderHook(
             () => useQueryClient().getQueryData(q().queryKey),
             wrapper,
@@ -150,7 +150,7 @@ describe(`QueryStuff hooks`, () => {
           () => useQueryClient().fetchQuery(q()),
           wrapper,
         );
-        await waitFor(() => expect(fetchQuery.current).resolves);
+        await waitFor(() => fetchQuery.current);
         const { result } = renderHook(
           () => useQueryClient().getQueryData(q().queryKey),
           wrapper,
@@ -163,7 +163,7 @@ describe(`QueryStuff hooks`, () => {
           () => useQueryClient().ensureQueryData(q()),
           wrapper,
         );
-        await waitFor(() => expect(fetchQuery.current).resolves);
+        await waitFor(() => fetchQuery.current);
         const { result } = renderHook(
           () => useQueryClient().getQueryData(q().queryKey),
           wrapper,

@@ -13,39 +13,13 @@ export default tseslint.config(
       tseslint.configs.recommendedTypeChecked,
       tseslint.configs.stylisticTypeChecked,
     ],
-    files: ["**/*.js", "**/*.ts"],
+    files: ["**/*.js", "**/*.ts", "**/*.tsx"],
     languageOptions: {
       parserOptions: {
         projectService: { allowDefaultProject: ["*.config.*s"] },
         tsconfigRootDir: import.meta.dirname,
       },
     },
-  },
-  {
-    extends: [vitest.configs.recommended],
-    files: ["**/*.test.*"],
-    rules: {
-      "@typescript-eslint/consistent-type-definitions": ["warn", "type"],
-      "@typescript-eslint/ban-ts-comment": "off",
-      "@typescript-eslint/no-empty-function": "off",
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/require-await": "off",
-      "@typescript-eslint/no-unsafe-assignment": "off",
-      "@typescript-eslint/no-unsafe-member-access": "off",
-      "@typescript-eslint/no-unsafe-call": "off",
-      "@typescript-eslint/no-unused-vars": [
-        "warn",
-        {
-          argsIgnorePattern: "^_",
-          caughtErrorsIgnorePattern: "^_",
-          destructuredArrayIgnorePattern: "^_",
-          varsIgnorePattern: "^_",
-        },
-      ],
-    },
-  },
-  {
-    files: ["**/*.js", "**/!(*.test).ts"],
     rules: {
       "@typescript-eslint/consistent-type-definitions": ["warn", "type"],
       "@typescript-eslint/no-empty-object-type": "off",
@@ -63,6 +37,19 @@ export default tseslint.config(
           varsIgnorePattern: "^_",
         },
       ],
+    },
+  },
+  {
+    extends: [vitest.configs.recommended],
+    files: ["**/*.test.*"],
+    rules: {
+      "@typescript-eslint/ban-ts-comment": "off",
+      "@typescript-eslint/no-empty-function": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/require-await": "off",
+      "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/no-unsafe-member-access": "off",
+      "@typescript-eslint/no-unsafe-call": "off",
     },
   },
 ) satisfies Config;
