@@ -4,11 +4,6 @@ import type {
   OmitKeyof,
 } from "@tanstack/react-query";
 import { queryOptions } from "@tanstack/react-query";
-import {
-  mutationNode,
-  queryNodeDefinedInput,
-  queryNodeUndefinedInput,
-} from "./symbols.js";
 import type {
   Merge,
   Node,
@@ -26,7 +21,7 @@ import type {
   QUnusedSkipTokenOptionsOut,
   SafePrettify,
   UnknownRecord,
-} from "./types.js";
+} from "./types.ts";
 import { createProxyNode } from "./createProxyNode.js";
 
 abstract class QueryStuffRoot<TInput = {}> {
@@ -35,13 +30,13 @@ abstract class QueryStuffRoot<TInput = {}> {
 
 export class QueryStuff {
   static factory<T extends Node, TInput extends UnknownRecord = {}>(
-    fn: (q: QueryStuffUndefinedInput<TInput>) => T,
+    fn: (q: QueryStuffUndefinedBase<TInput>) => T,
   ): ProxyNode<T> {
-    return createProxyNode(fn(new QueryStuffUndefinedInput<TInput>()));
+    return createProxyNode(fn(new QueryStuffUndefinedBase<TInput>()));
   }
 }
 
-export class QueryStuffUndefinedInput<TInput> extends QueryStuffRoot<TInput> {
+class QueryStuffUndefinedBase<TInput> extends QueryStuffRoot<TInput> {
   module<T extends Node>(fn: (q: QueryStuffUndefinedInput<TInput>) => T): T {
     return fn(new QueryStuffUndefinedInput(this._input));
   }
@@ -61,6 +56,11 @@ export class QueryStuffUndefinedInput<TInput> extends QueryStuffRoot<TInput> {
       >
     >(this._input);
   }
+}
+
+export class QueryStuffUndefinedInput<
+  TInput,
+> extends QueryStuffUndefinedBase<TInput> {
   query<TData = unknown, TError = DefaultError>(
     queryFn: (input: TInput) => TData,
     options?: QDefinedInitialDataOptionsIn<TData, TError>,
@@ -94,7 +94,7 @@ export class QueryStuffUndefinedInput<TInput> extends QueryStuffRoot<TInput> {
         queryKey: [],
         queryFn: () => queryFn(this._input),
       }),
-      [queryNodeUndefinedInput]: {},
+      queryNodeUndefinedInput: {},
     });
   }
   mutation<TData = unknown, TError = DefaultError, TContext = unknown>(
@@ -118,7 +118,7 @@ export class QueryStuffUndefinedInput<TInput> extends QueryStuffRoot<TInput> {
         overrideOptions.onError?.(error, this._input, context),
       onSettled: (data, error, _, context) =>
         overrideOptions.onSettled?.(data, error, this._input, context),
-      [mutationNode]: {},
+      mutationNode: {},
     });
   }
 }
@@ -175,7 +175,7 @@ export class QueryStuffDefinedInput<
         queryKey: [],
         queryFn: () => queryFn({ ...this._input, ...input }),
       }),
-      [queryNodeDefinedInput]: {},
+      queryNodeDefinedInput: {},
     });
   }
   mutation<TData = unknown, TError = DefaultError, TContext = unknown>(
@@ -214,7 +214,7 @@ export class QueryStuffDefinedInput<
           { ...this._input, ...input },
           context,
         ),
-      [mutationNode]: {},
+      mutationNode: {},
     });
   }
 }

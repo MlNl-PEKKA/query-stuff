@@ -1,5 +1,5 @@
 import { QueryKey } from "@tanstack/react-query";
-import type { ProxyNode, Node, UnknownRecord } from "./types.js";
+import type { ProxyNode, Node, UnknownRecord } from "./types.ts";
 import {
   isMutationNode,
   isNode,
