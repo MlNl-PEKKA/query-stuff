@@ -3,6 +3,7 @@ import { QueryStuffUndefinedInput } from "./queryStuff.js";
 import { QueryStuff } from "./index.js";
 import type * as _ from "../node_modules/.pnpm/@tanstack+query-core@5.64.1/node_modules/@tanstack/query-core/build/modern/hydration-DpBMnFDT.js";
 import {
+  ProxyKeyNode,
   QAnyMutationOptionsOut,
   QAnyQueryOptionsOut,
   UnknownRecord,
@@ -214,3 +215,31 @@ export const mutations = [
     },
   ],
 ] satisfies Mutations as unknown as typeof baseMutation;
+
+type Keys = [
+  ProxyKeyNode | ((...input: any[]) => ProxyKeyNode),
+  {
+    name: string;
+    input: undefined | UnknownRecord;
+    key: unknown[];
+  },
+][];
+
+export const keys = [
+  [
+    queryFactory.g,
+    {
+      name: "q.g",
+      input: undefined,
+      key: ["g"],
+    },
+  ],
+  [
+    queryFactory.h,
+    {
+      name: "q.h",
+      input: { h: 8 },
+      key: ["h", { h: 8 }],
+    },
+  ],
+] satisfies Keys;

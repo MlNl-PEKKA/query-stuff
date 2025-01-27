@@ -11,7 +11,7 @@ import {
 import { renderHook as rH, waitFor } from "@testing-library/react";
 import type { PropsWithChildren } from "react";
 import { describe, expect, it, vi } from "vitest";
-import { mutations, queries } from "./fixtures.js";
+import { keys, mutations, queries } from "./fixtures.js";
 
 const createTestQueryClient = () =>
   new QueryClient({
@@ -41,7 +41,7 @@ function renderHook<U = unknown, T = unknown>(
   return rH<T, U>(fn, { wrapper });
 }
 
-describe(`QueryStuff hooks`, () => {
+describe(`QueryStuff`, () => {
   queries.forEach(([q, { name, response, queryKey }]) => {
     describe(`${name}: query`, () => {
       it(`${name}: useQuery Error`, async () => {
@@ -286,6 +286,16 @@ describe(`QueryStuff hooks`, () => {
           undefined,
         );
       });
+    });
+  });
+  keys.forEach(([k, { name, input, key }]) => {
+    it(`${name}: key`, () => {
+      if (typeof k === "function" && input) {
+        const keyNode = k(input);
+        expect(keyNode._key).toStrictEqual(key);
+      } else if (typeof k === "object" && !input)
+        expect(k._key).toStrictEqual(key);
+      else throw new Error("key error");
     });
   });
 });

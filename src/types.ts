@@ -217,11 +217,16 @@ export type QMutationOptionsOut<
 
 export type QAnyMutationOptionsOut = QMutationOptionsOut<any, any, any, any>;
 
-export type ProxyKeyTag<TKey extends QueryKey = []> = {
+export type ProxyKeyTag<TKey extends QueryKey = QueryKey> = {
   _key: TKey;
 };
 
-export type ProxyNode<T extends Node, TQueryKey extends QueryKey = []> = {
+export type ProxyKeyNode = UnknownRecord & ProxyKeyTag;
+
+export type ProxyNode<
+  T extends Node = Node,
+  TQueryKey extends QueryKey = [],
+> = {
   [key in keyof T]: T[key] extends (...input: infer R) => infer S
     ? S extends QQueryOptionsOut<infer TQueryFnData, infer TError>
       ? (
