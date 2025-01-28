@@ -4,6 +4,7 @@ import type {
   OmitKeyof,
 } from "@tanstack/react-query";
 import { queryOptions } from "@tanstack/react-query";
+import { createProxyNode } from "./createProxyNode.js";
 import type {
   Merge,
   Node,
@@ -22,47 +23,61 @@ import type {
   SafePrettify,
   UnknownRecord,
 } from "./types.ts";
-import { createProxyNode } from "./createProxyNode.js";
+import {
+  mutationNode,
+  queryNodeDefinedInput,
+  queryNodeUndefinedInput,
+} from "./symbols.js";
 
-abstract class QueryStuffRoot<TInput = {}> {
-  constructor(protected _input: TInput = {} as TInput) {}
+type CtxOpts<TContext = void> = {
+  ctx: TContext;
+};
+
+type Opts<TContext = void, TInput = void> = CtxOpts<TContext> & {
+  input: TInput;
+};
+
+type SafeSpread<TContext = void, TContextIn = void> = SafePrettify<
+  Omit<TContextIn, keyof TContext> extends infer R
+    ? keyof R extends never
+      ? void
+      : R
+    : never
+>;
+
+abstract class QueryStuffRoot<TContext = void> {
+  constructor(protected _ctx: TContext = {} as TContext) {}
 }
 
 export class QueryStuff {
-  static factory<T extends Node, TInput extends UnknownRecord = {}>(
-    fn: (q: QueryStuffUndefinedBase<TInput>) => T,
+  static factory<T extends Node, TContext = void>(
+    fn: (q: QueryStuffUndefinedInput<TContext>) => T,
   ): ProxyNode<T> {
-    return createProxyNode(fn(new QueryStuffUndefinedBase<TInput>()));
-  }
-}
-
-class QueryStuffUndefinedBase<TInput> extends QueryStuffRoot<TInput> {
-  module<T extends Node>(fn: (q: QueryStuffUndefinedInput<TInput>) => T): T {
-    return fn(new QueryStuffUndefinedInput(this._input));
-  }
-  input<
-    T extends Prettify<
-      UnknownRecord & { [key in keyof TInput]?: never }
-    > | void = void,
-  >() {
-    return new QueryStuffDefinedInput<
-      TInput,
-      SafePrettify<
-        Omit<T, keyof TInput> extends infer R
-          ? keyof R extends never
-            ? void
-            : R
-          : never
-      >
-    >(this._input);
+    return createProxyNode(fn(new QueryStuffUndefinedInput<TContext>()));
   }
 }
 
 export class QueryStuffUndefinedInput<
-  TInput,
-> extends QueryStuffUndefinedBase<TInput> {
+  TContext = void,
+> extends QueryStuffRoot<TContext> {
+  module<T extends Node>(fn: (q: QueryStuffUndefinedInput<TContext>) => T): T {
+    return fn(new QueryStuffUndefinedInput<TContext>(this._ctx));
+  }
+  pipe<
+    TContextIn extends Prettify<
+      UnknownRecord & { [K in keyof TContext]?: never }
+    > | void = void,
+  >() {
+    return new QueryStuffDefinedContext<
+      TContext,
+      SafeSpread<TContext, TContextIn>
+    >(this._ctx);
+  }
+  input<TInput = void>() {
+    return new QueryStuffDefinedInput<TContext, TInput>(this._ctx);
+  }
   query<TData = unknown, TError = DefaultError>(
-    queryFn: (input: TInput) => TData,
+    queryFn: (opts: CtxOpts<TContext>) => TData,
     options?: QDefinedInitialDataOptionsIn<TData, TError>,
   ): (
     overrideOptions?: Prettify<
@@ -70,19 +85,19 @@ export class QueryStuffUndefinedInput<
     >,
   ) => QDefinedInitialDataOptionsOut<NoInfer<TData>, NoInfer<TError>>;
   query<TData = unknown, TError = DefaultError>(
-    queryFn: (input: TInput) => TData,
+    queryFn: (opts: CtxOpts<TContext>) => TData,
     options?: QUnusedSkipTokenOptionsIn<TData, TError>,
   ): (
     overrideOptions?: QUnusedSkipTokenOptionsIn<TData, TError>,
   ) => QUnusedSkipTokenOptionsOut<NoInfer<TData>, NoInfer<TError>>;
   query<TData = unknown, TError = DefaultError>(
-    queryFn: (input: TInput) => TData,
+    queryFn: (opts: CtxOpts<TContext>) => TData,
     options?: QUndefinedInitialDataOptionsIn<TData, TError>,
   ): (
     overrideOptions?: QUndefinedInitialDataOptionsIn<TData, TError>,
   ) => QUndefinedInitialDataOptionsOut<NoInfer<TData>, NoInfer<TError>>;
   query<TData = unknown, TError = DefaultError>(
-    queryFn: (input: TInput) => TData,
+    queryFn: (opts: CtxOpts<TContext>) => TData,
     options: QQueryOptionsIn<TData, TError> = {},
   ): (
     overrideOptions?: QQueryOptionsIn<TData, TError>,
@@ -92,80 +107,74 @@ export class QueryStuffUndefinedInput<
         ...options,
         ...overrideOptions,
         queryKey: [],
-        queryFn: () => queryFn(this._input),
+        queryFn: () => queryFn({ ctx: this._ctx }),
       }),
-      queryNodeUndefinedInput: {},
+      [queryNodeUndefinedInput]: {},
     });
   }
-  mutation<TData = unknown, TError = DefaultError, TContext = unknown>(
-    mutationFn: MutationFunction<TData, TInput>,
+  mutation<TData = unknown, TError = DefaultError, TMutationContext = unknown>(
+    mutationFn: MutationFunction<TData, CtxOpts<TContext>>,
   ): (
-    overrideOptions?: QMutationOptionsIn<TData, TError, TInput, TContext>,
+    overrideOptions?: QMutationOptionsIn<
+      TData,
+      TError,
+      CtxOpts<TContext>,
+      TMutationContext
+    >,
   ) => QMutationOptionsOut<
     NoInfer<TData>,
     NoInfer<TError>,
     void,
-    NoInfer<TContext>
+    NoInfer<TMutationContext>
   > {
     return (overrideOptions = {}) => ({
       ...overrideOptions,
       mutationKey: [],
-      mutationFn: () => mutationFn(this._input),
-      onMutate: () => overrideOptions.onMutate?.(this._input),
+      mutationFn: () => mutationFn({ ctx: this._ctx }),
+      onMutate: () => overrideOptions.onMutate?.({ ctx: this._ctx }),
       onSuccess: (data, _, context) =>
-        overrideOptions.onSuccess?.(data, this._input, context),
+        overrideOptions.onSuccess?.(data, { ctx: this._ctx }, context),
       onError: (error, _, context) =>
-        overrideOptions.onError?.(error, this._input, context),
+        overrideOptions.onError?.(error, { ctx: this._ctx }, context),
       onSettled: (data, error, _, context) =>
-        overrideOptions.onSettled?.(data, error, this._input, context),
-      mutationNode: {},
+        overrideOptions.onSettled?.(data, error, { ctx: this._ctx }, context),
+      [mutationNode]: {},
     });
   }
 }
 
-export class QueryStuffDefinedInput<
-  TInput,
-  TInputIn,
-> extends QueryStuffRoot<TInput> {
-  module<T extends Node>(
-    fn: (q: QueryStuffUndefinedInput<Merge<TInput, TInputIn>>) => T,
-  ): (input: TInputIn) => T {
-    return (input) =>
-      fn(
-        new QueryStuffUndefinedInput<Merge<TInput, TInputIn>>({
-          ...this._input,
-          ...input,
-        }),
-      );
-  }
+class QueryStuffDefinedInput<
+  TContext = void,
+  TInput = unknown,
+> extends QueryStuffRoot<TContext> {
   query<TData = unknown, TError = DefaultError>(
-    queryFn: (input: Merge<TInput, TInputIn>) => TData,
+    queryFn: (opts: Opts<TContext, TInput>) => TData,
     options?: QDefinedInitialDataOptionsIn<TData, TError>,
   ): (
-    input: TInputIn,
+    input: TInput,
     overrideOptions?: Prettify<
       OmitKeyof<QDefinedInitialDataOptionsIn<TData, TError>, "initialData">
     >,
   ) => QDefinedInitialDataOptionsOut<NoInfer<TData>, NoInfer<TError>>;
   query<TData = unknown, TError = DefaultError>(
-    queryFn: (input: Merge<TInput, TInputIn>) => TData,
+    queryFn: (opts: Opts<TContext, TInput>) => TData,
     options?: QUnusedSkipTokenOptionsIn<TData, TError>,
   ): (
-    input: TInputIn,
+    input: TInput,
     overrideOptions?: QUnusedSkipTokenOptionsIn<TData, TError>,
   ) => QUnusedSkipTokenOptionsOut<NoInfer<TData>, NoInfer<TError>>;
   query<TData = unknown, TError = DefaultError>(
-    queryFn: (input: Merge<TInput, TInputIn>) => TData,
+    queryFn: (opts: Opts<TContext, TInput>) => TData,
     options?: QUndefinedInitialDataOptionsIn<TData, TError>,
   ): (
-    input: TInputIn,
+    input: TInput,
     overrideOptions?: QUndefinedInitialDataOptionsIn<TData, TError>,
   ) => QUndefinedInitialDataOptionsOut<NoInfer<TData>, NoInfer<TError>>;
   query<TData = unknown, TError = DefaultError>(
-    queryFn: (input: Merge<TInput, TInputIn>) => TData,
+    queryFn: (opts: Opts<TContext, TInput>) => TData,
     options: QQueryOptionsIn<TData, TError> = {},
   ): (
-    input: TInputIn,
+    input: TInput,
     overrideOptions?: QQueryOptionsIn<TData, TError>,
   ) => QQueryOptionsOut<NoInfer<TData>, NoInfer<TError>> {
     return (input, overrideOptions = {}) => ({
@@ -173,48 +182,61 @@ export class QueryStuffDefinedInput<
         ...options,
         ...overrideOptions,
         queryKey: [],
-        queryFn: () => queryFn({ ...this._input, ...input }),
+        queryFn: () => queryFn({ input, ctx: this._ctx }),
       }),
-      queryNodeDefinedInput: {},
+      [queryNodeDefinedInput]: {},
     });
   }
-  mutation<TData = unknown, TError = DefaultError, TContext = unknown>(
-    mutationFn: MutationFunction<TData, Merge<TInput, TInputIn>>,
+  mutation<TData = unknown, TError = DefaultError, TMutationContext = unknown>(
+    mutationFn: MutationFunction<TData, Opts<TContext, TInput>>,
   ): (
     overrideOptions?: QMutationOptionsIn<
       TData,
       TError,
-      Merge<TInput, TInputIn>,
-      TContext
+      Opts<TContext, TInput>,
+      TMutationContext
     >,
   ) => QMutationOptionsOut<
     NoInfer<TData>,
     NoInfer<TError>,
-    NoInfer<TInputIn>,
-    NoInfer<TContext>
+    NoInfer<TInput>,
+    NoInfer<TMutationContext>
   > {
     return (overrideOptions = {}) => ({
       ...overrideOptions,
       mutationKey: [],
-      mutationFn: (input) => mutationFn({ ...this._input, ...input }),
+      mutationFn: (input) => mutationFn({ ctx: this._ctx, input }),
       onMutate: (input) =>
-        overrideOptions.onMutate?.({ ...this._input, ...input }),
+        overrideOptions.onMutate?.({ ctx: this._ctx, input }),
       onSuccess: (data, input, context) =>
-        overrideOptions.onSuccess?.(
-          data,
-          { ...this._input, ...input },
-          context,
-        ),
+        overrideOptions.onSuccess?.(data, { ctx: this._ctx, input }, context),
       onError: (error, input, context) =>
-        overrideOptions.onError?.(error, { ...this._input, ...input }, context),
+        overrideOptions.onError?.(error, { ctx: this._ctx, input }, context),
       onSettled: (data, error, input, context) =>
         overrideOptions.onSettled?.(
           data,
           error,
-          { ...this._input, ...input },
+          { ctx: this._ctx, input },
           context,
         ),
-      mutationNode: {},
+      [mutationNode]: {},
     });
+  }
+}
+
+class QueryStuffDefinedContext<
+  TContext = void,
+  TContextIn = void,
+> extends QueryStuffRoot<TContext> {
+  module<T extends Node>(
+    fn: (q: QueryStuffUndefinedInput<Merge<TContext, TContextIn>>) => T,
+  ): (ctx: TContextIn) => T {
+    return (ctx) =>
+      fn(
+        new QueryStuffUndefinedInput<Merge<TContext, TContextIn>>({
+          ...this._ctx,
+          ...ctx,
+        }),
+      );
   }
 }

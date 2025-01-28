@@ -185,11 +185,12 @@ describe(`QueryStuff`, () => {
           wrapper,
         );
         mutation.current.mutate(input);
-        const mutationInputs: unknown[] = mutationKey.filter(
-          (x) => typeof x === "object",
-        );
-        if (input) mutationInputs.push(input);
-        const variables = Object.assign({}, ...mutationInputs);
+        const ctx: unknown[] = mutationKey.filter((x) => typeof x === "object");
+        const variables = {
+          ctx: Object.assign({}, ...ctx),
+          input,
+        };
+        if (!input) delete variables.input;
         const { result: mutationState1, rerender } = renderHook(
           () =>
             useMutationState({
@@ -242,11 +243,12 @@ describe(`QueryStuff`, () => {
           wrapper,
         );
         mutation.current.mutate(input);
-        const mutationInputs: unknown[] = mutationKey.filter(
-          (x) => typeof x === "object",
-        );
-        if (input) mutationInputs.push(input);
-        const variables = Object.assign({}, ...mutationInputs);
+        const ctx: unknown[] = mutationKey.filter((x) => typeof x === "object");
+        const variables = {
+          ctx: Object.assign({}, ...ctx),
+          input,
+        };
+        if (!input) delete variables.input;
         const { result: mutationState1, rerender } = renderHook(
           () =>
             useMutationState({
@@ -288,14 +290,9 @@ describe(`QueryStuff`, () => {
       });
     });
   });
-  keys.forEach(([k, { name, input, key }]) => {
+  keys.forEach(([k, { name, key }]) => {
     it(`${name}: key`, () => {
-      if (typeof k === "function" && input) {
-        const keyNode = k(input);
-        expect(keyNode._key).toStrictEqual(key);
-      } else if (typeof k === "object" && !input)
-        expect(k._key).toStrictEqual(key);
-      else throw new Error("key error");
+      expect(k._key).toStrictEqual(key);
     });
   });
 });

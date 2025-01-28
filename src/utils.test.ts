@@ -17,6 +17,11 @@ import {
   isQueryNodeUndefinedInput,
   isString,
 } from "./utils.js";
+import {
+  mutationNode,
+  queryNodeDefinedInput,
+  queryNodeUndefinedInput,
+} from "./symbols.js";
 
 describe("utils", () => {
   describe("isString", () => {
@@ -85,7 +90,7 @@ describe("utils", () => {
       expect(isQueryNodeUndefinedInput({})).toBe(false);
     });
     it("returns true and asserts target type as QQueryOptionsOut", () => {
-      const target: unknown = { queryNodeUndefinedInput: null };
+      const target: unknown = { [queryNodeUndefinedInput]: null };
       const value = isQueryNodeUndefinedInput(target);
       expect(value).toBe(true);
       if (value) expectTypeOf(target).toEqualTypeOf<QQueryOptionsOut>();
@@ -110,7 +115,7 @@ describe("utils", () => {
       expect(isQueryNodeDefinedInput({})).toBe(false);
     });
     it("returns true and asserts target type as QQueryOptionsOut", () => {
-      const target: unknown = { queryNodeDefinedInput: null };
+      const target: unknown = { [queryNodeDefinedInput]: null };
       const value = isQueryNodeDefinedInput(target);
       expect(value).toBe(true);
       if (value) expectTypeOf(target).toEqualTypeOf<QQueryOptionsOut>();
@@ -140,13 +145,13 @@ describe("utils", () => {
       expect(isQueryNode({})).toBe(false);
     });
     it("returns true and asserts target type as QQueryOptionsOut for queryNodeWithoutInput symbol", () => {
-      const target: unknown = { queryNodeUndefinedInput: null };
+      const target: unknown = { [queryNodeUndefinedInput]: null };
       const value = isQueryNode(target);
       expect(value).toBe(true);
       if (value) expectTypeOf(target).toEqualTypeOf<QQueryOptionsOut>();
     });
     it("returns true and asserts target type as QQueryOptionsOut for queryNodeWithInput symbol", () => {
-      const target: unknown = { queryNodeDefinedInput: null };
+      const target: unknown = { [queryNodeDefinedInput]: null };
       const value = isQueryNode(target);
       expect(value).toBe(true);
       if (value) expectTypeOf(target).toEqualTypeOf<QQueryOptionsOut>();
@@ -175,18 +180,18 @@ describe("utils", () => {
       //@ts-expect-error
       expect(isMutationNode()).toBe(false);
     });
-    it("returns false for objects without the mutationNode symbol", () => {
+    it("returns false for objects without the [mutationNode] symbol", () => {
       expect(isMutationNode({})).toBe(false);
     });
-    it("returns true and asserts type QQueryOptionsOut, for objects with the mutationNode symbol", () => {
-      const target: unknown = { mutationNode: null };
+    it("returns true and asserts type QQueryOptionsOut, for objects with the [mutationNode] symbol", () => {
+      const target: unknown = { [mutationNode]: null };
       const value = isMutationNode(target);
       expect(value).toBe(true);
       if (value) {
         expectTypeOf(target).toEqualTypeOf<QMutationOptionsOut>();
       }
     });
-    it("returns true for mutationNode and asserts type QQueryOptionsOut, for objects with the mutationNode symbol", () => {
+    it("returns true for [mutationNode] and asserts type QQueryOptionsOut, for objects with the [mutationNode] symbol", () => {
       [
         nodes.b(),
         nodes.d(),
@@ -273,7 +278,7 @@ describe("utils", () => {
     });
     it("returns true and asserts target type as Node for queryNodeWithoutInput symbol", () => {
       const target: Parameters<typeof isNode>[0] = {
-        queryNodeUndefinedInput: null,
+        [queryNodeUndefinedInput]: null,
         queryKey: [],
       } satisfies QAnyQueryOptionsOut;
       const value = isNode(target);
@@ -282,16 +287,16 @@ describe("utils", () => {
     });
     it("returns true and asserts target type as Node for queryNodeWithInput symbol", () => {
       const target: Parameters<typeof isNode>[0] = {
-        queryNodeDefinedInput: null,
+        [queryNodeDefinedInput]: null,
         queryKey: [],
       } satisfies QAnyQueryOptionsOut;
       const value = isNode(target);
       expect(value).toBe(true);
       if (value) target satisfies Node;
     });
-    it("returns true and asserts target type as Node for mutationNode symbol", () => {
+    it("returns true and asserts target type as Node for [mutationNode] symbol", () => {
       const target: Parameters<typeof isNode>[0] = {
-        mutationNode: null,
+        [mutationNode]: null,
         mutationKey: [],
       } satisfies QAnyMutationOptionsOut;
       const value = isNode(target);

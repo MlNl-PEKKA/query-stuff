@@ -1,6 +1,7 @@
 import { queryOptions } from "@tanstack/react-query";
 import { describe, expect, it } from "vitest";
 import { nodes, queryFactories } from "./fixtures.js";
+import { inputSymbol } from "./symbols.js";
 
 const getQueryKey = <T>() => {
   return <U extends readonly unknown[]>(key: U) =>
@@ -47,7 +48,7 @@ describe("queryFactories", () => {
       const _key = nodes.e(input).queryKey;
       const value = getQueryKey<{ e: number }>()([
         "e",
-        input,
+        { [inputSymbol]: input },
       ] as const) satisfies typeof key satisfies typeof _key;
       expect(key).toStrictEqual(value);
     });
@@ -96,7 +97,7 @@ describe("queryFactories", () => {
       const value = getQueryKey<{ e: number }>()([
         "g",
         "e",
-        input,
+        { [inputSymbol]: input },
       ] as const) satisfies typeof key satisfies typeof _key;
       expect(key).toStrictEqual(value);
     });
@@ -154,7 +155,7 @@ describe("queryFactories", () => {
         "h",
         input1,
         "e",
-        input2,
+        { [inputSymbol]: input2 },
       ] as const) satisfies typeof key satisfies typeof _key;
       expect(key).toStrictEqual(value);
     });

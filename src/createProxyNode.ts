@@ -5,9 +5,11 @@ import {
   isNode,
   isNodeFunction,
   isQueryNode,
+  isQueryNodeDefinedInput,
   isQueryNodeUndefinedInput,
   isString,
 } from "./utils.js";
+import { inputSymbol } from "./symbols.js";
 
 export const createProxyNode = <T extends Node>(
   node: T,
@@ -40,7 +42,9 @@ export const createProxyNode = <T extends Node>(
           argArray[0] &&
           !(isMutationNode(nextTarget) || isQueryNodeUndefinedInput(nextTarget))
         ) {
-          nextKeys.push(argArray[0]);
+          if (isQueryNodeDefinedInput(nextTarget))
+            nextKeys.push({ [inputSymbol]: argArray[0] });
+          else nextKeys.push(argArray[0]);
         }
         if (isNode(nextTarget)) {
           return createProxyNode(nextTarget, nextKeys);

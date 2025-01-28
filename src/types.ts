@@ -11,6 +11,12 @@ import type {
   UnusedSkipTokenOptions,
   UseMutationOptions,
 } from "@tanstack/react-query";
+import type {
+  inputSymbol,
+  mutationNode,
+  queryNodeDefinedInput,
+  queryNodeUndefinedInput,
+} from "./symbols.js";
 
 export type UnknownRecord = Record<PropertyKey, unknown>;
 
@@ -74,10 +80,10 @@ export type QBaseQueryOptionsOut<
     QueryKeyTag<TQueryKey, TQueryFnData, TError> &
     (
       | {
-          queryNodeDefinedInput: unknown;
+          [queryNodeDefinedInput]: unknown;
         }
       | {
-          queryNodeUndefinedInput: unknown;
+          [queryNodeUndefinedInput]: unknown;
         }
     )
 >;
@@ -193,7 +199,7 @@ export type MutationKeyTag<TMutationKey extends MutationKey = MutationKey> = {
 export type QBaseMutationOptionsOut<
   T extends AnyUseMutationOptions,
   TMutationKey extends MutationKey = MutationKey,
-> = Merge<T, MutationKeyTag<TMutationKey>> & { mutationNode: unknown };
+> = Merge<T, MutationKeyTag<TMutationKey>> & { [mutationNode]: unknown };
 
 export type QMutationOptionsIn<
   TData = unknown,
@@ -236,7 +242,7 @@ export type ProxyNode<
           QueryKeyTag<
             R[0] extends QAnyQueryOptionsIn | void
               ? [...TQueryKey, key]
-              : [...TQueryKey, key, R[0]],
+              : [...TQueryKey, key, { [inputSymbol]: R[0] }],
             TQueryFnData,
             TError
           >
