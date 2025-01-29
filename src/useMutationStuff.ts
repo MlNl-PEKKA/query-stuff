@@ -1,4 +1,4 @@
-import {
+import type {
   DefaultError,
   Mutation,
   MutationFilters,
@@ -6,8 +6,8 @@ import {
   MutationState,
   OmitKeyof,
   QueryClient,
-  useMutationState,
 } from "@tanstack/react-query";
+import { useMutationState } from "@tanstack/react-query";
 import { MutationKeyTag } from "./types.js";
 
 type MutationStateOptions<TResult = MutationState> = {
