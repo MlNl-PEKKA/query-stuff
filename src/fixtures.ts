@@ -24,6 +24,18 @@ export const nodes = new QueryStuffUndefinedInput().module()((q) => ({
       d: q.input().mutation(async () => ({ d: 4 })),
       e: q.input<{ e: number }>().query(({ input: { e } }) => ({ e })),
       f: q.input<{ f: number }>().mutation(async ({ input: { f } }) => ({ f })),
+      i: q.infiniteQuery(
+        () => ({ i: 9 }),
+        () => undefined,
+      ),
+      j: q.input().infiniteQuery(
+        () => ({ j: 10 }),
+        () => undefined,
+      ),
+      k: q.input<{ k: number }>().infiniteQuery(
+        ({ input: { k } }) => ({ k }),
+        () => undefined,
+      ),
     })),
     h: q.module<{ h: number }>()((q) => ({
       a: q.query(({ ctx: { h } }) => ({ a: 1, h })),
@@ -36,7 +48,31 @@ export const nodes = new QueryStuffUndefinedInput().module()((q) => ({
       f: q
         .input<{ f: number }>()
         .mutation(async ({ input: { f }, ctx: { h } }) => ({ f, h })),
+      i: q.infiniteQuery(
+        ({ ctx: { h } }) => ({ i: 9, h }),
+        () => undefined,
+      ),
+      j: q.input().infiniteQuery(
+        ({ ctx: { h } }) => ({ j: 10, h }),
+        () => undefined,
+      ),
+      k: q.input<{ k: number }>().infiniteQuery(
+        ({ input: { k }, ctx: { h } }) => ({ k, h }),
+        () => undefined,
+      ),
     })),
+    i: q.infiniteQuery(
+      () => ({ i: 9 }),
+      () => undefined,
+    ),
+    j: q.input().infiniteQuery(
+      () => ({ j: 10 }),
+      () => undefined,
+    ),
+    k: q.input<{ k: number }>().infiniteQuery(
+      ({ input: { k } }) => ({ k }),
+      () => undefined,
+    ),
   })),
   h: q.module<{ h: number }>()((q) => ({
     a: q.query(({ ctx: { h } }) => ({ a: 1, h })),
@@ -60,6 +96,18 @@ export const nodes = new QueryStuffUndefinedInput().module()((q) => ({
       f: q
         .input<{ f: number }>()
         .mutation(async ({ input: { f }, ctx: { h } }) => ({ f, h })),
+      i: q.infiniteQuery(
+        ({ ctx: { h } }) => ({ i: 9, h }),
+        () => undefined,
+      ),
+      j: q.input().infiniteQuery(
+        ({ ctx: { h } }) => ({ j: 10, h }),
+        () => undefined,
+      ),
+      k: q.input<{ k: number }>().infiniteQuery(
+        ({ input: { k }, ctx: { h } }) => ({ k, h }),
+        () => undefined,
+      ),
     })),
     hh: q.module<{ hh: number }>()((q) => ({
       a: q.query(({ ctx: { h, hh } }) => ({ a: 1, h, hh })),
@@ -72,8 +120,44 @@ export const nodes = new QueryStuffUndefinedInput().module()((q) => ({
       f: q
         .input<{ f: number }>()
         .mutation(async ({ input: { f }, ctx: { h, hh } }) => ({ f, h, hh })),
+      i: q.infiniteQuery(
+        ({ ctx: { h, hh } }) => ({ i: 9, h, hh }),
+        () => undefined,
+      ),
+      j: q.input().infiniteQuery(
+        ({ ctx: { h, hh } }) => ({ j: 10, h, hh }),
+        () => undefined,
+      ),
+      k: q.input<{ k: number }>().infiniteQuery(
+        ({ input: { k }, ctx: { h, hh } }) => ({ k, h, hh }),
+        () => undefined,
+      ),
     })),
+    i: q.infiniteQuery(
+      ({ ctx: { h } }) => ({ i: 9, h }),
+      () => undefined,
+    ),
+    j: q.input().infiniteQuery(
+      ({ ctx: { h } }) => ({ j: 10, h }),
+      () => undefined,
+    ),
+    k: q.input<{ k: number }>().infiniteQuery(
+      ({ input: { k }, ctx: { h } }) => ({ k, h }),
+      () => undefined,
+    ),
   })),
+  i: q.infiniteQuery(
+    () => ({ i: 9 }),
+    () => undefined,
+  ),
+  j: q.input().infiniteQuery(
+    () => ({ j: 10 }),
+    () => undefined,
+  ),
+  k: q.input<{ k: number }>().infiniteQuery(
+    ({ input: { k } }) => ({ k }),
+    () => undefined,
+  ),
 }));
 
 export const queryFactory = QueryStuff.factory(() => nodes());

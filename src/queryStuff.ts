@@ -1,23 +1,32 @@
 import type {
   DefaultError,
+  GetNextPageParamFunction,
   MutationFunction,
   OmitKeyof,
 } from "@tanstack/react-query";
-import { queryOptions } from "@tanstack/react-query";
+import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 import { createProxyNode } from "./createProxyNode.js";
 import type {
   Merge,
   Node,
   Prettify,
   ProxyNode,
+  QDefinedInitialDataInfiniteOptionsIn,
+  QDefinedInitialDataInfiniteOptionsOut,
   QDefinedInitialDataOptionsIn,
   QDefinedInitialDataOptionsOut,
   QMutationOptionsIn,
   QMutationOptionsOut,
+  QQueryInfiniteOptionsIn,
+  QQueryInfiniteOptionsOut,
   QQueryOptionsIn,
   QQueryOptionsOut,
+  QUndefinedInitialDataInfiniteOptionsIn,
+  QUndefinedInitialDataInfiniteOptionsOut,
   QUndefinedInitialDataOptionsIn,
   QUndefinedInitialDataOptionsOut,
+  QUnusedSkipTokenInfiniteOptionsIn,
+  QUnusedSkipTokenInfiniteOptionsOut,
   QUnusedSkipTokenOptionsIn,
   QUnusedSkipTokenOptionsOut,
   UnknownRecord,
@@ -156,6 +165,87 @@ export class QueryStuffUndefinedInput<
       [mutationNode]: {},
     });
   }
+  infiniteQuery<TData = unknown, TError = DefaultError>(
+    queryFn: (opts: CtxOpts<TContext>) => TData,
+    getNextPageParam: GetNextPageParamFunction<CtxOpts<TContext>, TData>,
+    options?: QDefinedInitialDataInfiniteOptionsIn<
+      TData,
+      TError,
+      CtxOpts<TContext>
+    >,
+  ): (
+    overrideOptions?: Prettify<
+      OmitKeyof<
+        QDefinedInitialDataInfiniteOptionsIn<TData, TError, CtxOpts<TContext>>,
+        "initialData"
+      >
+    >,
+  ) => QDefinedInitialDataInfiniteOptionsOut<
+    NoInfer<TData>,
+    NoInfer<TError>,
+    NoInfer<CtxOpts<TContext>>
+  >;
+  infiniteQuery<TData = unknown, TError = DefaultError>(
+    queryFn: (opts: CtxOpts<TContext>) => TData,
+    getNextPageParam: GetNextPageParamFunction<CtxOpts<TContext>, TData>,
+    options?: QUnusedSkipTokenInfiniteOptionsIn<
+      TData,
+      TError,
+      CtxOpts<TContext>
+    >,
+  ): (
+    overrideOptions?: QUnusedSkipTokenInfiniteOptionsIn<
+      TData,
+      TError,
+      CtxOpts<TContext>
+    >,
+  ) => QUnusedSkipTokenInfiniteOptionsOut<
+    NoInfer<TData>,
+    NoInfer<TError>,
+    NoInfer<CtxOpts<TContext>>
+  >;
+  infiniteQuery<TData = unknown, TError = DefaultError>(
+    queryFn: (opts: CtxOpts<TContext>) => TData,
+    getNextPageParam: GetNextPageParamFunction<CtxOpts<TContext>, TData>,
+    options?: QUndefinedInitialDataInfiniteOptionsIn<
+      TData,
+      TError,
+      CtxOpts<TContext>
+    >,
+  ): (
+    overrideOptions?: QUndefinedInitialDataInfiniteOptionsIn<
+      TData,
+      TError,
+      CtxOpts<TContext>
+    >,
+  ) => QUndefinedInitialDataInfiniteOptionsOut<
+    NoInfer<TData>,
+    NoInfer<TError>,
+    NoInfer<CtxOpts<TContext>>
+  >;
+  infiniteQuery<TData = unknown, TError = DefaultError>(
+    queryFn: (opts: CtxOpts<TContext>) => TData,
+    getNextPageParam: GetNextPageParamFunction<CtxOpts<TContext>, TData>,
+    options: QQueryInfiniteOptionsIn<TData, TError, CtxOpts<TContext>> = {},
+  ): (
+    overrideOptions?: QQueryInfiniteOptionsIn<TData, TError, CtxOpts<TContext>>,
+  ) => QQueryInfiniteOptionsOut<
+    NoInfer<TData>,
+    NoInfer<TError>,
+    NoInfer<CtxOpts<TContext>>
+  > {
+    return (overrideOptions = {}) => ({
+      ...infiniteQueryOptions({
+        ...options,
+        ...overrideOptions,
+        queryKey: [],
+        queryFn: () => queryFn({ ctx: this._ctx }),
+        initialPageParam: { ctx: this._ctx },
+        getNextPageParam: getNextPageParam,
+      }),
+      [queryNodeUndefinedInput]: {},
+    });
+  }
 }
 
 class QueryStuffDefinedInput<
@@ -254,6 +344,103 @@ class QueryStuffDefinedInput<
           options.onSettled?.(data, error, { ctx: this._ctx, input }, context),
       }),
       [mutationNode]: {},
+    });
+  }
+  infiniteQuery<TData = unknown, TError = DefaultError>(
+    queryFn: (opts: Opts<TContext, TInput>) => TData,
+    getNextPageParam: GetNextPageParamFunction<Opts<TContext, TInput>, TData>,
+    options?: QDefinedInitialDataInfiniteOptionsIn<
+      TData,
+      TError,
+      Opts<TContext, TInput>
+    >,
+  ): (
+    input: TInput,
+    overrideOptions?: Prettify<
+      OmitKeyof<
+        QDefinedInitialDataInfiniteOptionsIn<
+          TData,
+          TError,
+          Opts<TContext, TInput>
+        >,
+        "initialData"
+      >
+    >,
+  ) => QDefinedInitialDataInfiniteOptionsOut<
+    NoInfer<TData>,
+    NoInfer<TError>,
+    NoInfer<Opts<TContext, TInput>>
+  >;
+  infiniteQuery<TData = unknown, TError = DefaultError>(
+    queryFn: (opts: Opts<TContext, TInput>) => TData,
+    getNextPageParam: GetNextPageParamFunction<Opts<TContext, TInput>, TData>,
+    options?: QUnusedSkipTokenInfiniteOptionsIn<
+      TData,
+      TError,
+      Opts<TContext, TInput>
+    >,
+  ): (
+    input: TInput,
+    overrideOptions?: QUnusedSkipTokenInfiniteOptionsIn<
+      TData,
+      TError,
+      Opts<TContext, TInput>
+    >,
+  ) => QUnusedSkipTokenInfiniteOptionsOut<
+    NoInfer<TData>,
+    NoInfer<TError>,
+    NoInfer<Opts<TContext, TInput>>
+  >;
+  infiniteQuery<TData = unknown, TError = DefaultError>(
+    queryFn: (opts: Opts<TContext, TInput>) => TData,
+    getNextPageParam: GetNextPageParamFunction<Opts<TContext, TInput>, TData>,
+    options?: QUndefinedInitialDataInfiniteOptionsIn<
+      TData,
+      TError,
+      Opts<TContext, TInput>
+    >,
+  ): (
+    input: TInput,
+    overrideOptions?: QUndefinedInitialDataInfiniteOptionsIn<
+      TData,
+      TError,
+      Opts<TContext, TInput>
+    >,
+  ) => QUndefinedInitialDataInfiniteOptionsOut<
+    NoInfer<TData>,
+    NoInfer<TError>,
+    NoInfer<Opts<TContext, TInput>>
+  >;
+  infiniteQuery<TData = unknown, TError = DefaultError>(
+    queryFn: (opts: Opts<TContext, TInput>) => TData,
+    getNextPageParam: GetNextPageParamFunction<Opts<TContext, TInput>, TData>,
+    options: QQueryInfiniteOptionsIn<
+      TData,
+      TError,
+      Opts<TContext, TInput>
+    > = {},
+  ): (
+    input: TInput,
+    overrideOptions?: QQueryInfiniteOptionsIn<
+      TData,
+      TError,
+      Opts<TContext, TInput>
+    >,
+  ) => QQueryInfiniteOptionsOut<
+    NoInfer<TData>,
+    NoInfer<TError>,
+    NoInfer<Opts<TContext, TInput>>
+  > {
+    return (input, overrideOptions = {}) => ({
+      ...infiniteQueryOptions({
+        ...options,
+        ...overrideOptions,
+        queryKey: [],
+        queryFn: () => queryFn({ ctx: this._ctx, input }),
+        initialPageParam: { ctx: this._ctx, input },
+        getNextPageParam: getNextPageParam,
+      }),
+      [queryNodeUndefinedInput]: {},
     });
   }
 }

@@ -5,11 +5,15 @@ import type {
   dataTagErrorSymbol,
   dataTagSymbol,
   DefaultError,
+  DefinedInitialDataInfiniteOptions,
   DefinedInitialDataOptions,
+  InfiniteData,
   MutationKey,
   OmitKeyof,
   QueryKey,
+  UndefinedInitialDataInfiniteOptions,
   UndefinedInitialDataOptions,
+  UnusedSkipTokenInfiniteOptions,
   UnusedSkipTokenOptions,
   UseMutationOptions,
 } from "@tanstack/react-query";
@@ -57,11 +61,6 @@ export type Node = {
       ) => Node | QAnyQueryOptionsOut | QAnyMutationOptionsOut);
 };
 
-export type QBaseQueryOptions<T extends AnyUseQueryOptions> = OmitKeyof<
-  T,
-  "queryFn" | "queryKey"
->;
-
 export type QueryKeyTag<
   TQueryKey extends QueryKey = QueryKey,
   TQueryFnData = unknown,
@@ -69,6 +68,11 @@ export type QueryKeyTag<
 > = {
   queryKey: DataTag<TQueryKey, TQueryFnData, TError>;
 };
+
+export type QBaseQueryOptions<T extends AnyUseQueryOptions> = OmitKeyof<
+  T,
+  "queryFn" | "queryKey"
+>;
 
 export type QBaseQueryOptionsOut<
   T extends AnyUseQueryOptions,
@@ -187,11 +191,6 @@ export type QQueryOptionsOut<
 
 export type QAnyQueryOptionsOut = QQueryOptionsOut<any, any, any, any>;
 
-export type QBaseMutationOptions<T extends AnyUseMutationOptions> = OmitKeyof<
-  T,
-  "mutationFn" | "mutationKey"
->;
-
 export type MutationKeyTag<
   TMutationKey extends MutationKey = MutationKey,
   TData = unknown,
@@ -206,6 +205,11 @@ export type MutationKeyTag<
     [dataTagContextSymbol]: TContext;
   };
 };
+
+export type QBaseMutationOptions<T extends AnyUseMutationOptions> = OmitKeyof<
+  T,
+  "mutationFn" | "mutationKey"
+>;
 
 export type QBaseMutationOptionsOut<
   T extends AnyUseMutationOptions,
@@ -247,6 +251,228 @@ export type QMutationOptionsOut<
 
 export type QAnyMutationOptionsOut = QMutationOptionsOut<any, any, any, any>;
 
+export type InfiniteQueryKeyTag<
+  TQueryKey extends QueryKey = QueryKey,
+  TQueryFnData = unknown,
+  TError = DefaultError,
+> = {
+  queryKey: DataTag<TQueryKey, InfiniteData<TQueryFnData>, TError>;
+};
+
+export type QBaseQueryInfiniteOptions<T> = Omit<
+  T,
+  "queryFn" | "queryKey" | "initialPageParam" | "getNextPageParam"
+>;
+
+export type QBaseQueryInfiniteOptionsOut<
+  T,
+  TQueryFnData = InfiniteData<unknown>,
+  TError = DefaultError,
+  TQueryKey extends QueryKey = QueryKey,
+> = Prettify<
+  Omit<T, "queryKey"> &
+    QueryKeyTag<TQueryKey, InfiniteData<TQueryFnData>, TError> &
+    (
+      | {
+          [queryNodeDefinedInput]: unknown;
+        }
+      | {
+          [queryNodeUndefinedInput]: unknown;
+        }
+    )
+>;
+
+export type QDefinedInitialDataInfiniteOptionsIn<
+  TQueryFnData = unknown,
+  TError = DefaultError,
+  TPageParam = unknown,
+  TData = InfiniteData<TQueryFnData>,
+  TQueryKey extends QueryKey = QueryKey,
+> = Prettify<
+  QBaseQueryInfiniteOptions<
+    DefinedInitialDataInfiniteOptions<
+      TQueryFnData,
+      TError,
+      TData,
+      TQueryKey,
+      TPageParam
+    >
+  >
+>;
+
+export type QDefinedInitialDataInfiniteOptionsOut<
+  TQueryFnData = unknown,
+  TError = DefaultError,
+  TPageParam = unknown,
+  TData = InfiniteData<TQueryFnData>,
+  TQueryKey extends QueryKey = QueryKey,
+> = Prettify<
+  QBaseQueryInfiniteOptionsOut<
+    DefinedInitialDataInfiniteOptions<
+      TQueryFnData,
+      TError,
+      TData,
+      TQueryKey,
+      TPageParam
+    >,
+    TQueryFnData,
+    TError,
+    TQueryKey
+  >
+>;
+
+export type QUnusedSkipTokenInfiniteOptionsIn<
+  TQueryFnData = unknown,
+  TError = DefaultError,
+  TPageParam = unknown,
+  TData = InfiniteData<TQueryFnData>,
+  TQueryKey extends QueryKey = QueryKey,
+> = Prettify<
+  QBaseQueryInfiniteOptions<
+    UnusedSkipTokenInfiniteOptions<
+      TQueryFnData,
+      TError,
+      TData,
+      TQueryKey,
+      TPageParam
+    >
+  >
+>;
+
+export type QUnusedSkipTokenInfiniteOptionsOut<
+  TQueryFnData = unknown,
+  TError = DefaultError,
+  TPageParam = unknown,
+  TData = InfiniteData<TQueryFnData>,
+  TQueryKey extends QueryKey = QueryKey,
+> = Prettify<
+  QBaseQueryInfiniteOptionsOut<
+    UnusedSkipTokenInfiniteOptions<
+      TQueryFnData,
+      TError,
+      TData,
+      TQueryKey,
+      TPageParam
+    >,
+    TQueryFnData,
+    TError,
+    TQueryKey
+  >
+>;
+
+export type QUndefinedInitialDataInfiniteOptionsIn<
+  TQueryFnData = unknown,
+  TError = DefaultError,
+  TPageParam = unknown,
+  TData = InfiniteData<TQueryFnData>,
+  TQueryKey extends QueryKey = QueryKey,
+> = Prettify<
+  QBaseQueryInfiniteOptions<
+    UndefinedInitialDataInfiniteOptions<
+      TQueryFnData,
+      TError,
+      TData,
+      TQueryKey,
+      TPageParam
+    >
+  >
+>;
+
+export type QUndefinedInitialDataInfiniteOptionsOut<
+  TQueryFnData = unknown,
+  TError = DefaultError,
+  TPageParam = unknown,
+  TData = InfiniteData<TQueryFnData>,
+  TQueryKey extends QueryKey = QueryKey,
+> = Prettify<
+  QBaseQueryInfiniteOptionsOut<
+    UndefinedInitialDataInfiniteOptions<
+      TQueryFnData,
+      TError,
+      TData,
+      TQueryKey,
+      TPageParam
+    >,
+    TQueryFnData,
+    TError,
+    TQueryKey
+  >
+>;
+
+export type QQueryInfiniteOptionsIn<
+  TQueryFnData = unknown,
+  TError = DefaultError,
+  TPageParam = unknown,
+  TData = InfiniteData<TQueryFnData>,
+  TQueryKey extends QueryKey = QueryKey,
+> =
+  | QDefinedInitialDataInfiniteOptionsIn<
+      TQueryFnData,
+      TError,
+      TPageParam,
+      TData,
+      TQueryKey
+    >
+  | QUnusedSkipTokenInfiniteOptionsIn<
+      TQueryFnData,
+      TError,
+      TPageParam,
+      TData,
+      TQueryKey
+    >
+  | QUndefinedInitialDataInfiniteOptionsIn<
+      TQueryFnData,
+      TError,
+      TPageParam,
+      TData,
+      TQueryKey
+    >;
+
+export type QAnyQueryInfiniteOptionsIn = QQueryInfiniteOptionsIn<
+  any,
+  any,
+  any,
+  any,
+  any
+>;
+
+export type QQueryInfiniteOptionsOut<
+  TQueryFnData = unknown,
+  TError = DefaultError,
+  TPageParam = unknown,
+  TData = InfiniteData<TQueryFnData>,
+  TQueryKey extends QueryKey = QueryKey,
+> =
+  | QDefinedInitialDataInfiniteOptionsOut<
+      TQueryFnData,
+      TError,
+      TPageParam,
+      TData,
+      TQueryKey
+    >
+  | QUnusedSkipTokenInfiniteOptionsOut<
+      TQueryFnData,
+      TError,
+      TPageParam,
+      TData,
+      TQueryKey
+    >
+  | QUndefinedInitialDataInfiniteOptionsOut<
+      TQueryFnData,
+      TError,
+      TPageParam,
+      TData,
+      TQueryKey
+    >;
+
+export type QAnyQueryInfiniteOptionsOut = QQueryInfiniteOptionsOut<
+  any,
+  any,
+  any,
+  any,
+  any
+>;
+
 export type ProxyKeyTag<TKey extends QueryKey = QueryKey> = {
   _key: TKey;
 };
@@ -271,37 +497,50 @@ export type ProxyNode<
             TError
           >
         >
-      : S extends QMutationOptionsOut<
-            infer TData,
-            infer TError,
-            infer TVariables,
-            infer TContext
-          >
+      : S extends QQueryInfiniteOptionsOut<infer TQueryFnData, infer TError>
         ? (
             ...input: R
           ) => Merge<
             S,
-            MutationKeyTag<
-              [...TQueryKey, key],
-              TData,
-              TError,
-              TVariables,
-              TContext
+            InfiniteQueryKeyTag<
+              R[0] extends QAnyQueryInfiniteOptionsIn | void
+                ? [...TQueryKey, key]
+                : [...TQueryKey, key, { [inputSymbol]: R[0] }],
+              TQueryFnData,
+              TError
             >
           >
-        : S extends Node
+        : S extends QMutationOptionsOut<
+              infer TData,
+              infer TError,
+              infer TVariables,
+              infer TContext
+            >
           ? (
               ...input: R
-            ) => R[0] extends void | undefined
-              ? Merge<
-                  ProxyNode<S, [...TQueryKey, key]>,
-                  ProxyKeyTag<[...TQueryKey, key]>
-                >
-              : Merge<
-                  ProxyNode<S, [...TQueryKey, key, R[0]]>,
-                  ProxyKeyTag<[...TQueryKey, key, R[0]]>
-                >
-          : never
+            ) => Merge<
+              S,
+              MutationKeyTag<
+                [...TQueryKey, key],
+                TData,
+                TError,
+                TVariables,
+                TContext
+              >
+            >
+          : S extends Node
+            ? (
+                ...input: R
+              ) => R[0] extends void | undefined
+                ? Merge<
+                    ProxyNode<S, [...TQueryKey, key]>,
+                    ProxyKeyTag<[...TQueryKey, key]>
+                  >
+                : Merge<
+                    ProxyNode<S, [...TQueryKey, key, R[0]]>,
+                    ProxyKeyTag<[...TQueryKey, key, R[0]]>
+                  >
+            : never
     : T[key] extends Node
       ? Merge<
           ProxyNode<T[key], [...TQueryKey, key]>,
