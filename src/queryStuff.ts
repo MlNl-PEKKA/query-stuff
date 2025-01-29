@@ -111,6 +111,12 @@ export class QueryStuffUndefinedInput<
   }
   mutation<TData = unknown, TError = DefaultError, TMutationContext = unknown>(
     mutationFn: MutationFunction<TData, CtxOpts<TContext>>,
+    options: QMutationOptionsIn<
+      TData,
+      TError,
+      CtxOpts<TContext>,
+      TMutationContext
+    > = {},
   ): (
     overrideOptions?: QMutationOptionsIn<
       TData,
@@ -126,16 +132,26 @@ export class QueryStuffUndefinedInput<
   > {
     return (overrideOptions = {}) => ({
       ...mutationOptions({
+        ...options,
         ...overrideOptions,
         mutationKey: [],
         mutationFn: () => mutationFn({ ctx: this._ctx }),
-        onMutate: () => overrideOptions.onMutate?.({ ctx: this._ctx }),
+        onMutate: () =>
+          overrideOptions.onMutate?.({ ctx: this._ctx }) ??
+          options.onMutate?.({ ctx: this._ctx }),
         onSuccess: (data, _, context) =>
-          overrideOptions.onSuccess?.(data, { ctx: this._ctx }, context),
+          overrideOptions.onSuccess?.(data, { ctx: this._ctx }, context) ??
+          options.onSuccess?.(data, { ctx: this._ctx }, context),
         onError: (error, _, context) =>
-          overrideOptions.onError?.(error, { ctx: this._ctx }, context),
+          overrideOptions.onError?.(error, { ctx: this._ctx }, context) ??
+          options.onError?.(error, { ctx: this._ctx }, context),
         onSettled: (data, error, _, context) =>
-          overrideOptions.onSettled?.(data, error, { ctx: this._ctx }, context),
+          overrideOptions.onSettled?.(
+            data,
+            error,
+            { ctx: this._ctx },
+            context,
+          ) ?? options.onSettled?.(data, error, { ctx: this._ctx }, context),
       }),
       [mutationNode]: {},
     });
@@ -188,6 +204,12 @@ class QueryStuffDefinedInput<
   }
   mutation<TData = unknown, TError = DefaultError, TMutationContext = unknown>(
     mutationFn: MutationFunction<TData, Opts<TContext, TInput>>,
+    options: QMutationOptionsIn<
+      TData,
+      TError,
+      Opts<TContext, TInput>,
+      TMutationContext
+    > = {},
   ): (
     overrideOptions?: QMutationOptionsIn<
       TData,
@@ -203,22 +225,33 @@ class QueryStuffDefinedInput<
   > {
     return (overrideOptions = {}) => ({
       ...mutationOptions({
+        ...options,
         ...overrideOptions,
         mutationKey: [],
         mutationFn: (input) => mutationFn({ ctx: this._ctx, input }),
         onMutate: (input) =>
-          overrideOptions.onMutate?.({ ctx: this._ctx, input }),
+          overrideOptions.onMutate?.({ ctx: this._ctx, input }) ??
+          options.onMutate?.({ ctx: this._ctx, input }),
         onSuccess: (data, input, context) =>
-          overrideOptions.onSuccess?.(data, { ctx: this._ctx, input }, context),
+          overrideOptions.onSuccess?.(
+            data,
+            { ctx: this._ctx, input },
+            context,
+          ) ?? options.onSuccess?.(data, { ctx: this._ctx, input }, context),
         onError: (error, input, context) =>
-          overrideOptions.onError?.(error, { ctx: this._ctx, input }, context),
+          overrideOptions.onError?.(
+            error,
+            { ctx: this._ctx, input },
+            context,
+          ) ?? options.onError?.(error, { ctx: this._ctx, input }, context),
         onSettled: (data, error, input, context) =>
           overrideOptions.onSettled?.(
             data,
             error,
             { ctx: this._ctx, input },
             context,
-          ),
+          ) ??
+          options.onSettled?.(data, error, { ctx: this._ctx, input }, context),
       }),
       [mutationNode]: {},
     });
