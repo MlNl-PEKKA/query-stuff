@@ -1,3 +1,4 @@
+import { MutationKey, MutationOptions } from "@tanstack/react-query";
 import {
   mutationNode,
   queryNodeDefinedInput,
@@ -68,4 +69,22 @@ export const isNode = (
     isNodeFunction(target) ||
     isNodeObject(target)
   );
+};
+
+export const mutationOptions = <
+  TData = unknown,
+  TError = Error,
+  TVariables = unknown,
+  TContext = unknown,
+  TMutationKey extends MutationKey = readonly unknown[],
+>(
+  mutationOptions: MutationOptions<TData, TError, TVariables, TContext>,
+): QMutationOptionsOut<TData, TError, TVariables, TContext, TMutationKey> => {
+  return mutationOptions as QMutationOptionsOut<
+    TData,
+    TError,
+    TVariables,
+    TContext,
+    TMutationKey
+  >;
 };

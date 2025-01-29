@@ -16,6 +16,7 @@ import {
   isQueryNodeDefinedInput,
   isQueryNodeUndefinedInput,
   isString,
+  mutationOptions,
 } from "./utils.js";
 import {
   mutationNode,
@@ -296,8 +297,10 @@ describe("utils", () => {
     });
     it("returns true and asserts target type as Node for [mutationNode] symbol", () => {
       const target: Parameters<typeof isNode>[0] = {
+        ...mutationOptions({
+          mutationKey: [],
+        }),
         [mutationNode]: null,
-        mutationKey: [],
       } satisfies QAnyMutationOptionsOut;
       const value = isNode(target);
       expect(value).toBe(true);

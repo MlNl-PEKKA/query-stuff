@@ -2,6 +2,8 @@ import type {
   AnyUseMutationOptions,
   AnyUseQueryOptions,
   DataTag,
+  dataTagErrorSymbol,
+  dataTagSymbol,
   DefaultError,
   DefinedInitialDataOptions,
   MutationKey,
@@ -12,6 +14,7 @@ import type {
   UseMutationOptions,
 } from "@tanstack/react-query";
 import type {
+  dataTagVariablesSymbol,
   inputSymbol,
   mutationNode,
   queryNodeDefinedInput,
@@ -192,14 +195,28 @@ export type QBaseMutationOptions<T extends AnyUseMutationOptions> = OmitKeyof<
   "mutationFn" | "mutationKey"
 >;
 
-export type MutationKeyTag<TMutationKey extends MutationKey = MutationKey> = {
-  mutationKey: TMutationKey;
+export type MutationKeyTag<
+  TMutationKey extends MutationKey = MutationKey,
+  TData = unknown,
+  TError = DefaultError,
+  TVariables = unknown,
+> = {
+  mutationKey: TMutationKey & {
+    [dataTagSymbol]: TData;
+    [dataTagErrorSymbol]: TError;
+    [dataTagVariablesSymbol]: TVariables;
+  };
 };
 
 export type QBaseMutationOptionsOut<
   T extends AnyUseMutationOptions,
   TMutationKey extends MutationKey = MutationKey,
-> = Merge<T, MutationKeyTag<TMutationKey>> & { [mutationNode]: unknown };
+> =
+  T extends UseMutationOptions<infer TData, infer TError, infer TVariables>
+    ? Merge<T, MutationKeyTag<TMutationKey, TData, TError, TVariables>> & {
+        [mutationNode]: unknown;
+      }
+    : never;
 
 export type QMutationOptionsIn<
   TData = unknown,
@@ -247,8 +264,17 @@ export type ProxyNode<
             TError
           >
         >
-      : S extends QAnyMutationOptionsOut
-        ? (...input: R) => Merge<S, MutationKeyTag<[...TQueryKey, key]>>
+      : S extends QMutationOptionsOut<
+            infer TData,
+            infer TError,
+            infer TVariables
+          >
+        ? (
+            ...input: R
+          ) => Merge<
+            S,
+            MutationKeyTag<[...TQueryKey, key], TData, TError, TVariables>
+          >
         : S extends Node
           ? (
               ...input: R

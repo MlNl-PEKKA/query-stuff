@@ -27,6 +27,7 @@ import {
   queryNodeDefinedInput,
   queryNodeUndefinedInput,
 } from "./symbols.js";
+import { mutationOptions } from "./utils.js";
 
 type CtxOpts<TContext = void> = {
   ctx: TContext;
@@ -124,16 +125,18 @@ export class QueryStuffUndefinedInput<
     NoInfer<TMutationContext>
   > {
     return (overrideOptions = {}) => ({
-      ...overrideOptions,
-      mutationKey: [],
-      mutationFn: () => mutationFn({ ctx: this._ctx }),
-      onMutate: () => overrideOptions.onMutate?.({ ctx: this._ctx }),
-      onSuccess: (data, _, context) =>
-        overrideOptions.onSuccess?.(data, { ctx: this._ctx }, context),
-      onError: (error, _, context) =>
-        overrideOptions.onError?.(error, { ctx: this._ctx }, context),
-      onSettled: (data, error, _, context) =>
-        overrideOptions.onSettled?.(data, error, { ctx: this._ctx }, context),
+      ...mutationOptions({
+        ...overrideOptions,
+        mutationKey: [],
+        mutationFn: () => mutationFn({ ctx: this._ctx }),
+        onMutate: () => overrideOptions.onMutate?.({ ctx: this._ctx }),
+        onSuccess: (data, _, context) =>
+          overrideOptions.onSuccess?.(data, { ctx: this._ctx }, context),
+        onError: (error, _, context) =>
+          overrideOptions.onError?.(error, { ctx: this._ctx }, context),
+        onSettled: (data, error, _, context) =>
+          overrideOptions.onSettled?.(data, error, { ctx: this._ctx }, context),
+      }),
       [mutationNode]: {},
     });
   }
@@ -199,22 +202,24 @@ class QueryStuffDefinedInput<
     NoInfer<TMutationContext>
   > {
     return (overrideOptions = {}) => ({
-      ...overrideOptions,
-      mutationKey: [],
-      mutationFn: (input) => mutationFn({ ctx: this._ctx, input }),
-      onMutate: (input) =>
-        overrideOptions.onMutate?.({ ctx: this._ctx, input }),
-      onSuccess: (data, input, context) =>
-        overrideOptions.onSuccess?.(data, { ctx: this._ctx, input }, context),
-      onError: (error, input, context) =>
-        overrideOptions.onError?.(error, { ctx: this._ctx, input }, context),
-      onSettled: (data, error, input, context) =>
-        overrideOptions.onSettled?.(
-          data,
-          error,
-          { ctx: this._ctx, input },
-          context,
-        ),
+      ...mutationOptions({
+        ...overrideOptions,
+        mutationKey: [],
+        mutationFn: (input) => mutationFn({ ctx: this._ctx, input }),
+        onMutate: (input) =>
+          overrideOptions.onMutate?.({ ctx: this._ctx, input }),
+        onSuccess: (data, input, context) =>
+          overrideOptions.onSuccess?.(data, { ctx: this._ctx, input }, context),
+        onError: (error, input, context) =>
+          overrideOptions.onError?.(error, { ctx: this._ctx, input }, context),
+        onSettled: (data, error, input, context) =>
+          overrideOptions.onSettled?.(
+            data,
+            error,
+            { ctx: this._ctx, input },
+            context,
+          ),
+      }),
       [mutationNode]: {},
     });
   }
