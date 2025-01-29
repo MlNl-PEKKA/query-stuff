@@ -252,10 +252,15 @@ export type ProxyNode<
         : S extends Node
           ? (
               ...input: R
-            ) => Merge<
-              ProxyNode<S, [...TQueryKey, key, R[0]]>,
-              ProxyKeyTag<[...TQueryKey, key, R[0]]>
-            >
+            ) => R[0] extends void | undefined
+              ? Merge<
+                  ProxyNode<S, [...TQueryKey, key]>,
+                  ProxyKeyTag<[...TQueryKey, key]>
+                >
+              : Merge<
+                  ProxyNode<S, [...TQueryKey, key, R[0]]>,
+                  ProxyKeyTag<[...TQueryKey, key, R[0]]>
+                >
           : never
     : T[key] extends Node
       ? Merge<

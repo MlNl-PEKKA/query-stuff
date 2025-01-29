@@ -20,7 +20,6 @@ import type {
   QUndefinedInitialDataOptionsOut,
   QUnusedSkipTokenOptionsIn,
   QUnusedSkipTokenOptionsOut,
-  SafePrettify,
   UnknownRecord,
 } from "./types.ts";
 import {
@@ -37,14 +36,6 @@ type Opts<TContext = void, TInput = void> = CtxOpts<TContext> & {
   input: TInput;
 };
 
-type SafeSpread<TContext = void, TContextIn = void> = SafePrettify<
-  Omit<TContextIn, keyof TContext> extends infer R
-    ? keyof R extends never
-      ? void
-      : R
-    : never
->;
-
 abstract class QueryStuffRoot<TContext = void> {
   constructor(protected _ctx: TContext = {} as TContext) {}
 }
@@ -60,18 +51,23 @@ export class QueryStuff {
 export class QueryStuffUndefinedInput<
   TContext = void,
 > extends QueryStuffRoot<TContext> {
-  module<T extends Node>(fn: (q: QueryStuffUndefinedInput<TContext>) => T): T {
-    return fn(new QueryStuffUndefinedInput<TContext>(this._ctx));
-  }
-  pipe<
+  module<
     TContextIn extends Prettify<
       UnknownRecord & { [K in keyof TContext]?: never }
     > | void = void,
   >() {
-    return new QueryStuffDefinedContext<
-      TContext,
-      SafeSpread<TContext, TContextIn>
-    >(this._ctx);
+    return <T extends Node>(
+        fn: (
+          q: QueryStuffUndefinedInput<Merge<TContext, NoInfer<TContextIn>>>,
+        ) => T,
+      ) =>
+      (ctx: NoInfer<TContextIn>) =>
+        fn(
+          new QueryStuffUndefinedInput<Merge<TContext, NoInfer<TContextIn>>>({
+            ...this._ctx,
+            ...ctx,
+          }),
+        );
   }
   input<TInput = void>() {
     return new QueryStuffDefinedInput<TContext, TInput>(this._ctx);
@@ -221,22 +217,5 @@ class QueryStuffDefinedInput<
         ),
       [mutationNode]: {},
     });
-  }
-}
-
-class QueryStuffDefinedContext<
-  TContext = void,
-  TContextIn = void,
-> extends QueryStuffRoot<TContext> {
-  module<T extends Node>(
-    fn: (q: QueryStuffUndefinedInput<Merge<TContext, TContextIn>>) => T,
-  ): (ctx: TContextIn) => T {
-    return (ctx) =>
-      fn(
-        new QueryStuffUndefinedInput<Merge<TContext, TContextIn>>({
-          ...this._ctx,
-          ...ctx,
-        }),
-      );
   }
 }
