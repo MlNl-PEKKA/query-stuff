@@ -6,4 +6,6 @@ export const mutationNode = Symbol();
 
 export const dataTagVariablesSymbol = Symbol();
 
+export const dataTagContextSymbol = Symbol();
+
 export const inputSymbol = Symbol();

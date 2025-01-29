@@ -3,7 +3,6 @@ import {
   QueryClient,
   QueryClientProvider,
   useMutation,
-  useMutationState,
   useQueries,
   useQuery,
   useQueryClient,
@@ -12,6 +11,7 @@ import { renderHook as rH, waitFor } from "@testing-library/react";
 import type { PropsWithChildren } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { keys, mutations, queries } from "./fixtures.js";
+import { useMutationStuff } from "./index.js";
 
 const createTestQueryClient = () =>
   new QueryClient({
@@ -174,7 +174,7 @@ describe(`QueryStuff`, () => {
   });
   mutations.forEach(([m, { name, input, response, mutationKey }]) => {
     describe(`${name}: mutation`, () => {
-      it(`${name}: useMutation, useMutationState, onMutate, onSuccess, onSettled, onError`, async () => {
+      it(`${name}: useMutation, useMutationStuff, onMutate, onSuccess, onSettled, onError`, async () => {
         const onMutate = vi.fn(() => void 0);
         const onError = vi.fn(() => void 0);
         const onSuccess = vi.fn(() => void 0);
@@ -193,26 +193,38 @@ describe(`QueryStuff`, () => {
         if (!input) delete variables.input;
         const { result: mutationState1, rerender } = renderHook(
           () =>
-            useMutationState({
-              filters: { mutationKey, status: "pending" },
-              select: (mutation) => mutation.state.variables,
+            useMutationStuff({
+              filters: {
+                mutationKey: m().mutationKey satisfies typeof mutationKey,
+                status: "pending",
+              },
+              select: (mutation) => [
+                mutation.state.variables,
+                mutation.state.data,
+              ],
             }),
           wrapper,
         );
-        expect(mutationState1.current).toStrictEqual([input]);
+        expect(mutationState1.current).toStrictEqual([[input, undefined]]);
         await waitFor(() => expect(mutation.current.isSuccess).toBe(true));
         expect(mutation.current.data).toStrictEqual(response);
         rerender();
         expect(mutationState1.current).toStrictEqual([]);
         const { result: mutationState2 } = renderHook(
           () =>
-            useMutationState({
-              filters: { mutationKey, status: "success" },
-              select: (mutation) => mutation.state.variables,
+            useMutationStuff({
+              filters: {
+                mutationKey: m().mutationKey satisfies typeof mutationKey,
+                status: "success",
+              },
+              select: (mutation) => [
+                mutation.state.variables,
+                mutation.state.data,
+              ],
             }),
           wrapper,
         );
-        expect(mutationState2.current).toStrictEqual([input]);
+        expect(mutationState2.current).toStrictEqual([[input, response]]);
         expect(onMutate).toHaveBeenCalledTimes(1);
         expect(onMutate).toHaveBeenCalledWith(variables);
         expect(onError).toHaveBeenCalledTimes(0);
@@ -226,7 +238,7 @@ describe(`QueryStuff`, () => {
           undefined,
         );
       });
-      it(`${name}: useMutation Error, useMutationState,  onMutate, onSuccess, onSettled, onError`, async () => {
+      it(`${name}: useMutation Error, useMutationStuff,  onMutate, onSuccess, onSettled, onError`, async () => {
         const onMutate = vi.fn(() => void 0);
         const onError = vi.fn(() => void 0);
         const onSuccess = vi.fn(() => void 0);
@@ -251,26 +263,38 @@ describe(`QueryStuff`, () => {
         if (!input) delete variables.input;
         const { result: mutationState1, rerender } = renderHook(
           () =>
-            useMutationState({
-              filters: { mutationKey, status: "pending" },
-              select: (mutation) => mutation.state.variables,
+            useMutationStuff({
+              filters: {
+                mutationKey: m().mutationKey satisfies typeof mutationKey,
+                status: "pending",
+              },
+              select: (mutation) => [
+                mutation.state.variables,
+                mutation.state.data,
+              ],
             }),
           wrapper,
         );
-        expect(mutationState1.current).toStrictEqual([input]);
+        expect(mutationState1.current).toStrictEqual([[input, undefined]]);
         await waitFor(() => expect(mutation.current.isError).toBe(true));
         expect(mutation.current.data).toStrictEqual(undefined);
         rerender();
         expect(mutationState1.current).toStrictEqual([]);
         const { result: mutationState2 } = renderHook(
           () =>
-            useMutationState({
-              filters: { mutationKey, status: "error" },
-              select: (mutation) => mutation.state.variables,
+            useMutationStuff({
+              filters: {
+                mutationKey: m().mutationKey satisfies typeof mutationKey,
+                status: "error",
+              },
+              select: (mutation) => [
+                mutation.state.variables,
+                mutation.state.data,
+              ],
             }),
           wrapper,
         );
-        expect(mutationState2.current).toStrictEqual([input]);
+        expect(mutationState2.current).toStrictEqual([[input, undefined]]);
         expect(onMutate).toHaveBeenCalledTimes(1);
         expect(onMutate).toHaveBeenCalledWith(variables);
         expect(onError).toHaveBeenCalledTimes(1);

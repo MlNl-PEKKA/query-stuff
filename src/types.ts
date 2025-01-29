@@ -14,6 +14,7 @@ import type {
   UseMutationOptions,
 } from "@tanstack/react-query";
 import type {
+  dataTagContextSymbol,
   dataTagVariablesSymbol,
   inputSymbol,
   mutationNode,
@@ -200,11 +201,13 @@ export type MutationKeyTag<
   TData = unknown,
   TError = DefaultError,
   TVariables = unknown,
+  TContext = unknown,
 > = {
   mutationKey: TMutationKey & {
     [dataTagSymbol]: TData;
     [dataTagErrorSymbol]: TError;
     [dataTagVariablesSymbol]: TVariables;
+    [dataTagContextSymbol]: TContext;
   };
 };
 
@@ -212,8 +215,16 @@ export type QBaseMutationOptionsOut<
   T extends AnyUseMutationOptions,
   TMutationKey extends MutationKey = MutationKey,
 > =
-  T extends UseMutationOptions<infer TData, infer TError, infer TVariables>
-    ? Merge<T, MutationKeyTag<TMutationKey, TData, TError, TVariables>> & {
+  T extends UseMutationOptions<
+    infer TData,
+    infer TError,
+    infer TVariables,
+    infer TContext
+  >
+    ? Merge<
+        T,
+        MutationKeyTag<TMutationKey, TData, TError, TVariables, TContext>
+      > & {
         [mutationNode]: unknown;
       }
     : never;
@@ -267,13 +278,20 @@ export type ProxyNode<
       : S extends QMutationOptionsOut<
             infer TData,
             infer TError,
-            infer TVariables
+            infer TVariables,
+            infer TContext
           >
         ? (
             ...input: R
           ) => Merge<
             S,
-            MutationKeyTag<[...TQueryKey, key], TData, TError, TVariables>
+            MutationKeyTag<
+              [...TQueryKey, key],
+              TData,
+              TError,
+              TVariables,
+              TContext
+            >
           >
         : S extends Node
           ? (
