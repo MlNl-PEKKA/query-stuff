@@ -50,7 +50,13 @@ export const useMutationStuff = <
   queryClient?: QueryClient,
 ) => {
   return useMutationState<TResult>(
-    options as MutationStateOptions<TResult>,
+    {
+      ...options,
+      filters: {
+        ...options.filters,
+        exact: true,
+      },
+    } as MutationStateOptions<TResult>,
     queryClient,
   );
 };
