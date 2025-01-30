@@ -41,13 +41,11 @@ abstract class QueryStuffRoot<TContext = void> {
   constructor(protected _ctx: TContext = {} as TContext) {}
 }
 
-export class QueryStuff {
-  static factory<T extends Node, TContext = void>(
-    fn: (q: QueryStuffUndefinedInput<TContext>) => T,
-  ): ProxyNode<T> {
-    return createProxyNode(fn(new QueryStuffUndefinedInput<TContext>()));
-  }
-}
+export const factory = <T extends Node, TContext = void>(
+  fn: (q: QueryStuffUndefinedInput<TContext>) => T,
+): ProxyNode<T> => {
+  return createProxyNode(fn(new QueryStuffUndefinedInput<TContext>()));
+};
 
 export class QueryStuffUndefinedInput<
   TContext = void,
@@ -158,7 +156,7 @@ export class QueryStuffUndefinedInput<
   }
 }
 
-class QueryStuffDefinedInput<
+export class QueryStuffDefinedInput<
   TContext = void,
   TInput = unknown,
 > extends QueryStuffRoot<TContext> {

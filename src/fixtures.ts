@@ -1,6 +1,6 @@
 import { createProxyNode } from "./createProxyNode.js";
 import { QueryStuffUndefinedInput } from "./queryStuff.js";
-import { QueryStuff } from "./index.js";
+import { factory } from "./index.js";
 import type * as _ from "../node_modules/.pnpm/@tanstack+query-core@5.64.1/node_modules/@tanstack/query-core/build/modern/hydration-DpBMnFDT.js";
 
 export const nodes = new QueryStuffUndefinedInput().module()((q) => ({
@@ -76,9 +76,9 @@ export const nodes = new QueryStuffUndefinedInput().module()((q) => ({
   })),
 }));
 
-export const queryFactory = QueryStuff.factory(() => nodes());
+export const queryFactory = factory(() => nodes());
 
 export const queryFactories = [
   [createProxyNode(nodes()), "createProxyNode"],
-  [queryFactory, "QueryStuff.factory"],
+  [queryFactory, "factory"],
 ] as const;
