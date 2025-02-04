@@ -76,7 +76,250 @@ export const nodes = new QueryStuffUndefinedInput().module()((q) => ({
   })),
 }));
 
+export const NODES = new QueryStuffUndefinedInput().module()((q) => ({
+  query: q.query(() => ({ query: true })),
+  mutation: q.mutation(async () => ({ mutation: true })),
+  voidInputQuery: q.input().query(() => ({ query: true })),
+  voidInputMutation: q.input().mutation(async () => ({ mutation: true })),
+  inputQuery: q
+    .input<{ inputQuery: boolean }>()
+    .query((opts) => ({ ...opts.input, query: true })),
+  inputMutation: q
+    .input<{ inputMutation: boolean }>()
+    .mutation(async (opts) => ({ ...opts.input, mutation: true })),
+  contextQuery: q
+    .use(async ({ next }) => await next({ ctx: { contextQuery: true } }))
+    .query((opts) => ({ ...opts.ctx, query: true })),
+  contextMutation: q
+    .use(async ({ next }) => await next({ ctx: { contextMutation: true } }))
+    .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+  module: q.module<{ module: boolean }>()((q) => ({
+    query: q.query((opts) => ({ ...opts.ctx, query: true })),
+    mutation: q.mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+    voidInputQuery: q.input().query((opts) => ({ ...opts.ctx, query: true })),
+    voidInputMutation: q
+      .input()
+      .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+    inputQuery: q
+      .input<{ inputQuery: boolean }>()
+      .query((opts) => ({ ...opts.ctx, ...opts.input, query: true })),
+    inputMutation: q
+      .input<{ inputMutation: boolean }>()
+      .mutation(async (opts) => ({
+        ...opts.ctx,
+        ...opts.input,
+        mutation: true,
+      })),
+    contextQuery: q
+      .use(async ({ next }) => await next({ ctx: { contextQuery: true } }))
+      .query((opts) => ({ ...opts.ctx, query: true })),
+    contextMutation: q
+      .use(async ({ next }) => await next({ ctx: { contextMutation: true } }))
+      .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+    MODULE: q.module<{ MODULE: boolean }>()((q) => ({
+      query: q.query((opts) => ({ ...opts.ctx, query: true })),
+      mutation: q.mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+      voidInputQuery: q.input().query((opts) => ({ ...opts.ctx, query: true })),
+      voidInputMutation: q
+        .input()
+        .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+      inputQuery: q
+        .input<{ inputQuery: boolean }>()
+        .query((opts) => ({ ...opts.ctx, ...opts.input, query: true })),
+      inputMutation: q
+        .input<{ inputMutation: boolean }>()
+        .mutation(async (opts) => ({
+          ...opts.ctx,
+          ...opts.input,
+          mutation: true,
+        })),
+      contextQuery: q
+        .use(async ({ next }) => await next({ ctx: { contextQuery: true } }))
+        .query((opts) => ({ ...opts.ctx, query: true })),
+      contextMutation: q
+        .use(async ({ next }) => await next({ ctx: { contextMutation: true } }))
+        .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+      context: q
+        .use(async ({ next }) => await next({ ctx: { context: true } }))
+        .module()((q) => ({
+        query: q.query((opts) => ({ ...opts.ctx, query: true })),
+        mutation: q.mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+        voidInputQuery: q
+          .input()
+          .query((opts) => ({ ...opts.ctx, query: true })),
+        voidInputMutation: q
+          .input()
+          .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+        inputQuery: q
+          .input<{ inputQuery: boolean }>()
+          .query((opts) => ({ ...opts.ctx, ...opts.input, query: true })),
+        inputMutation: q
+          .input<{ inputMutation: boolean }>()
+          .mutation(async (opts) => ({
+            ...opts.ctx,
+            ...opts.input,
+            mutation: true,
+          })),
+        contextQuery: q
+          .use(async ({ next }) => await next({ ctx: { contextQuery: true } }))
+          .query((opts) => ({ ...opts.ctx, query: true })),
+        contextMutation: q
+          .use(
+            async ({ next }) => await next({ ctx: { contextMutation: true } }),
+          )
+          .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+        CONTEXT: q
+          .use(async ({ next }) => await next({ ctx: { CONTEXT: true } }))
+          .module()((q) => ({
+          query: q.query((opts) => ({ ...opts.ctx, query: true })),
+          mutation: q.mutation(async (opts) => ({
+            ...opts.ctx,
+            mutation: true,
+          })),
+          voidInputQuery: q
+            .input()
+            .query((opts) => ({ ...opts.ctx, query: true })),
+          voidInputMutation: q
+            .input()
+            .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+          inputQuery: q
+            .input<{ inputQuery: boolean }>()
+            .query((opts) => ({ ...opts.ctx, ...opts.input, query: true })),
+          inputMutation: q
+            .input<{ inputMutation: boolean }>()
+            .mutation(async (opts) => ({
+              ...opts.ctx,
+              ...opts.input,
+              mutation: true,
+            })),
+          contextQuery: q
+            .use(
+              async ({ next }) => await next({ ctx: { contextQuery: true } }),
+            )
+            .query((opts) => ({ ...opts.ctx, query: true })),
+          contextMutation: q
+            .use(
+              async ({ next }) =>
+                await next({ ctx: { contextMutation: true } }),
+            )
+            .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+        })),
+      })),
+    })),
+    context: q
+      .use(async ({ next }) => await next({ ctx: { context: true } }))
+      .module()((q) => ({
+      query: q.query((opts) => ({ ...opts.ctx, query: true })),
+      mutation: q.mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+      voidInputQuery: q.input().query((opts) => ({ ...opts.ctx, query: true })),
+      voidInputMutation: q
+        .input()
+        .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+      inputQuery: q
+        .input<{ inputQuery: boolean }>()
+        .query((opts) => ({ ...opts.ctx, ...opts.input, query: true })),
+      inputMutation: q
+        .input<{ inputMutation: boolean }>()
+        .mutation(async (opts) => ({
+          ...opts.ctx,
+          ...opts.input,
+          mutation: true,
+        })),
+      contextQuery: q
+        .use(async ({ next }) => await next({ ctx: { contextQuery: true } }))
+        .query((opts) => ({ ...opts.ctx, query: true })),
+      contextMutation: q
+        .use(async ({ next }) => await next({ ctx: { contextMutation: true } }))
+        .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+      CONTEXT: q
+        .use(async ({ next }) => await next({ ctx: { CONTEXT: true } }))
+        .module()((q) => ({
+        query: q.query((opts) => ({ ...opts.ctx, query: true })),
+        mutation: q.mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+        voidInputQuery: q
+          .input()
+          .query((opts) => ({ ...opts.ctx, query: true })),
+        voidInputMutation: q
+          .input()
+          .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+        inputQuery: q
+          .input<{ inputQuery: boolean }>()
+          .query((opts) => ({ ...opts.ctx, ...opts.input, query: true })),
+        inputMutation: q
+          .input<{ inputMutation: boolean }>()
+          .mutation(async (opts) => ({
+            ...opts.ctx,
+            ...opts.input,
+            mutation: true,
+          })),
+        contextQuery: q
+          .use(async ({ next }) => await next({ ctx: { contextQuery: true } }))
+          .query((opts) => ({ ...opts.ctx, query: true })),
+        contextMutation: q
+          .use(
+            async ({ next }) => await next({ ctx: { contextMutation: true } }),
+          )
+          .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+      })),
+    })),
+  })),
+  context: q
+    .use(async ({ next }) => await next({ ctx: { context: true } }))
+    .module()((q) => ({
+    query: q.query((opts) => ({ ...opts.ctx, query: true })),
+    mutation: q.mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+    voidInputQuery: q.input().query((opts) => ({ ...opts.ctx, query: true })),
+    voidInputMutation: q
+      .input()
+      .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+    inputQuery: q
+      .input<{ inputQuery: boolean }>()
+      .query((opts) => ({ ...opts.ctx, ...opts.input, query: true })),
+    inputMutation: q
+      .input<{ inputMutation: boolean }>()
+      .mutation(async (opts) => ({
+        ...opts.ctx,
+        ...opts.input,
+        mutation: true,
+      })),
+    contextQuery: q
+      .use(async ({ next }) => await next({ ctx: { contextQuery: true } }))
+      .query((opts) => ({ ...opts.ctx, query: true })),
+    contextMutation: q
+      .use(async ({ next }) => await next({ ctx: { contextMutation: true } }))
+      .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+    CONTEXT: q
+      .use(async ({ next }) => await next({ ctx: { CONTEXT: true } }))
+      .module()((q) => ({
+      query: q.query((opts) => ({ ...opts.ctx, query: true })),
+      mutation: q.mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+      voidInputQuery: q.input().query((opts) => ({ ...opts.ctx, query: true })),
+      voidInputMutation: q
+        .input()
+        .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+      inputQuery: q
+        .input<{ inputQuery: boolean }>()
+        .query((opts) => ({ ...opts.ctx, ...opts.input, query: true })),
+      inputMutation: q
+        .input<{ inputMutation: boolean }>()
+        .mutation(async (opts) => ({
+          ...opts.ctx,
+          ...opts.input,
+          mutation: true,
+        })),
+      contextQuery: q
+        .use(async ({ next }) => await next({ ctx: { contextQuery: true } }))
+        .query((opts) => ({ ...opts.ctx, query: true })),
+      contextMutation: q
+        .use(async ({ next }) => await next({ ctx: { contextMutation: true } }))
+        .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+    })),
+  })),
+}));
+
 export const queryFactory = factory(() => nodes());
+
+export const QUERY_FACTORY = factory(() => NODES());
 
 export const queryFactories = [
   [createProxyNode(nodes()), "createProxyNode"],

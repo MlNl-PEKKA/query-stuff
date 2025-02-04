@@ -12,15 +12,14 @@ import {
 import { renderHook as rH, waitFor } from "@testing-library/react";
 import type { PropsWithChildren } from "react";
 import { describe, expect, it, vi } from "vitest";
-import { useMutationStuff } from "./index.js";
+import { inputSymbol, useMutationState } from "./index.js";
 import {
   ProxyKeyNode,
   QAnyMutationOptionsOut,
   QAnyQueryOptionsOut,
   UnknownRecord,
 } from "./types.js";
-import { queryFactory } from "./fixtures.js";
-import { inputSymbol } from "./symbols.js";
+import { QUERY_FACTORY } from "./fixtures.js";
 
 const createTestQueryClient = () =>
   new QueryClient({
@@ -181,148 +180,165 @@ describe(`QueryStuff`, () => {
       });
     });
   });
-  mutations.forEach(([m, { name, input, response, mutationKey }]) => {
-    describe(`${name}: mutation`, () => {
-      it(`${name}: useMutation, useMutationStuff, onMutate, onSuccess, onSettled, onError`, async () => {
-        const onMutate = vi.fn(() => void 0);
-        const onError = vi.fn(() => void 0);
-        const onSuccess = vi.fn(() => void 0);
-        const onSettled = vi.fn(() => void 0);
-        const wrapper = createWrapper();
-        const { result: mutation } = renderHook(
-          () => useMutation(m({ onMutate, onSuccess, onError, onSettled })),
-          wrapper,
-        );
-        mutation.current.mutate(input);
-        const ctx: unknown[] = mutationKey.filter((x) => typeof x === "object");
-        const variables = {
-          ctx: Object.assign({}, ...ctx),
-          input,
-        };
-        if (!input) delete variables.input;
-        const { result: mutationState1, rerender } = renderHook(
-          () =>
-            useMutationStuff({
-              filters: {
-                mutationKey: m().mutationKey satisfies typeof mutationKey,
-                status: "pending",
-              },
-              select: (mutation) => [
-                mutation.state.variables,
-                mutation.state.data,
-              ],
-            }),
-          wrapper,
-        );
-        expect(mutationState1.current).toStrictEqual([[input, undefined]]);
-        await waitFor(() => expect(mutation.current.isSuccess).toBe(true));
-        expect(mutation.current.data).toStrictEqual(response);
-        rerender();
-        expect(mutationState1.current).toStrictEqual([]);
-        const { result: mutationState2 } = renderHook(
-          () =>
-            useMutationStuff({
-              filters: {
-                mutationKey: m().mutationKey satisfies typeof mutationKey,
-                status: "success",
-              },
-              select: (mutation) => [
-                mutation.state.variables,
-                mutation.state.data,
-              ],
-            }),
-          wrapper,
-        );
-        expect(mutationState2.current).toStrictEqual([[input, response]]);
-        expect(onMutate).toHaveBeenCalledTimes(1);
-        expect(onMutate).toHaveBeenCalledWith(variables);
-        expect(onError).toHaveBeenCalledTimes(0);
-        expect(onSuccess).toHaveBeenCalledTimes(1);
-        expect(onSuccess).toHaveBeenCalledWith(response, variables, undefined);
-        expect(onSettled).toHaveBeenCalledTimes(1);
-        expect(onSettled).toHaveBeenCalledWith(
-          response,
-          null,
-          variables,
-          undefined,
-        );
+  mutations.forEach(
+    ([m, { name, input, response, mutationKey, ctx: innerCtx }]) => {
+      describe(`${name}: mutation`, () => {
+        it(`${name}: useMutation, useMutationState, onMutate, onSuccess, onSettled, onError`, async () => {
+          const onMutate = vi.fn(() => void 0);
+          const onError = vi.fn(() => void 0);
+          const onSuccess = vi.fn(() => void 0);
+          const onSettled = vi.fn(() => void 0);
+          const wrapper = createWrapper();
+          const { result: mutation } = renderHook(
+            () => useMutation(m({ onMutate, onSuccess, onError, onSettled })),
+            wrapper,
+          );
+          mutation.current.mutate(input);
+          const ctx: unknown[] = mutationKey.filter(
+            (x) => typeof x === "object",
+          );
+          const variables = {
+            ctx: Object.assign({}, ...ctx),
+            input,
+          };
+          if (innerCtx)
+            variables.ctx = {
+              ...variables.ctx,
+              ...(innerCtx as any),
+            };
+          if (!input) delete variables.input;
+          const { result: mutationState1, rerender } = renderHook(
+            () =>
+              useMutationState({
+                filters: {
+                  mutationKey: m().mutationKey satisfies typeof mutationKey,
+                  status: "pending",
+                },
+                select: (mutation) => [
+                  mutation.state.variables,
+                  mutation.state.data,
+                ],
+              }),
+            wrapper,
+          );
+          expect(mutationState1.current).toStrictEqual([[input, undefined]]);
+          await waitFor(() => expect(mutation.current.isSuccess).toBe(true));
+          expect(mutation.current.data).toStrictEqual(response);
+          rerender();
+          expect(mutationState1.current).toStrictEqual([]);
+          const { result: mutationState2 } = renderHook(
+            () =>
+              useMutationState({
+                filters: {
+                  mutationKey: m().mutationKey satisfies typeof mutationKey,
+                  status: "success",
+                },
+                select: (mutation) => [
+                  mutation.state.variables,
+                  mutation.state.data,
+                ],
+              }),
+            wrapper,
+          );
+          expect(mutationState2.current).toStrictEqual([[input, response]]);
+          expect(onMutate).toHaveBeenCalledTimes(1);
+          expect(onMutate).toHaveBeenCalledWith(variables);
+          expect(onError).toHaveBeenCalledTimes(0);
+          expect(onSuccess).toHaveBeenCalledTimes(1);
+          expect(onSuccess).toHaveBeenCalledWith(
+            response,
+            variables,
+            undefined,
+          );
+          expect(onSettled).toHaveBeenCalledTimes(1);
+          expect(onSettled).toHaveBeenCalledWith(
+            response,
+            null,
+            variables,
+            undefined,
+          );
+        });
+        it(`${name}: useMutation Error, useMutationState,  onMutate, onSuccess, onSettled, onError`, async () => {
+          const onMutate = vi.fn(() => void 0);
+          const onError = vi.fn(() => void 0);
+          const onSuccess = vi.fn(() => void 0);
+          const onSettled = vi.fn(() => void 0);
+          const wrapper = createWrapper();
+          const { result: mutation } = renderHook(
+            () =>
+              useMutation({
+                ...m({ onMutate, onSuccess, onError, onSettled }),
+                mutationFn: () => {
+                  throw new Error("error");
+                },
+              }),
+            wrapper,
+          );
+          mutation.current.mutate(input);
+          const ctx: unknown[] = mutationKey.filter(
+            (x) => typeof x === "object",
+          );
+          const variables = {
+            ctx: Object.assign({}, ...ctx),
+            input,
+          };
+          if (innerCtx)
+            variables.ctx = { ...variables.ctx, ...(innerCtx as any) };
+          if (!input) delete variables.input;
+          const { result: mutationState1, rerender } = renderHook(
+            () =>
+              useMutationState({
+                filters: {
+                  mutationKey: m().mutationKey satisfies typeof mutationKey,
+                  status: "pending",
+                },
+                select: (mutation) => [
+                  mutation.state.variables,
+                  mutation.state.data,
+                ],
+              }),
+            wrapper,
+          );
+          expect(mutationState1.current).toStrictEqual([[input, undefined]]);
+          await waitFor(() => expect(mutation.current.isError).toBe(true));
+          expect(mutation.current.data).toStrictEqual(undefined);
+          rerender();
+          expect(mutationState1.current).toStrictEqual([]);
+          const { result: mutationState2 } = renderHook(
+            () =>
+              useMutationState({
+                filters: {
+                  mutationKey: m().mutationKey satisfies typeof mutationKey,
+                  status: "error",
+                },
+                select: (mutation) => [
+                  mutation.state.variables,
+                  mutation.state.data,
+                ],
+              }),
+            wrapper,
+          );
+          expect(mutationState2.current).toStrictEqual([[input, undefined]]);
+          expect(onMutate).toHaveBeenCalledTimes(1);
+          expect(onMutate).toHaveBeenCalledWith(variables);
+          expect(onError).toHaveBeenCalledTimes(1);
+          expect(onError).toHaveBeenCalledWith(
+            Error("error"),
+            variables,
+            undefined,
+          );
+          expect(onSuccess).toHaveBeenCalledTimes(0);
+          expect(onSettled).toHaveBeenCalledTimes(1);
+          expect(onSettled).toHaveBeenCalledWith(
+            undefined,
+            Error("error"),
+            variables,
+            undefined,
+          );
+        });
       });
-      it(`${name}: useMutation Error, useMutationStuff,  onMutate, onSuccess, onSettled, onError`, async () => {
-        const onMutate = vi.fn(() => void 0);
-        const onError = vi.fn(() => void 0);
-        const onSuccess = vi.fn(() => void 0);
-        const onSettled = vi.fn(() => void 0);
-        const wrapper = createWrapper();
-        const { result: mutation } = renderHook(
-          () =>
-            useMutation({
-              ...m({ onMutate, onSuccess, onError, onSettled }),
-              mutationFn: () => {
-                throw new Error("error");
-              },
-            }),
-          wrapper,
-        );
-        mutation.current.mutate(input);
-        const ctx: unknown[] = mutationKey.filter((x) => typeof x === "object");
-        const variables = {
-          ctx: Object.assign({}, ...ctx),
-          input,
-        };
-        if (!input) delete variables.input;
-        const { result: mutationState1, rerender } = renderHook(
-          () =>
-            useMutationStuff({
-              filters: {
-                mutationKey: m().mutationKey satisfies typeof mutationKey,
-                status: "pending",
-              },
-              select: (mutation) => [
-                mutation.state.variables,
-                mutation.state.data,
-              ],
-            }),
-          wrapper,
-        );
-        expect(mutationState1.current).toStrictEqual([[input, undefined]]);
-        await waitFor(() => expect(mutation.current.isError).toBe(true));
-        expect(mutation.current.data).toStrictEqual(undefined);
-        rerender();
-        expect(mutationState1.current).toStrictEqual([]);
-        const { result: mutationState2 } = renderHook(
-          () =>
-            useMutationStuff({
-              filters: {
-                mutationKey: m().mutationKey satisfies typeof mutationKey,
-                status: "error",
-              },
-              select: (mutation) => [
-                mutation.state.variables,
-                mutation.state.data,
-              ],
-            }),
-          wrapper,
-        );
-        expect(mutationState2.current).toStrictEqual([[input, undefined]]);
-        expect(onMutate).toHaveBeenCalledTimes(1);
-        expect(onMutate).toHaveBeenCalledWith(variables);
-        expect(onError).toHaveBeenCalledTimes(1);
-        expect(onError).toHaveBeenCalledWith(
-          Error("error"),
-          variables,
-          undefined,
-        );
-        expect(onSuccess).toHaveBeenCalledTimes(0);
-        expect(onSettled).toHaveBeenCalledTimes(1);
-        expect(onSettled).toHaveBeenCalledWith(
-          undefined,
-          Error("error"),
-          variables,
-          undefined,
-        );
-      });
-    });
-  });
+    },
+  );
   keys.forEach(([k, { name, key }]) => {
     it(`${name}: key`, () => {
       expect(k._key).toStrictEqual(key);
@@ -337,11 +353,11 @@ type Queries = [
 
 const baseQuery = [
   [
-    queryFactory.a,
+    QUERY_FACTORY.query,
     {
-      name: "q.a",
-      response: { a: 1 },
-      queryKey: ["a"],
+      name: "query",
+      response: { query: true },
+      queryKey: ["query"],
     },
   ],
 ] as const satisfies Queries;
@@ -349,169 +365,530 @@ const baseQuery = [
 const queries = [
   ...baseQuery,
   [
-    queryFactory.c,
+    QUERY_FACTORY.voidInputQuery,
     {
-      name: "q.c",
-      response: { c: 3 },
-      queryKey: ["c"],
+      name: "voidInputQuery",
+      response: { query: true },
+      queryKey: ["voidInputQuery"],
     },
   ],
   [
-    () => queryFactory.e({ e: 5 }),
+    () => QUERY_FACTORY.inputQuery({ inputQuery: true }),
     {
-      name: "q.e",
-      response: { e: 5 },
-      queryKey: ["e", { [inputSymbol]: { e: 5 } }],
+      name: "inputQuery",
+      response: { inputQuery: true, query: true },
+      queryKey: ["inputQuery", { [inputSymbol]: { inputQuery: true } }],
     },
   ],
   [
-    queryFactory.g().a,
+    QUERY_FACTORY.contextQuery,
     {
-      name: "q.g.a",
-      response: { a: 1 },
-      queryKey: ["g", "a"],
+      name: "contextQuery",
+      response: { query: true, contextQuery: true },
+      queryKey: ["contextQuery"],
     },
   ],
   [
-    queryFactory.g().c,
+    QUERY_FACTORY.context().query,
     {
-      name: "q.g.c",
-      response: { c: 3 },
-      queryKey: ["g", "c"],
+      name: "context.query",
+      response: { context: true, query: true },
+      queryKey: ["context", "query"],
     },
   ],
   [
-    () => queryFactory.g().e({ e: 5 }),
+    QUERY_FACTORY.context().voidInputQuery,
     {
-      name: "q.g.e",
-      response: { e: 5 },
-      queryKey: ["g", "e", { [inputSymbol]: { e: 5 } }],
+      name: "context.voidInputQuery",
+      response: { context: true, query: true },
+      queryKey: ["context", "voidInputQuery"],
     },
   ],
   [
-    queryFactory.g().gg().a,
+    () => QUERY_FACTORY.context().inputQuery({ inputQuery: true }),
     {
-      name: "q.g.gg.a",
-      response: { a: 1 },
-      queryKey: ["g", "gg", "a"],
-    },
-  ],
-  [
-    queryFactory.g().gg().c,
-    {
-      name: "q.g.gg.c",
-      response: { c: 3 },
-      queryKey: ["g", "gg", "c"],
-    },
-  ],
-  [
-    () => queryFactory.g().gg().e({ e: 5 }),
-    {
-      name: "q.g.gg.e",
-      response: { e: 5 },
-      queryKey: ["g", "gg", "e", { [inputSymbol]: { e: 5 } }],
-    },
-  ],
-  [
-    queryFactory.g().h({ h: 8 }).a,
-    {
-      name: "q.g.h.a",
-      response: { a: 1, h: 8 },
-      queryKey: ["g", "h", { h: 8 }, "a"],
-    },
-  ],
-  [
-    queryFactory.g().h({ h: 8 }).c,
-    {
-      name: "q.g.h.c",
-      response: { c: 3, h: 8 },
-      queryKey: ["g", "h", { h: 8 }, "c"],
-    },
-  ],
-  [
-    () => queryFactory.g().h({ h: 8 }).e({ e: 5 }),
-    {
-      name: "q.g.h.e",
-      response: { e: 5, h: 8 },
-      queryKey: ["g", "h", { h: 8 }, "e", { [inputSymbol]: { e: 5 } }],
-    },
-  ],
-  [
-    queryFactory.h({ h: 8 }).a,
-    {
-      name: "q.h.a",
-      response: { a: 1, h: 8 },
-      queryKey: ["h", { h: 8 }, "a"],
-    },
-  ],
-  [
-    queryFactory.h({ h: 8 }).c,
-    {
-      name: "q.h.c",
-      response: { c: 3, h: 8 },
-      queryKey: ["h", { h: 8 }, "c"],
-    },
-  ],
-  [
-    () => queryFactory.h({ h: 8 }).e({ e: 5 }),
-    {
-      name: "q.h.e",
-      response: { e: 5, h: 8 },
-      queryKey: ["h", { h: 8 }, "e", { [inputSymbol]: { e: 5 } }],
-    },
-  ],
-  [
-    queryFactory.h({ h: 8 }).g().a,
-    {
-      name: "q.h.g.a",
-      response: { a: 1, h: 8 },
-      queryKey: ["h", { h: 8 }, "g", "a"],
-    },
-  ],
-  [
-    queryFactory.h({ h: 8 }).g().c,
-    {
-      name: "q.h.g.c",
-      response: { c: 3, h: 8 },
-      queryKey: ["h", { h: 8 }, "g", "c"],
-    },
-  ],
-  [
-    () => queryFactory.h({ h: 8 }).g().e({ e: 5 }),
-    {
-      name: "q.h.g.e",
-      response: { e: 5, h: 8 },
-      queryKey: ["h", { h: 8 }, "g", "e", { [inputSymbol]: { e: 5 } }],
-    },
-  ],
-  [
-    queryFactory.h({ h: 8 }).hh({ hh: 88 }).a,
-    {
-      name: "q.h.hh.a",
-      response: { a: 1, h: 8, hh: 88 },
-      queryKey: ["h", { h: 8 }, "hh", { hh: 88 }, "a"],
-    },
-  ],
-  [
-    queryFactory.h({ h: 8 }).hh({ hh: 88 }).c,
-    {
-      name: "q.h.hh.c",
-      response: { c: 3, h: 8, hh: 88 },
-      queryKey: ["h", { h: 8 }, "hh", { hh: 88 }, "c"],
-    },
-  ],
-  [
-    () => queryFactory.h({ h: 8 }).hh({ hh: 88 }).e({ e: 5 }),
-    {
-      name: "q.h.hh.e",
-      response: { e: 5, h: 8, hh: 88 },
+      name: "context.inputQuery",
+      response: { context: true, inputQuery: true, query: true },
       queryKey: [
-        "h",
-        { h: 8 },
-        "hh",
-        { hh: 88 },
-        "e",
-        { [inputSymbol]: { e: 5 } },
+        "context",
+        "inputQuery",
+        { [inputSymbol]: { inputQuery: true } },
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.context().contextQuery,
+    {
+      name: "context.contextQuery",
+      response: { context: true, query: true, contextQuery: true },
+      queryKey: ["context", "contextQuery"],
+    },
+  ],
+  [
+    QUERY_FACTORY.context().CONTEXT().query,
+    {
+      name: "context.CONTEXT.query",
+      response: { context: true, CONTEXT: true, query: true },
+      queryKey: ["context", "CONTEXT", "query"],
+    },
+  ],
+  [
+    QUERY_FACTORY.context().CONTEXT().voidInputQuery,
+    {
+      name: "context.CONTEXT.voidInputQuery",
+      response: { context: true, CONTEXT: true, query: true },
+      queryKey: ["context", "CONTEXT", "voidInputQuery"],
+    },
+  ],
+  [
+    () => QUERY_FACTORY.context().CONTEXT().inputQuery({ inputQuery: true }),
+    {
+      name: "context.CONTEXT.inputQuery",
+      response: { context: true, CONTEXT: true, inputQuery: true, query: true },
+      queryKey: [
+        "context",
+        "CONTEXT",
+        "inputQuery",
+        { [inputSymbol]: { inputQuery: true } },
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.context().CONTEXT().contextQuery,
+    {
+      name: "context.CONTEXT.contextQuery",
+      response: {
+        context: true,
+        CONTEXT: true,
+        query: true,
+        contextQuery: true,
+      },
+      queryKey: ["context", "CONTEXT", "contextQuery"],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).query,
+    {
+      name: "module.query",
+      response: { module: true, query: true },
+      queryKey: ["module", { module: true }, "query"],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).voidInputQuery,
+    {
+      name: "module.voidInputQuery",
+      response: { module: true, query: true },
+      queryKey: ["module", { module: true }, "voidInputQuery"],
+    },
+  ],
+  [
+    () =>
+      QUERY_FACTORY.module({ module: true }).inputQuery({ inputQuery: true }),
+    {
+      name: "module.inputQuery",
+      response: { module: true, inputQuery: true, query: true },
+      queryKey: [
+        "module",
+        { module: true },
+        "inputQuery",
+        { [inputSymbol]: { inputQuery: true } },
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).contextQuery,
+    {
+      name: "module.contextQuery",
+      response: { module: true, query: true, contextQuery: true },
+      queryKey: ["module", { module: true }, "contextQuery"],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).context().query,
+    {
+      name: "module.context.query",
+      response: { module: true, context: true, query: true },
+      queryKey: ["module", { module: true }, "context", "query"],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).context().voidInputQuery,
+    {
+      name: "module.context.voidInputQuery",
+      response: { module: true, context: true, query: true },
+      queryKey: ["module", { module: true }, "context", "voidInputQuery"],
+    },
+  ],
+  [
+    () =>
+      QUERY_FACTORY.module({ module: true })
+        .context()
+        .inputQuery({ inputQuery: true }),
+    {
+      name: "module.context.inputQuery",
+      response: { module: true, context: true, inputQuery: true, query: true },
+      queryKey: [
+        "module",
+        { module: true },
+        "context",
+        "inputQuery",
+        { [inputSymbol]: { inputQuery: true } },
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).context().contextQuery,
+    {
+      name: "module.context.contextQuery",
+      response: {
+        module: true,
+        context: true,
+        query: true,
+        contextQuery: true,
+      },
+      queryKey: ["module", { module: true }, "context", "contextQuery"],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).context().CONTEXT().query,
+    {
+      name: "module.context.CONTEXT.query",
+      response: { module: true, context: true, CONTEXT: true, query: true },
+      queryKey: ["module", { module: true }, "context", "CONTEXT", "query"],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).context().CONTEXT().voidInputQuery,
+    {
+      name: "module.context.CONTEXT.voidInputQuery",
+      response: { module: true, context: true, CONTEXT: true, query: true },
+      queryKey: [
+        "module",
+        { module: true },
+        "context",
+        "CONTEXT",
+        "voidInputQuery",
+      ],
+    },
+  ],
+  [
+    () =>
+      QUERY_FACTORY.module({ module: true })
+        .context()
+        .CONTEXT()
+        .inputQuery({ inputQuery: true }),
+    {
+      name: "module.context.CONTEXT.inputQuery",
+      response: {
+        module: true,
+        context: true,
+        CONTEXT: true,
+        inputQuery: true,
+        query: true,
+      },
+      queryKey: [
+        "module",
+        { module: true },
+        "context",
+        "CONTEXT",
+        "inputQuery",
+        { [inputSymbol]: { inputQuery: true } },
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).context().CONTEXT().contextQuery,
+    {
+      name: "module.context.CONTEXT.contextQuery",
+      response: {
+        module: true,
+        context: true,
+        CONTEXT: true,
+        query: true,
+        contextQuery: true,
+      },
+      queryKey: [
+        "module",
+        { module: true },
+        "context",
+        "CONTEXT",
+        "contextQuery",
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true }).query,
+    {
+      name: "module.MODULE.query",
+      response: {
+        MODULE: true,
+        module: true,
+        query: true,
+      },
+      queryKey: [
+        "module",
+        { module: true },
+        "MODULE",
+        { MODULE: true },
+        "query",
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true })
+      .voidInputQuery,
+    {
+      name: "module.MODULE.voidInputQuery",
+      response: {
+        MODULE: true,
+        module: true,
+        query: true,
+      },
+      queryKey: [
+        "module",
+        { module: true },
+        "MODULE",
+        { MODULE: true },
+        "voidInputQuery",
+      ],
+    },
+  ],
+  [
+    () =>
+      QUERY_FACTORY.module({ module: true })
+        .MODULE({ MODULE: true })
+        .inputQuery({ inputQuery: true }),
+    {
+      name: "module.MODULE.inputQuery",
+      response: {
+        MODULE: true,
+        module: true,
+        inputQuery: true,
+        query: true,
+      },
+      queryKey: [
+        "module",
+        { module: true },
+        "MODULE",
+        { MODULE: true },
+        "inputQuery",
+        { [inputSymbol]: { inputQuery: true } },
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true })
+      .contextQuery,
+    {
+      name: "module.MODULE.contextQuery",
+      response: {
+        MODULE: true,
+        module: true,
+        query: true,
+        contextQuery: true,
+      },
+      queryKey: [
+        "module",
+        { module: true },
+        "MODULE",
+        { MODULE: true },
+        "contextQuery",
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true }).context()
+      .query,
+    {
+      name: "module.MODULE.context.query",
+      response: {
+        MODULE: true,
+        module: true,
+        context: true,
+        query: true,
+      },
+      queryKey: [
+        "module",
+        { module: true },
+        "MODULE",
+        { MODULE: true },
+        "context",
+        "query",
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true }).context()
+      .voidInputQuery,
+    {
+      name: "module.MODULE.context.voidInputQuery",
+      response: {
+        MODULE: true,
+        module: true,
+        context: true,
+        query: true,
+      },
+      queryKey: [
+        "module",
+        { module: true },
+        "MODULE",
+        { MODULE: true },
+        "context",
+        "voidInputQuery",
+      ],
+    },
+  ],
+  [
+    () =>
+      QUERY_FACTORY.module({ module: true })
+        .MODULE({ MODULE: true })
+        .context()
+        .inputQuery({ inputQuery: true }),
+    {
+      name: "module.MODULE.context.inputQuery",
+      response: {
+        MODULE: true,
+        module: true,
+        context: true,
+        inputQuery: true,
+        query: true,
+      },
+      queryKey: [
+        "module",
+        { module: true },
+        "MODULE",
+        { MODULE: true },
+        "context",
+        "inputQuery",
+        { [inputSymbol]: { inputQuery: true } },
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true }).context()
+      .contextQuery,
+    {
+      name: "module.MODULE.context.contextQuery",
+      response: {
+        MODULE: true,
+        module: true,
+        context: true,
+        query: true,
+        contextQuery: true,
+      },
+      queryKey: [
+        "module",
+        { module: true },
+        "MODULE",
+        { MODULE: true },
+        "context",
+        "contextQuery",
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true })
+      .MODULE({ MODULE: true })
+      .context()
+      .CONTEXT().query,
+    {
+      name: "module.MODULE.context.CONTEXT.query",
+      response: {
+        MODULE: true,
+        module: true,
+        context: true,
+        CONTEXT: true,
+        query: true,
+      },
+      queryKey: [
+        "module",
+        { module: true },
+        "MODULE",
+        { MODULE: true },
+        "context",
+        "CONTEXT",
+        "query",
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true })
+      .MODULE({ MODULE: true })
+      .context()
+      .CONTEXT().voidInputQuery,
+    {
+      name: "module.MODULE.context.CONTEXT.voidInputQuery",
+      response: {
+        MODULE: true,
+        module: true,
+        context: true,
+        CONTEXT: true,
+        query: true,
+      },
+      queryKey: [
+        "module",
+        { module: true },
+        "MODULE",
+        { MODULE: true },
+        "context",
+        "CONTEXT",
+        "voidInputQuery",
+      ],
+    },
+  ],
+  [
+    () =>
+      QUERY_FACTORY.module({ module: true })
+        .MODULE({ MODULE: true })
+        .context()
+        .CONTEXT()
+        .inputQuery({ inputQuery: true }),
+    {
+      name: "module.MODULE.context.CONTEXT.inputQuery",
+      response: {
+        MODULE: true,
+        module: true,
+        context: true,
+        CONTEXT: true,
+        inputQuery: true,
+        query: true,
+      },
+      queryKey: [
+        "module",
+        { module: true },
+        "MODULE",
+        { MODULE: true },
+        "context",
+        "CONTEXT",
+        "inputQuery",
+        { [inputSymbol]: { inputQuery: true } },
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true })
+      .MODULE({ MODULE: true })
+      .context()
+      .CONTEXT().contextQuery,
+    {
+      name: "module.MODULE.context.CONTEXT.contextQuery",
+      response: {
+        MODULE: true,
+        module: true,
+        context: true,
+        CONTEXT: true,
+        query: true,
+        contextQuery: true,
+      },
+      queryKey: [
+        "module",
+        { module: true },
+        "MODULE",
+        { MODULE: true },
+        "context",
+        "CONTEXT",
+        "contextQuery",
       ],
     },
   ],
@@ -522,6 +899,7 @@ type Mutations = [
   {
     name: string;
     input: undefined | UnknownRecord;
+    ctx: undefined | UnknownRecord;
     response: UnknownRecord;
     mutationKey: MutationKey;
   },
@@ -529,12 +907,13 @@ type Mutations = [
 
 const baseMutation = [
   [
-    queryFactory.b,
+    QUERY_FACTORY.mutation,
     {
-      name: "q.b",
+      name: "mutation",
       input: undefined,
-      response: { b: 2 },
-      mutationKey: ["b"],
+      ctx: undefined,
+      response: { mutation: true },
+      mutationKey: ["mutation"],
     },
   ],
 ] as const satisfies Mutations;
@@ -542,183 +921,679 @@ const baseMutation = [
 const mutations = [
   ...baseMutation,
   [
-    queryFactory.d,
+    QUERY_FACTORY.voidInputMutation,
     {
-      name: "q.d",
+      name: "voidInputMutation",
       input: undefined,
-      response: { d: 4 },
-      mutationKey: ["d"],
+      ctx: undefined,
+      response: {
+        mutation: true,
+      },
+      mutationKey: ["voidInputMutation"],
     },
   ],
   [
-    queryFactory.f,
+    QUERY_FACTORY.inputMutation,
     {
-      name: "q.f",
-      input: { f: 6 },
-      response: { f: 6 },
-      mutationKey: ["f"],
+      name: "inputMutation",
+      input: { inputMutation: true },
+      ctx: undefined,
+      response: {
+        inputMutation: true,
+        mutation: true,
+      },
+      mutationKey: ["inputMutation"],
     },
   ],
   [
-    queryFactory.g().b,
+    QUERY_FACTORY.contextMutation,
     {
-      name: "q.g.b",
+      name: "contextMutation",
+      ctx: {
+        contextMutation: true,
+      },
       input: undefined,
-      response: { b: 2 },
-      mutationKey: ["g", "b"],
+      response: {
+        mutation: true,
+        contextMutation: true,
+      },
+      mutationKey: ["contextMutation"],
     },
   ],
   [
-    queryFactory.g().d,
+    QUERY_FACTORY.context().mutation,
     {
-      name: "q.g.d",
+      name: "context.mutation",
       input: undefined,
-      response: { d: 4 },
-      mutationKey: ["g", "d"],
+      ctx: {
+        context: true,
+      },
+      response: {
+        context: true,
+        mutation: true,
+      },
+      mutationKey: ["context", "mutation"],
     },
   ],
   [
-    queryFactory.g().f,
+    QUERY_FACTORY.context().voidInputMutation,
     {
-      name: "q.g.f",
-      input: { f: 6 },
-      response: { f: 6 },
-      mutationKey: ["g", "f"],
-    },
-  ],
-  [
-    queryFactory.g().gg().b,
-    {
-      name: "q.g.gg.b",
+      name: "context.voidInputMutation",
       input: undefined,
-      response: { b: 2 },
-      mutationKey: ["g", "gg", "b"],
+      ctx: {
+        context: true,
+      },
+      response: {
+        context: true,
+        mutation: true,
+      },
+      mutationKey: ["context", "voidInputMutation"],
     },
   ],
   [
-    queryFactory.g().gg().d,
+    QUERY_FACTORY.context().inputMutation,
     {
-      name: "q.g.gg.d",
+      name: "context.inputMutation",
+      input: { inputMutation: true },
+      ctx: {
+        context: true,
+      },
+      response: {
+        context: true,
+        inputMutation: true,
+        mutation: true,
+      },
+      mutationKey: ["context", "inputMutation"],
+    },
+  ],
+  [
+    QUERY_FACTORY.context().contextMutation,
+    {
+      name: "context.contextMutation",
       input: undefined,
-      response: { d: 4 },
-      mutationKey: ["g", "gg", "d"],
+      ctx: {
+        context: true,
+        contextMutation: true,
+      },
+      response: {
+        context: true,
+        mutation: true,
+        contextMutation: true,
+      },
+      mutationKey: ["context", "contextMutation"],
     },
   ],
   [
-    queryFactory.g().gg().f,
+    QUERY_FACTORY.context().CONTEXT().mutation,
     {
-      name: "q.g.gg.f",
-      input: { f: 6 },
-      response: { f: 6 },
-      mutationKey: ["g", "gg", "f"],
-    },
-  ],
-  [
-    queryFactory.g().h({ h: 8 }).b,
-    {
-      name: "q.g.h.b",
+      name: "context.CONTEXT.mutation",
       input: undefined,
-      response: { b: 2, h: 8 },
-      mutationKey: ["g", "h", { h: 8 }, "b"],
+      ctx: {
+        context: true,
+        CONTEXT: true,
+      },
+      response: {
+        context: true,
+        CONTEXT: true,
+        mutation: true,
+      },
+      mutationKey: ["context", "CONTEXT", "mutation"],
     },
   ],
   [
-    queryFactory.g().h({ h: 8 }).d,
+    QUERY_FACTORY.context().CONTEXT().voidInputMutation,
     {
-      name: "q.g.h.d",
+      name: "context.CONTEXT.voidInputMutation",
       input: undefined,
-      response: { d: 4, h: 8 },
-      mutationKey: ["g", "h", { h: 8 }, "d"],
+      ctx: {
+        context: true,
+        CONTEXT: true,
+      },
+      response: {
+        context: true,
+        CONTEXT: true,
+        mutation: true,
+      },
+      mutationKey: ["context", "CONTEXT", "voidInputMutation"],
     },
   ],
   [
-    queryFactory.g().h({ h: 8 }).f,
+    QUERY_FACTORY.context().CONTEXT().inputMutation,
     {
-      name: "q.g.h.f",
-      input: { f: 6 },
-      response: { f: 6, h: 8 },
-      mutationKey: ["g", "h", { h: 8 }, "f"],
+      name: "context.CONTEXT.inputMutation",
+      input: { inputMutation: true },
+      ctx: {
+        context: true,
+        CONTEXT: true,
+      },
+      response: {
+        context: true,
+        CONTEXT: true,
+        inputMutation: true,
+        mutation: true,
+      },
+      mutationKey: ["context", "CONTEXT", "inputMutation"],
     },
   ],
   [
-    queryFactory.h({ h: 8 }).b,
+    QUERY_FACTORY.context().CONTEXT().contextMutation,
     {
-      name: "q.h.b",
+      name: "context.CONTEXT.contextMutation",
+      ctx: {
+        context: true,
+        CONTEXT: true,
+        contextMutation: true,
+      },
+      response: {
+        context: true,
+        CONTEXT: true,
+        mutation: true,
+        contextMutation: true,
+      },
       input: undefined,
-      response: { b: 2, h: 8 },
-      mutationKey: ["h", { h: 8 }, "b"],
+      mutationKey: ["context", "CONTEXT", "contextMutation"],
     },
   ],
   [
-    queryFactory.h({ h: 8 }).d,
+    QUERY_FACTORY.module({ module: true }).mutation,
     {
-      name: "q.h.d",
+      name: "module.mutation",
       input: undefined,
-      response: { d: 4, h: 8 },
-      mutationKey: ["h", { h: 8 }, "d"],
+      ctx: undefined,
+      response: {
+        module: true,
+        mutation: true,
+      },
+      mutationKey: ["module", { module: true }, "mutation"],
     },
   ],
   [
-    queryFactory.h({ h: 8 }).f,
+    QUERY_FACTORY.module({ module: true }).voidInputMutation,
     {
-      name: "q.h.f",
-      input: { f: 6 },
-      response: { f: 6, h: 8 },
-      mutationKey: ["h", { h: 8 }, "f"],
-    },
-  ],
-  [
-    queryFactory.h({ h: 8 }).g().b,
-    {
-      name: "q.h.g.b",
+      name: "module.voidInputMutation",
       input: undefined,
-      response: { b: 2, h: 8 },
-      mutationKey: ["h", { h: 8 }, "g", "b"],
+      ctx: undefined,
+      response: {
+        module: true,
+        mutation: true,
+      },
+      mutationKey: ["module", { module: true }, "voidInputMutation"],
     },
   ],
   [
-    queryFactory.h({ h: 8 }).g().d,
+    QUERY_FACTORY.module({ module: true }).inputMutation,
     {
-      name: "q.h.g.d",
+      name: "module.inputMutation",
+      input: {
+        inputMutation: true,
+      },
+      ctx: undefined,
+      response: {
+        module: true,
+        inputMutation: true,
+        mutation: true,
+      },
+      mutationKey: ["module", { module: true }, "inputMutation"],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).contextMutation,
+    {
+      name: "module.contextMutation",
       input: undefined,
-      response: { d: 4, h: 8 },
-      mutationKey: ["h", { h: 8 }, "g", "d"],
+      ctx: {
+        contextMutation: true,
+      },
+      response: {
+        module: true,
+        mutation: true,
+        contextMutation: true,
+      },
+      mutationKey: ["module", { module: true }, "contextMutation"],
     },
   ],
   [
-    queryFactory.h({ h: 8 }).g().f,
+    QUERY_FACTORY.module({ module: true }).context().mutation,
     {
-      name: "q.h.g.f",
-      input: { f: 6 },
-      response: { f: 6, h: 8 },
-      mutationKey: ["h", { h: 8 }, "g", "f"],
-    },
-  ],
-  [
-    queryFactory.h({ h: 8 }).hh({ hh: 88 }).b,
-    {
-      name: "q.h.hh.b",
+      name: "module.context.mutation",
       input: undefined,
-      response: { b: 2, h: 8, hh: 88 },
-      mutationKey: ["h", { h: 8 }, "hh", { hh: 88 }, "b"],
+      ctx: { context: true },
+      response: {
+        module: true,
+        context: true,
+        mutation: true,
+      },
+      mutationKey: ["module", { module: true }, "context", "mutation"],
     },
   ],
   [
-    queryFactory.h({ h: 8 }).hh({ hh: 88 }).d,
+    QUERY_FACTORY.module({ module: true }).context().voidInputMutation,
     {
-      name: "q.h.hh.d",
+      name: "module.context.voidInputMutation",
       input: undefined,
-      response: { d: 4, h: 8, hh: 88 },
-      mutationKey: ["h", { h: 8 }, "hh", { hh: 88 }, "d"],
+      ctx: { context: true },
+      response: {
+        module: true,
+        context: true,
+        mutation: true,
+      },
+      mutationKey: ["module", { module: true }, "context", "voidInputMutation"],
     },
   ],
   [
-    queryFactory.h({ h: 8 }).hh({ hh: 88 }).f,
+    QUERY_FACTORY.module({ module: true }).context().inputMutation,
     {
-      name: "q.h.hh.f",
-      input: { f: 6 },
-      response: { f: 6, h: 8, hh: 88 },
-      mutationKey: ["h", { h: 8 }, "hh", { hh: 88 }, "f"],
+      name: "module.context.inputMutation",
+      input: {
+        inputMutation: true,
+      },
+      ctx: { context: true },
+      response: {
+        module: true,
+        context: true,
+        inputMutation: true,
+        mutation: true,
+      },
+      mutationKey: ["module", { module: true }, "context", "inputMutation"],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).context().contextMutation,
+    {
+      name: "module.context.contextMutation",
+      input: undefined,
+      ctx: { context: true, contextMutation: true },
+      response: {
+        module: true,
+        context: true,
+        contextMutation: true,
+        mutation: true,
+      },
+      mutationKey: ["module", { module: true }, "context", "contextMutation"],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).context().CONTEXT().mutation,
+    {
+      name: "module.context.CONTEXT.mutation",
+      input: undefined,
+      ctx: { context: true, CONTEXT: true },
+      response: {
+        module: true,
+        context: true,
+        CONTEXT: true,
+        mutation: true,
+      },
+      mutationKey: [
+        "module",
+        { module: true },
+        "context",
+        "CONTEXT",
+        "mutation",
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).context().CONTEXT()
+      .voidInputMutation,
+    {
+      name: "module.context.CONTEXT.voidInputMutation",
+      input: undefined,
+      ctx: { context: true, CONTEXT: true },
+      response: {
+        module: true,
+        context: true,
+        CONTEXT: true,
+        mutation: true,
+      },
+      mutationKey: [
+        "module",
+        { module: true },
+        "context",
+        "CONTEXT",
+        "voidInputMutation",
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).context().CONTEXT().inputMutation,
+    {
+      name: "module.context.CONTEXT.inputMutation",
+      input: {
+        inputMutation: true,
+      },
+      ctx: { context: true, CONTEXT: true },
+      response: {
+        module: true,
+        context: true,
+        CONTEXT: true,
+        inputMutation: true,
+        mutation: true,
+      },
+      mutationKey: [
+        "module",
+        { module: true },
+        "context",
+        "CONTEXT",
+        "inputMutation",
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).context().CONTEXT().contextMutation,
+    {
+      name: "module.context.CONTEXT.contextMutation",
+      response: {
+        module: true,
+        context: true,
+        CONTEXT: true,
+        mutation: true,
+        contextMutation: true,
+      },
+      input: undefined,
+      ctx: { context: true, CONTEXT: true, contextMutation: true },
+      mutationKey: [
+        "module",
+        { module: true },
+        "context",
+        "CONTEXT",
+        "contextMutation",
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true }).mutation,
+    {
+      name: "module.MODULE.mutation",
+      response: {
+        MODULE: true,
+        module: true,
+        mutation: true,
+      },
+      input: undefined,
+      ctx: undefined,
+      mutationKey: [
+        "module",
+        { module: true },
+        "MODULE",
+        { MODULE: true },
+        "mutation",
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true })
+      .voidInputMutation,
+    {
+      name: "module.MODULE.voidInputMutation",
+      response: {
+        MODULE: true,
+        module: true,
+        mutation: true,
+      },
+      input: undefined,
+      ctx: undefined,
+      mutationKey: [
+        "module",
+        { module: true },
+        "MODULE",
+        { MODULE: true },
+        "voidInputMutation",
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true })
+      .inputMutation,
+    {
+      name: "module.MODULE.inputMutation",
+      response: {
+        MODULE: true,
+        module: true,
+        inputMutation: true,
+        mutation: true,
+      },
+      input: {
+        inputMutation: true,
+      },
+      ctx: undefined,
+      mutationKey: [
+        "module",
+        { module: true },
+        "MODULE",
+        { MODULE: true },
+        "inputMutation",
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true })
+      .contextMutation,
+    {
+      name: "module.MODULE.contextMutation",
+      response: {
+        MODULE: true,
+        module: true,
+        mutation: true,
+        contextMutation: true,
+      },
+      input: undefined,
+      ctx: { contextMutation: true },
+      mutationKey: [
+        "module",
+        { module: true },
+        "MODULE",
+        { MODULE: true },
+        "contextMutation",
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true }).context()
+      .mutation,
+    {
+      name: "module.MODULE.context.mutation",
+      response: {
+        MODULE: true,
+        module: true,
+        context: true,
+        mutation: true,
+      },
+      input: undefined,
+      ctx: { context: true },
+      mutationKey: [
+        "module",
+        { module: true },
+        "MODULE",
+        { MODULE: true },
+        "context",
+        "mutation",
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true }).context()
+      .voidInputMutation,
+    {
+      name: "module.MODULE.context.voidInputMutation",
+      response: {
+        MODULE: true,
+        module: true,
+        context: true,
+        mutation: true,
+      },
+      ctx: { context: true },
+      input: undefined,
+      mutationKey: [
+        "module",
+        { module: true },
+        "MODULE",
+        { MODULE: true },
+        "context",
+        "voidInputMutation",
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true }).context()
+      .inputMutation,
+    {
+      name: "module.MODULE.context.inputMutation",
+      response: {
+        MODULE: true,
+        module: true,
+        context: true,
+        inputMutation: true,
+        mutation: true,
+      },
+      input: {
+        inputMutation: true,
+      },
+      ctx: { context: true },
+      mutationKey: [
+        "module",
+        { module: true },
+        "MODULE",
+        { MODULE: true },
+        "context",
+        "inputMutation",
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true }).context()
+      .contextMutation,
+    {
+      name: "module.MODULE.context.contextMutation",
+      response: {
+        MODULE: true,
+        module: true,
+        context: true,
+        mutation: true,
+        contextMutation: true,
+      },
+      ctx: { context: true, contextMutation: true },
+      input: undefined,
+      mutationKey: [
+        "module",
+        { module: true },
+        "MODULE",
+        { MODULE: true },
+        "context",
+        "contextMutation",
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true })
+      .MODULE({ MODULE: true })
+      .context()
+      .CONTEXT().mutation,
+    {
+      name: "module.MODULE.context.CONTEXT.mutation",
+      response: {
+        MODULE: true,
+        module: true,
+        context: true,
+        CONTEXT: true,
+        mutation: true,
+      },
+      input: undefined,
+      ctx: { context: true, CONTEXT: true },
+      mutationKey: [
+        "module",
+        { module: true },
+        "MODULE",
+        { MODULE: true },
+        "context",
+        "CONTEXT",
+        "mutation",
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true })
+      .MODULE({ MODULE: true })
+      .context()
+      .CONTEXT().voidInputMutation,
+    {
+      name: "module.MODULE.context.CONTEXT.voidInputMutation",
+      response: {
+        MODULE: true,
+        module: true,
+        context: true,
+        CONTEXT: true,
+        mutation: true,
+      },
+      input: undefined,
+      ctx: { context: true, CONTEXT: true },
+      mutationKey: [
+        "module",
+        { module: true },
+        "MODULE",
+        { MODULE: true },
+        "context",
+        "CONTEXT",
+        "voidInputMutation",
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true })
+      .MODULE({ MODULE: true })
+      .context()
+      .CONTEXT().inputMutation,
+    {
+      name: "module.MODULE.context.CONTEXT.inputMutation",
+      response: {
+        MODULE: true,
+        module: true,
+        context: true,
+        CONTEXT: true,
+        inputMutation: true,
+        mutation: true,
+      },
+      input: {
+        inputMutation: true,
+      },
+      ctx: { context: true, CONTEXT: true },
+      mutationKey: [
+        "module",
+        { module: true },
+        "MODULE",
+        { MODULE: true },
+        "context",
+        "CONTEXT",
+        "inputMutation",
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true })
+      .MODULE({ MODULE: true })
+      .context()
+      .CONTEXT().contextMutation,
+    {
+      name: "module.MODULE.context.CONTEXT.contextMutation",
+      response: {
+        MODULE: true,
+        module: true,
+        context: true,
+        CONTEXT: true,
+        mutation: true,
+        contextMutation: true,
+      },
+      input: undefined,
+      ctx: { context: true, CONTEXT: true, contextMutation: true },
+      mutationKey: [
+        "module",
+        { module: true },
+        "MODULE",
+        { MODULE: true },
+        "context",
+        "CONTEXT",
+        "contextMutation",
+      ],
     },
   ],
 ] satisfies Mutations as unknown as typeof baseMutation;
@@ -733,45 +1608,69 @@ type Keys = [
 
 const keys = [
   [
-    queryFactory.g(),
+    QUERY_FACTORY.context(),
     {
-      name: "q.g",
-      key: ["g"],
+      name: "context",
+      key: ["context"],
     },
   ],
   [
-    queryFactory.g().gg(),
+    QUERY_FACTORY.context().CONTEXT(),
     {
-      name: "q.g.gg",
-      key: ["g", "gg"],
+      name: "context.CONTEXT",
+      key: ["context", "CONTEXT"],
     },
   ],
   [
-    queryFactory.g().h({ h: 8 }),
+    QUERY_FACTORY.module({ module: true }),
     {
-      name: "q.g.h",
-      key: ["g", "h", { h: 8 }],
+      name: "module",
+      key: ["module", { module: true }],
     },
   ],
   [
-    queryFactory.h({ h: 8 }),
+    QUERY_FACTORY.module({ module: true }).context(),
     {
-      name: "q.h",
-      key: ["h", { h: 8 }],
+      name: "module.context",
+      key: ["module", { module: true }, "context"],
     },
   ],
   [
-    queryFactory.h({ h: 8 }).g(),
+    QUERY_FACTORY.module({ module: true }).context().CONTEXT(),
     {
-      name: "q.h.gg",
-      key: ["h", { h: 8 }, "g"],
+      name: "module.context.CONTEXT",
+      key: ["module", { module: true }, "context", "CONTEXT"],
     },
   ],
   [
-    queryFactory.h({ h: 8 }).hh({ hh: 88 }),
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true }),
     {
-      name: "q.h.h",
-      key: ["h", { h: 8 }, "hh", { hh: 88 }],
+      name: "module.MODULE",
+      key: ["module", { module: true }, "MODULE", { MODULE: true }],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true }).context(),
+    {
+      name: "module.MODULE.context",
+      key: ["module", { module: true }, "MODULE", { MODULE: true }, "context"],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true })
+      .MODULE({ MODULE: true })
+      .context()
+      .CONTEXT(),
+    {
+      name: "module.MODULE.context.CONTEXT",
+      key: [
+        "module",
+        { module: true },
+        "MODULE",
+        { MODULE: true },
+        "context",
+        "CONTEXT",
+      ],
     },
   ],
 ] satisfies Keys;
