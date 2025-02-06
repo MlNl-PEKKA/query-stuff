@@ -2,8 +2,6 @@ import type {
   AnyUseMutationOptions,
   AnyUseQueryOptions,
   DataTag,
-  dataTagErrorSymbol,
-  dataTagSymbol,
   DefaultError,
   DefinedInitialDataOptions,
   MutationKey,
@@ -14,10 +12,14 @@ import type {
   UseMutationOptions,
 } from "@tanstack/react-query";
 import type {
-  dataTagContextSymbol,
-  dataTagVariablesSymbol,
   inputSymbol,
+  middlewareCtx,
+  middlewareData,
+  mutationContext,
+  mutationData,
+  mutationError,
   mutationNode,
+  mutationVariables,
   queryNodeDefinedInput,
   queryNodeUndefinedInput,
 } from "./symbols.js";
@@ -200,10 +202,10 @@ export type MutationKeyTag<
   TContext = unknown,
 > = {
   mutationKey: TMutationKey & {
-    [dataTagSymbol]: TData;
-    [dataTagErrorSymbol]: TError;
-    [dataTagVariablesSymbol]: TVariables;
-    [dataTagContextSymbol]: TContext;
+    [mutationData]: TData;
+    [mutationError]: TError;
+    [mutationVariables]: TVariables;
+    [mutationContext]: TContext;
   };
 };
 
@@ -308,4 +310,53 @@ export type ProxyNode<
           ProxyKeyTag<[...TQueryKey, key]>
         >
       : never;
+};
+
+export type MiddlewareResponse<TContext> = {
+  [middlewareData]: {
+    opts: any;
+    run: (input: any) => any;
+  };
+  [middlewareCtx]: TContext;
+};
+
+export type MiddlewareFn<TContext, TOverride> = (opts: {
+  ctx: TContext;
+  next: <TContextIn>(opts: {
+    ctx: TContextIn;
+  }) => Promise<MiddlewareResponse<TContextIn>>;
+}) => Promise<MiddlewareResponse<TOverride>>;
+
+export type CtxOpts<TContext = void, TOverrides extends Overrides = []> = {
+  ctx: Merge<TContext, OverridesRecord<TOverrides>>;
+};
+
+export type Overrides = readonly UnknownRecord[];
+
+export type OverridesRecord<TOverrides extends Overrides> = TOverrides extends [
+  infer Head,
+  ...infer Tail,
+]
+  ? Tail extends Overrides
+    ? Merge<Head, OverridesRecord<Tail>>
+    : never
+  : void;
+
+export type Middlewares<
+  TContext = void,
+  TOverrides extends Overrides = [],
+> = TOverrides extends [infer Head, ...infer Tail]
+  ? Tail extends Overrides
+    ? [MiddlewareFn<TContext, Head>, ...Middlewares<TContext, Tail>]
+    : never
+  : [];
+
+export type AnyMiddlewares = MiddlewareFn<any, any>[];
+
+export type Opts<
+  TContext = void,
+  TOverrides extends Overrides = [],
+  TSchema = void,
+> = CtxOpts<TContext, TOverrides> & {
+  input: TSchema;
 };

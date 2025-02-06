@@ -7,15 +7,15 @@ import type {
   OmitKeyof,
   QueryClient,
 } from "@tanstack/react-query";
-import { useMutationState } from "@tanstack/react-query";
+import { useMutationState as useDefaultMutationState } from "@tanstack/react-query";
 import { MutationKeyTag } from "./types.js";
 
-type MutationStateOptions<TResult = MutationState> = {
+type DefaultMutationStateOptions<TResult = MutationState> = {
   filters?: MutationFilters;
   select?: (mutation: Mutation) => TResult;
 };
 
-type MutationStuffOptions<
+type MutationStateOptions<
   TTMutationKey extends MutationKey = MutationKey,
   TData = unknown,
   TError = DefaultError,
@@ -31,7 +31,7 @@ type MutationStuffOptions<
   select?: (mutation: Mutation<TData, TError, TVariables, TContext>) => TResult;
 };
 
-export const useMutationStuff = <
+export const useMutationState = <
   TTMutationKey extends MutationKey = MutationKey,
   TData = unknown,
   TError = DefaultError,
@@ -39,7 +39,7 @@ export const useMutationStuff = <
   TContext = unknown,
   TResult = MutationState,
 >(
-  options: MutationStuffOptions<
+  options: MutationStateOptions<
     TTMutationKey,
     TData,
     TError,
@@ -49,14 +49,14 @@ export const useMutationStuff = <
   >,
   queryClient?: QueryClient,
 ) => {
-  return useMutationState<TResult>(
+  return useDefaultMutationState<TResult>(
     {
       ...options,
       filters: {
         ...options.filters,
         exact: true,
       },
-    } as MutationStateOptions<TResult>,
+    } as DefaultMutationStateOptions<TResult>,
     queryClient,
   );
 };
