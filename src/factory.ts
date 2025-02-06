@@ -156,16 +156,41 @@ export class QueryStuffUndefinedInput<
     return fn(new QueryStuffUndefinedInput(this._ctx, this._middlewares));
   }
   use<TOverride extends UnknownRecord>(
+    fn: MiddlewareFn<void, TOverride>,
+  ): QueryStuffUndefinedInput<
+    TContext,
+    [...TOverrides, TOverride],
+    [...TMiddlewares, MiddlewareFn<TContext, TOverride>]
+  >;
+  use<TOverride extends UnknownRecord>(
     fn: MiddlewareFn<CtxOpts<TContext, TOverrides>["ctx"], TOverride>,
-  ) {
+  ): QueryStuffUndefinedInput<
+    TContext,
+    [...TOverrides, TOverride],
+    [
+      ...TMiddlewares,
+      MiddlewareFn<CtxOpts<TContext, TOverrides>["ctx"], TOverride>,
+    ]
+  >;
+  use<
+    TOverride extends UnknownRecord,
+    U extends void | CtxOpts<TContext, TOverrides>["ctx"],
+  >(
+    fn: MiddlewareFn<U, TOverride>,
+  ): QueryStuffUndefinedInput<
+    TContext,
+    [...TOverrides, TOverride],
+    [...TMiddlewares, MiddlewareFn<U extends void ? TContext : U, TOverride>]
+  > {
+    const middlewares = [...this._middlewares, fn] as [
+      ...TMiddlewares,
+      MiddlewareFn<U extends void ? TContext : U, TOverride>,
+    ];
     return new QueryStuffUndefinedInput<
       TContext,
       [...TOverrides, TOverride],
-      [
-        ...TMiddlewares,
-        MiddlewareFn<CtxOpts<TContext, TOverrides>["ctx"], TOverride>,
-      ]
-    >(this._ctx, [...this._middlewares, fn]);
+      [...TMiddlewares, MiddlewareFn<U extends void ? TContext : U, TOverride>]
+    >(this._ctx, middlewares);
   }
   query<TData = unknown, TError = DefaultError>(
     queryFn: (opts: CtxOpts<TContext, TOverrides>) => TData,
