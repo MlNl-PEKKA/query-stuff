@@ -1,15 +1,19 @@
-export const queryNodeDefinedInput = Symbol();
+export const queryNodeDefinedInput = "~queryNodeDefinedInput";
 
-export const queryNodeUndefinedInput = Symbol();
+export const queryNodeUndefinedInput = "~queryNodeUndefinedInput";
 
-export const mutationNode = Symbol();
+export const mutationNode = "~mutationNode";
 
-export const dataTagVariablesSymbol = Symbol();
+export const mutationData = "~mutationData";
 
-export const dataTagContextSymbol = Symbol();
+export const mutationError = "~mutationError";
 
-export const inputSymbol = Symbol();
+export const mutationVariables = "~mutationVariables";
 
-export const middlewareData = Symbol();
+export const mutationContext = "~mutationContext";
 
-export const middlewareCtx = Symbol();
+export const inputSymbol = "~inputSymbol";
+
+export const middlewareData = "~middlewareData";
+
+export const middlewareCtx = "~middlewareCtx";

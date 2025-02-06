@@ -55,19 +55,19 @@ describe("utils", () => {
     });
     it("returns true for nodes and asserts target type as Node Object", () => {
       [
-        nodes(),
-        nodes().a(),
-        nodes().b(),
-        nodes().e({ e: 5 }),
-        nodes().f(),
-        nodes().g().a(),
-        nodes().g().b(),
-        nodes().g().e({ e: 5 }),
-        nodes().g().f(),
-        nodes().h({ h: 8 }).a(),
-        nodes().h({ h: 8 }).b(),
-        nodes().h({ h: 8 }).e({ e: 5 }),
-        nodes().h({ h: 8 }).f(),
+        nodes,
+        nodes.a(),
+        nodes.b(),
+        nodes.e({ e: 5 }),
+        nodes.f(),
+        nodes.g.a(),
+        nodes.g.b(),
+        nodes.g.e({ e: 5 }),
+        nodes.g.f(),
+        nodes.h({ h: 8 }).a(),
+        nodes.h({ h: 8 }).b(),
+        nodes.h({ h: 8 }).e({ e: 5 }),
+        nodes.h({ h: 8 }).f(),
       ].forEach((target: unknown) => {
         const value = isNodeObject(target);
         expect(value).toBe(true);
@@ -91,7 +91,7 @@ describe("utils", () => {
       if (value) expectTypeOf(target).toEqualTypeOf<QQueryOptionsOut>();
     });
     it("returns true for QueryNodeUndefinedInput and asserts target type as QQueryOptionsOut", () => {
-      [nodes().a(), nodes().g().a(), nodes().h({ h: 8 }).a()].forEach(
+      [nodes.a(), nodes.g.a(), nodes.h({ h: 8 }).a()].forEach(
         (target: unknown) => {
           const value = isQueryNodeUndefinedInput(target);
           expect(value).toBe(true);
@@ -117,9 +117,9 @@ describe("utils", () => {
     });
     it("returns true for QueryNodeDefinedInput and asserts target type as QQueryOptionsOut", () => {
       [
-        nodes().e({ e: 5 }),
-        nodes().g().e({ e: 5 }),
-        nodes().h({ h: 8 }).e({ e: 5 }),
+        nodes.e({ e: 5 }),
+        nodes.g.e({ e: 5 }),
+        nodes.h({ h: 8 }).e({ e: 5 }),
       ].forEach((target: unknown) => {
         const value = isQueryNodeDefinedInput(target);
         expect(value).toBe(true);
@@ -150,12 +150,12 @@ describe("utils", () => {
     });
     it("returns true for QueryNode and asserts target type as QQueryOptionsOut", () => {
       [
-        nodes().a(),
-        nodes().g().a(),
-        nodes().h({ h: 8 }).a(),
-        nodes().e({ e: 5 }),
-        nodes().g().e({ e: 5 }),
-        nodes().h({ h: 8 }).e({ e: 5 }),
+        nodes.a(),
+        nodes.g.a(),
+        nodes.h({ h: 8 }).a(),
+        nodes.e({ e: 5 }),
+        nodes.g.e({ e: 5 }),
+        nodes.h({ h: 8 }).e({ e: 5 }),
       ].forEach((target: unknown) => {
         const value = isQueryNode(target);
         expect(value).toBe(true);
@@ -181,7 +181,7 @@ describe("utils", () => {
       }
     });
     it("returns true for [mutationNode] and asserts type QQueryOptionsOut, for objects with the [mutationNode] symbol", () => {
-      [nodes().b(), nodes().g().b(), nodes().h({ h: 8 }).b()].forEach(
+      [nodes.b(), nodes.g.b(), nodes.h({ h: 8 }).b()].forEach(
         (target: unknown) => {
           const value = isMutationNode(target);
           expect(value).toBe(true);
@@ -214,19 +214,19 @@ describe("utils", () => {
     });
     it("returns true for NodeFunctions and asserts target type as node function i.e., (...input: unknown[]) => Node | QAnyQueryOptionsOut | QAnyMutationOptionsOut", () => {
       [
-        nodes().a,
-        nodes().b,
-        nodes().e,
-        nodes().f,
-        nodes().g().a,
-        nodes().g().b,
-        nodes().g().e,
-        nodes().g().f,
-        nodes().h,
-        nodes().h({ h: 8 }).a,
-        nodes().h({ h: 8 }).b,
-        nodes().h({ h: 8 }).e,
-        nodes().h({ h: 8 }).f,
+        nodes.a,
+        nodes.b,
+        nodes.e,
+        nodes.f,
+        nodes.g.a,
+        nodes.g.b,
+        nodes.g.e,
+        nodes.g.f,
+        nodes.h,
+        nodes.h({ h: 8 }).a,
+        nodes.h({ h: 8 }).b,
+        nodes.h({ h: 8 }).e,
+        nodes.h({ h: 8 }).f,
       ].forEach((target: unknown) => {
         const value = isNodeFunction(target);
         expect(value).toBe(true);
@@ -293,32 +293,32 @@ describe("utils", () => {
     });
     it("returns true for Nodes and NodeFunctions and asserts target type as Node", () => {
       [
-        nodes(),
-        nodes().a(),
-        nodes().b(),
-        nodes().e({ e: 5 }),
-        nodes().f(),
-        nodes().g().a(),
-        nodes().g().b(),
-        nodes().g().e({ e: 5 }),
-        nodes().g().f(),
-        nodes().h({ h: 8 }).a(),
-        nodes().h({ h: 8 }).b(),
-        nodes().h({ h: 8 }).e({ e: 5 }),
-        nodes().h({ h: 8 }).f(),
-        nodes().a,
-        nodes().b,
-        nodes().e,
-        nodes().f,
-        nodes().g().a,
-        nodes().g().b,
-        nodes().g().e,
-        nodes().g().f,
-        nodes().h,
-        nodes().h({ h: 8 }).a,
-        nodes().h({ h: 8 }).b,
-        nodes().h({ h: 8 }).e,
-        nodes().h({ h: 8 }).f,
+        nodes,
+        nodes.a(),
+        nodes.b(),
+        nodes.e({ e: 5 }),
+        nodes.f(),
+        nodes.g.a(),
+        nodes.g.b(),
+        nodes.g.e({ e: 5 }),
+        nodes.g.f(),
+        nodes.h({ h: 8 }).a(),
+        nodes.h({ h: 8 }).b(),
+        nodes.h({ h: 8 }).e({ e: 5 }),
+        nodes.h({ h: 8 }).f(),
+        nodes.a,
+        nodes.b,
+        nodes.e,
+        nodes.f,
+        nodes.g.a,
+        nodes.g.b,
+        nodes.g.e,
+        nodes.g.f,
+        nodes.h,
+        nodes.h({ h: 8 }).a,
+        nodes.h({ h: 8 }).b,
+        nodes.h({ h: 8 }).e,
+        nodes.h({ h: 8 }).f,
       ].forEach(
         (
           target:

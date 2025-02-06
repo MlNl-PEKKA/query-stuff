@@ -28,62 +28,30 @@ import type {
   QUnusedSkipTokenOptionsIn,
   QUnusedSkipTokenOptionsOut,
   UnknownRecord,
-} from "./types.ts";
+  CtxOpts,
+  Overrides,
+  Middlewares,
+  AnyMiddlewares,
+  Opts,
+  MiddlewareFn,
+} from "./types.js";
 import type { StandardSchemaV1 } from "@standard-schema/spec";
 import { mutationOptions } from "./utils.js";
 
-type MiddlewareResponse<TContext> = {
-  [middlewareData]: {
-    opts: any;
-    run: (input: any) => any;
-  };
-  [middlewareCtx]: TContext;
-};
-
-type MiddlewareFn<TContext, TOverride> = (opts: {
-  ctx: TContext;
-  next: <TContextIn>(opts: {
-    ctx: TContextIn;
-  }) => Promise<MiddlewareResponse<TContextIn>>;
-}) => Promise<MiddlewareResponse<TOverride>>;
-
-type AnyMiddlewareFn = MiddlewareFn<any, any>;
-
-type CtxOpts<TContext = void, TOverrides extends Overrides = []> = {
-  ctx: Merge<TContext, OverridesRecord<TOverrides>>;
-};
-
-export type Overrides = readonly UnknownRecord[];
-
-type OverridesRecord<TOverrides extends Overrides> = TOverrides extends [
-  infer Head,
-  ...infer Tail,
-]
-  ? Tail extends Overrides
-    ? Merge<Head, OverridesRecord<Tail>>
-    : never
-  : void;
-
-export type Middlewares<
+export const factory = <
+  T extends Node,
   TContext = void,
   TOverrides extends Overrides = [],
-> = TOverrides extends [infer Head, ...infer Tail]
-  ? Tail extends Overrides
-    ? [MiddlewareFn<TContext, Head>, ...Middlewares<TContext, Tail>]
-    : never
-  : [];
-
-export type AnyMiddlewares = AnyMiddlewareFn[];
-
-type Opts<
-  TContext = void,
-  TOverrides extends Overrides = [],
-  TSchema = void,
-> = CtxOpts<TContext, TOverrides> & {
-  input: TSchema;
+  TMiddlewares extends AnyMiddlewares = Middlewares<TOverrides>,
+>(
+  fn: (q: QueryStuffUndefinedInput<TContext, TOverrides, TMiddlewares>) => T,
+): ProxyNode<T> => {
+  return createProxyNode(
+    fn(new QueryStuffUndefinedInput<TContext, TOverrides, TMiddlewares>()),
+  );
 };
 
-class QueryStuffRoot<
+export class QueryStuffRoot<
   TContext = void,
   TOverrides extends Overrides = [],
   TMiddlewares extends AnyMiddlewares = Middlewares<TOverrides>,
@@ -161,71 +129,38 @@ class QueryStuffRoot<
   }
 }
 
-export const factory = <
-  T extends Node,
-  TContext = void,
-  TOverrides extends Overrides = [],
-  TMiddlewares extends AnyMiddlewares = Middlewares<TOverrides>,
->(
-  fn: (q: QueryStuffUndefinedInput<TContext, TOverrides, TMiddlewares>) => T,
-): ProxyNode<T> => {
-  return createProxyNode(
-    fn(new QueryStuffUndefinedInput<TContext, TOverrides, TMiddlewares>()),
-  );
-};
-
 export class QueryStuffUndefinedInput<
   TContext = void,
   TOverrides extends Overrides = [],
   TMiddlewares extends AnyMiddlewares = Middlewares<TOverrides>,
 > extends QueryStuffRoot<TContext, TOverrides, TMiddlewares> {
-  module<
-    TContextIn extends Prettify<
-      UnknownRecord & {
-        [K in keyof Merge<TContext, OverridesRecord<TOverrides>>]?: never;
-      }
-    > | void = void,
-  >() {
-    return <T extends Node>(
-        fn: (
-          q: QueryStuffUndefinedInput<
-            Merge<TContext, NoInfer<TContextIn>>,
-            TOverrides,
-            TMiddlewares
-          >,
-        ) => T,
-      ) =>
-      (ctx: NoInfer<TContextIn>) =>
-        fn(
-          new QueryStuffUndefinedInput(
-            {
-              ...this._ctx,
-              ...ctx,
-            },
-            this._middlewares,
-          ),
-        );
-  }
-  use<
-    TOverride extends Prettify<
-      UnknownRecord & {
-        [K in keyof TContext]?: never;
-      }
-    >,
-  >(fn: MiddlewareFn<TContext, TOverride>) {
+  use<TOverride extends UnknownRecord>(fn: MiddlewareFn<TContext, TOverride>) {
     return new QueryStuffUndefinedInput<
       TContext,
       [...TOverrides, TOverride],
       [...TMiddlewares, MiddlewareFn<TContext, TOverride>]
     >(this._ctx, [...this._middlewares, fn]);
   }
-  input<TSchema extends StandardSchemaV1>(schema: TSchema) {
-    return new QueryStuffDefinedInput<
+  input<TSchema extends StandardSchemaV1<UnknownRecord>>(
+    schema: TSchema,
+  ): QueryStuffDefinedRecordInput<TSchema, TContext, TOverrides, TMiddlewares>;
+  input<TSchema extends StandardSchemaV1>(
+    schema: TSchema,
+  ): QueryStuffDefinedInput<TSchema, TContext, TOverrides, TMiddlewares>;
+  input<TSchema extends StandardSchemaV1<UnknownRecord>>(
+    schema: TSchema,
+  ): QueryStuffDefinedRecordInput<TSchema, TContext, TOverrides, TMiddlewares> {
+    return new QueryStuffDefinedRecordInput<
       TSchema,
       TContext,
       TOverrides,
       TMiddlewares
     >(schema, this._ctx, this._middlewares);
+  }
+  module<T extends Node>(
+    fn: (q: QueryStuffUndefinedInput<TContext, TOverrides, TMiddlewares>) => T,
+  ) {
+    return fn(new QueryStuffUndefinedInput(this._ctx, this._middlewares));
   }
   query<TData = unknown, TError = DefaultError>(
     queryFn: (opts: CtxOpts<TContext, TOverrides>) => TData,
@@ -343,13 +278,15 @@ export class QueryStuffDefinedInput<
     StandardSchemaV1.InferInput<TSchema> = StandardSchemaV1.InferInput<TSchema>,
 > extends QueryStuffRoot<TContext, TOverrides, TMiddlewares> {
   constructor(
-    private _schema: TSchema,
+    protected _schema: TSchema,
     protected _ctx: TContext = {} as TContext,
     protected _middlewares: TMiddlewares = [] as unknown as TMiddlewares,
   ) {
     super(_ctx, _middlewares);
   }
-  private validate<T, U extends unknown[]>(fn: (...args: [TInput, ...U]) => T) {
+  protected validate<T, U extends unknown[]>(
+    fn: (...args: [TInput, ...U]) => T,
+  ) {
     return (input: TInput, ...rest: U) => {
       const result = this._schema["~standard"].validate(input);
       if (result instanceof Promise) {
@@ -473,5 +410,42 @@ export class QueryStuffDefinedInput<
       }),
       [mutationNode]: {},
     });
+  }
+}
+
+export class QueryStuffDefinedRecordInput<
+  TSchema extends StandardSchemaV1<UnknownRecord>,
+  TContext = void,
+  TOverrides extends Overrides = [],
+  TMiddlewares extends AnyMiddlewares = Middlewares<TOverrides>,
+  TInput extends
+    StandardSchemaV1.InferInput<TSchema> = StandardSchemaV1.InferInput<TSchema>,
+> extends QueryStuffDefinedInput<
+  TSchema,
+  TContext,
+  TOverrides,
+  TMiddlewares,
+  TInput
+> {
+  module<T extends Node>(
+    fn: (
+      q: QueryStuffUndefinedInput<
+        Merge<TContext, TInput>,
+        TOverrides,
+        TMiddlewares
+      >,
+    ) => T,
+  ) {
+    return this.validate((input: TInput) =>
+      fn(
+        new QueryStuffUndefinedInput(
+          {
+            ...this._ctx,
+            ...input,
+          },
+          this._middlewares,
+        ),
+      ),
+    );
   }
 }
