@@ -90,11 +90,11 @@ export const NODES = new QueryStuffUndefinedInput().module((q) => ({
   inputMutation: q
     .input(z.object({ inputMutation: z.boolean() }))
     .mutation(async (opts) => ({ ...opts.input, mutation: true })),
-  contextQuery: q
-    .use(async ({ next }) => await next({ ctx: { contextQuery: true } }))
+  middlewareQuery: q
+    .use(async ({ next }) => await next({ ctx: { middlewareQuery: true } }))
     .query((opts) => ({ ...opts.ctx, query: true })),
-  contextMutation: q
-    .use(async ({ next }) => await next({ ctx: { contextMutation: true } }))
+  middlewareMutation: q
+    .use(async ({ next }) => await next({ ctx: { middlewareMutation: true } }))
     .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
   module: q.input(z.object({ module: z.boolean() })).module((q) => ({
     query: q.query((opts) => ({ ...opts.ctx, query: true })),
@@ -109,11 +109,13 @@ export const NODES = new QueryStuffUndefinedInput().module((q) => ({
         ...opts.input,
         mutation: true,
       })),
-    contextQuery: q
-      .use(async ({ next }) => await next({ ctx: { contextQuery: true } }))
+    middlewareQuery: q
+      .use(async ({ next }) => await next({ ctx: { middlewareQuery: true } }))
       .query((opts) => ({ ...opts.ctx, query: true })),
-    contextMutation: q
-      .use(async ({ next }) => await next({ ctx: { contextMutation: true } }))
+    middlewareMutation: q
+      .use(
+        async ({ next }) => await next({ ctx: { middlewareMutation: true } }),
+      )
       .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
     MODULE: q.input(z.object({ MODULE: z.boolean() })).module((q) => ({
       query: q.query((opts) => ({ ...opts.ctx, query: true })),
@@ -128,14 +130,18 @@ export const NODES = new QueryStuffUndefinedInput().module((q) => ({
           ...opts.input,
           mutation: true,
         })),
-      contextQuery: q
-        .use(async ({ next }) => await next({ ctx: { contextQuery: true } }))
+      middlewareQuery: q
+        .use(async ({ next }) => await next({ ctx: { middlewareQuery: true } }))
         .query((opts) => ({ ...opts.ctx, query: true })),
-      contextMutation: q
-        .use(async ({ next }) => await next({ ctx: { contextMutation: true } }))
+      middlewareMutation: q
+        .use(
+          async ({ next }) => await next({ ctx: { middlewareMutation: true } }),
+        )
         .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
-      context: q
-        .use(async ({ next }) => await next({ ctx: { context: true } }))
+      middlewareModule: q
+        .use(
+          async ({ next }) => await next({ ctx: { middlewareModule: true } }),
+        )
         .module((q) => ({
           query: q.query((opts) => ({ ...opts.ctx, query: true })),
           mutation: q.mutation(async (opts) => ({
@@ -152,19 +158,23 @@ export const NODES = new QueryStuffUndefinedInput().module((q) => ({
               ...opts.input,
               mutation: true,
             })),
-          contextQuery: q
-            .use(
-              async ({ next }) => await next({ ctx: { contextQuery: true } }),
-            )
-            .query((opts) => ({ ...opts.ctx, query: true })),
-          contextMutation: q
+          middlewareQuery: q
             .use(
               async ({ next }) =>
-                await next({ ctx: { contextMutation: true } }),
+                await next({ ctx: { middlewareQuery: true } }),
+            )
+            .query((opts) => ({ ...opts.ctx, query: true })),
+          middlewareMutation: q
+            .use(
+              async ({ next }) =>
+                await next({ ctx: { middlewareMutation: true } }),
             )
             .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
-          CONTEXT: q
-            .use(async ({ next }) => await next({ ctx: { CONTEXT: true } }))
+          MIDDLEWARE_MODULE: q
+            .use(
+              async ({ next }) =>
+                await next({ ctx: { MIDDLEWARE_MODULE: true } }),
+            )
             .module((q) => ({
               query: q.query((opts) => ({ ...opts.ctx, query: true })),
               mutation: q.mutation(async (opts) => ({
@@ -181,23 +191,23 @@ export const NODES = new QueryStuffUndefinedInput().module((q) => ({
                   ...opts.input,
                   mutation: true,
                 })),
-              contextQuery: q
+              middlewareQuery: q
                 .use(
                   async ({ next }) =>
-                    await next({ ctx: { contextQuery: true } }),
+                    await next({ ctx: { middlewareQuery: true } }),
                 )
                 .query((opts) => ({ ...opts.ctx, query: true })),
-              contextMutation: q
+              middlewareMutation: q
                 .use(
                   async ({ next }) =>
-                    await next({ ctx: { contextMutation: true } }),
+                    await next({ ctx: { middlewareMutation: true } }),
                 )
                 .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
             })),
         })),
     })),
-    context: q
-      .use(async ({ next }) => await next({ ctx: { context: true } }))
+    middlewareModule: q
+      .use(async ({ next }) => await next({ ctx: { middlewareModule: true } }))
       .module((q) => ({
         query: q.query((opts) => ({ ...opts.ctx, query: true })),
         mutation: q.mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
@@ -211,16 +221,22 @@ export const NODES = new QueryStuffUndefinedInput().module((q) => ({
             ...opts.input,
             mutation: true,
           })),
-        contextQuery: q
-          .use(async ({ next }) => await next({ ctx: { contextQuery: true } }))
-          .query((opts) => ({ ...opts.ctx, query: true })),
-        contextMutation: q
+        middlewareQuery: q
           .use(
-            async ({ next }) => await next({ ctx: { contextMutation: true } }),
+            async ({ next }) => await next({ ctx: { middlewareQuery: true } }),
+          )
+          .query((opts) => ({ ...opts.ctx, query: true })),
+        middlewareMutation: q
+          .use(
+            async ({ next }) =>
+              await next({ ctx: { middlewareMutation: true } }),
           )
           .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
-        CONTEXT: q
-          .use(async ({ next }) => await next({ ctx: { CONTEXT: true } }))
+        MIDDLEWARE_MODULE: q
+          .use(
+            async ({ next }) =>
+              await next({ ctx: { MIDDLEWARE_MODULE: true } }),
+          )
           .module((q) => ({
             query: q.query((opts) => ({ ...opts.ctx, query: true })),
             mutation: q.mutation(async (opts) => ({
@@ -237,22 +253,23 @@ export const NODES = new QueryStuffUndefinedInput().module((q) => ({
                 ...opts.input,
                 mutation: true,
               })),
-            contextQuery: q
-              .use(
-                async ({ next }) => await next({ ctx: { contextQuery: true } }),
-              )
-              .query((opts) => ({ ...opts.ctx, query: true })),
-            contextMutation: q
+            middlewareQuery: q
               .use(
                 async ({ next }) =>
-                  await next({ ctx: { contextMutation: true } }),
+                  await next({ ctx: { middlewareQuery: true } }),
+              )
+              .query((opts) => ({ ...opts.ctx, query: true })),
+            middlewareMutation: q
+              .use(
+                async ({ next }) =>
+                  await next({ ctx: { middlewareMutation: true } }),
               )
               .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
           })),
       })),
   })),
-  context: q
-    .use(async ({ next }) => await next({ ctx: { context: true } }))
+  middlewareModule: q
+    .use(async ({ next }) => await next({ ctx: { middlewareModule: true } }))
     .module((q) => ({
       query: q.query((opts) => ({ ...opts.ctx, query: true })),
       mutation: q.mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
@@ -266,14 +283,18 @@ export const NODES = new QueryStuffUndefinedInput().module((q) => ({
           ...opts.input,
           mutation: true,
         })),
-      contextQuery: q
-        .use(async ({ next }) => await next({ ctx: { contextQuery: true } }))
+      middlewareQuery: q
+        .use(async ({ next }) => await next({ ctx: { middlewareQuery: true } }))
         .query((opts) => ({ ...opts.ctx, query: true })),
-      contextMutation: q
-        .use(async ({ next }) => await next({ ctx: { contextMutation: true } }))
+      middlewareMutation: q
+        .use(
+          async ({ next }) => await next({ ctx: { middlewareMutation: true } }),
+        )
         .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
-      CONTEXT: q
-        .use(async ({ next }) => await next({ ctx: { CONTEXT: true } }))
+      MIDDLEWARE_MODULE: q
+        .use(
+          async ({ next }) => await next({ ctx: { MIDDLEWARE_MODULE: true } }),
+        )
         .module((q) => ({
           query: q.query((opts) => ({ ...opts.ctx, query: true })),
           mutation: q.mutation(async (opts) => ({
@@ -290,15 +311,16 @@ export const NODES = new QueryStuffUndefinedInput().module((q) => ({
               ...opts.input,
               mutation: true,
             })),
-          contextQuery: q
-            .use(
-              async ({ next }) => await next({ ctx: { contextQuery: true } }),
-            )
-            .query((opts) => ({ ...opts.ctx, query: true })),
-          contextMutation: q
+          middlewareQuery: q
             .use(
               async ({ next }) =>
-                await next({ ctx: { contextMutation: true } }),
+                await next({ ctx: { middlewareQuery: true } }),
+            )
+            .query((opts) => ({ ...opts.ctx, query: true })),
+          middlewareMutation: q
+            .use(
+              async ({ next }) =>
+                await next({ ctx: { middlewareMutation: true } }),
             )
             .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
         })),
@@ -341,73 +363,85 @@ export const queries = [
     },
   ],
   [
-    QUERY_FACTORY.contextQuery,
+    QUERY_FACTORY.middlewareQuery,
     {
-      name: "contextQuery",
-      response: { query: true, contextQuery: true },
-      queryKey: ["contextQuery"],
+      name: "middlewareQuery",
+      response: { query: true, middlewareQuery: true },
+      queryKey: ["middlewareQuery"],
     },
   ],
   [
-    QUERY_FACTORY.context.query,
+    QUERY_FACTORY.middlewareModule.query,
     {
-      name: "context.query",
-      response: { context: true, query: true },
-      queryKey: ["context", "query"],
+      name: "middlewareModule.query",
+      response: { middlewareModule: true, query: true },
+      queryKey: ["middlewareModule", "query"],
     },
   ],
   [
-    () => QUERY_FACTORY.context.inputQuery({ inputQuery: true }),
+    () => QUERY_FACTORY.middlewareModule.inputQuery({ inputQuery: true }),
     {
-      name: "context.inputQuery",
-      response: { context: true, inputQuery: true, query: true },
+      name: "middlewareModule.inputQuery",
+      response: { middlewareModule: true, inputQuery: true, query: true },
       queryKey: [
-        "context",
+        "middlewareModule",
         "inputQuery",
         { [inputSymbol]: { inputQuery: true } },
       ],
     },
   ],
   [
-    QUERY_FACTORY.context.contextQuery,
+    QUERY_FACTORY.middlewareModule.middlewareQuery,
     {
-      name: "context.contextQuery",
-      response: { context: true, query: true, contextQuery: true },
-      queryKey: ["context", "contextQuery"],
+      name: "middlewareModule.middlewareQuery",
+      response: { middlewareModule: true, query: true, middlewareQuery: true },
+      queryKey: ["middlewareModule", "middlewareQuery"],
     },
   ],
   [
-    QUERY_FACTORY.context.CONTEXT.query,
+    QUERY_FACTORY.middlewareModule.MIDDLEWARE_MODULE.query,
     {
-      name: "context.CONTEXT.query",
-      response: { context: true, CONTEXT: true, query: true },
-      queryKey: ["context", "CONTEXT", "query"],
-    },
-  ],
-  [
-    () => QUERY_FACTORY.context.CONTEXT.inputQuery({ inputQuery: true }),
-    {
-      name: "context.CONTEXT.inputQuery",
-      response: { context: true, CONTEXT: true, inputQuery: true, query: true },
-      queryKey: [
-        "context",
-        "CONTEXT",
-        "inputQuery",
-        { [inputSymbol]: { inputQuery: true } },
-      ],
-    },
-  ],
-  [
-    QUERY_FACTORY.context.CONTEXT.contextQuery,
-    {
-      name: "context.CONTEXT.contextQuery",
+      name: "middlewareModule.MIDDLEWARE_MODULE.query",
       response: {
-        context: true,
-        CONTEXT: true,
+        middlewareModule: true,
+        MIDDLEWARE_MODULE: true,
         query: true,
-        contextQuery: true,
       },
-      queryKey: ["context", "CONTEXT", "contextQuery"],
+      queryKey: ["middlewareModule", "MIDDLEWARE_MODULE", "query"],
+    },
+  ],
+  [
+    () =>
+      QUERY_FACTORY.middlewareModule.MIDDLEWARE_MODULE.inputQuery({
+        inputQuery: true,
+      }),
+    {
+      name: "middlewareModule.MIDDLEWARE_MODULE.inputQuery",
+      response: {
+        middlewareModule: true,
+        MIDDLEWARE_MODULE: true,
+        inputQuery: true,
+        query: true,
+      },
+      queryKey: [
+        "middlewareModule",
+        "MIDDLEWARE_MODULE",
+        "inputQuery",
+        { [inputSymbol]: { inputQuery: true } },
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.middlewareModule.MIDDLEWARE_MODULE.middlewareQuery,
+    {
+      name: "middlewareModule.MIDDLEWARE_MODULE.middlewareQuery",
+      response: {
+        middlewareModule: true,
+        MIDDLEWARE_MODULE: true,
+        query: true,
+        middlewareQuery: true,
+      },
+      queryKey: ["middlewareModule", "MIDDLEWARE_MODULE", "middlewareQuery"],
     },
   ],
   [
@@ -433,100 +467,125 @@ export const queries = [
     },
   ],
   [
-    QUERY_FACTORY.module({ module: true }).contextQuery,
+    QUERY_FACTORY.module({ module: true }).middlewareQuery,
     {
-      name: "module.contextQuery",
-      response: { module: true, query: true, contextQuery: true },
-      queryKey: ["module", { module: true }, "contextQuery"],
+      name: "module.middlewareQuery",
+      response: { module: true, query: true, middlewareQuery: true },
+      queryKey: ["module", { module: true }, "middlewareQuery"],
     },
   ],
   [
-    QUERY_FACTORY.module({ module: true }).context.query,
+    QUERY_FACTORY.module({ module: true }).middlewareModule.query,
     {
-      name: "module.context.query",
-      response: { module: true, context: true, query: true },
-      queryKey: ["module", { module: true }, "context", "query"],
+      name: "module.middlewareModule.query",
+      response: { module: true, middlewareModule: true, query: true },
+      queryKey: ["module", { module: true }, "middlewareModule", "query"],
     },
   ],
   [
     () =>
-      QUERY_FACTORY.module({ module: true }).context.inputQuery({
+      QUERY_FACTORY.module({ module: true }).middlewareModule.inputQuery({
         inputQuery: true,
       }),
     {
-      name: "module.context.inputQuery",
-      response: { module: true, context: true, inputQuery: true, query: true },
+      name: "module.middlewareModule.inputQuery",
+      response: {
+        module: true,
+        middlewareModule: true,
+        inputQuery: true,
+        query: true,
+      },
       queryKey: [
         "module",
         { module: true },
-        "context",
+        "middlewareModule",
         "inputQuery",
         { [inputSymbol]: { inputQuery: true } },
       ],
     },
   ],
   [
-    QUERY_FACTORY.module({ module: true }).context.contextQuery,
+    QUERY_FACTORY.module({ module: true }).middlewareModule.middlewareQuery,
     {
-      name: "module.context.contextQuery",
+      name: "module.middlewareModule.middlewareQuery",
       response: {
         module: true,
-        context: true,
+        middlewareModule: true,
         query: true,
-        contextQuery: true,
+        middlewareQuery: true,
       },
-      queryKey: ["module", { module: true }, "context", "contextQuery"],
+      queryKey: [
+        "module",
+        { module: true },
+        "middlewareModule",
+        "middlewareQuery",
+      ],
     },
   ],
   [
-    QUERY_FACTORY.module({ module: true }).context.CONTEXT.query,
+    QUERY_FACTORY.module({ module: true }).middlewareModule.MIDDLEWARE_MODULE
+      .query,
     {
-      name: "module.context.CONTEXT.query",
-      response: { module: true, context: true, CONTEXT: true, query: true },
-      queryKey: ["module", { module: true }, "context", "CONTEXT", "query"],
+      name: "module.middlewareModule.MIDDLEWARE_MODULE.query",
+      response: {
+        module: true,
+        middlewareModule: true,
+        MIDDLEWARE_MODULE: true,
+        query: true,
+      },
+      queryKey: [
+        "module",
+        { module: true },
+        "middlewareModule",
+        "MIDDLEWARE_MODULE",
+        "query",
+      ],
     },
   ],
   [
     () =>
-      QUERY_FACTORY.module({ module: true }).context.CONTEXT.inputQuery({
+      QUERY_FACTORY.module({
+        module: true,
+      }).middlewareModule.MIDDLEWARE_MODULE.inputQuery({
         inputQuery: true,
       }),
     {
-      name: "module.context.CONTEXT.inputQuery",
+      name: "module.middlewareModule.MIDDLEWARE_MODULE.inputQuery",
       response: {
         module: true,
-        context: true,
-        CONTEXT: true,
+        middlewareModule: true,
+        MIDDLEWARE_MODULE: true,
         inputQuery: true,
         query: true,
       },
       queryKey: [
         "module",
         { module: true },
-        "context",
-        "CONTEXT",
+        "middlewareModule",
+        "MIDDLEWARE_MODULE",
         "inputQuery",
         { [inputSymbol]: { inputQuery: true } },
       ],
     },
   ],
   [
-    QUERY_FACTORY.module({ module: true }).context.CONTEXT.contextQuery,
+    QUERY_FACTORY.module({ module: true }).middlewareModule.MIDDLEWARE_MODULE
+      .middlewareQuery,
     {
-      name: "module.context.CONTEXT.contextQuery",
+      name: "module.middlewareModule.MIDDLEWARE_MODULE.middlewareQuery",
       response: {
         module: true,
-        context: true,
-        CONTEXT: true,
+        middlewareModule: true,
+        MIDDLEWARE_MODULE: true,
         query: true,
-        contextQuery: true,
+        middlewareQuery: true,
       },
       queryKey: [
         "module",
         { module: true },
-        "context",
-        "CONTEXT",
-        "contextQuery",
+        "middlewareModule",
+        "MIDDLEWARE_MODULE",
+        "middlewareQuery",
       ],
     },
   ],
@@ -573,33 +632,33 @@ export const queries = [
   ],
   [
     QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true })
-      .contextQuery,
+      .middlewareQuery,
     {
-      name: "module.MODULE.contextQuery",
+      name: "module.MODULE.middlewareQuery",
       response: {
         MODULE: true,
         module: true,
         query: true,
-        contextQuery: true,
+        middlewareQuery: true,
       },
       queryKey: [
         "module",
         { module: true },
         "MODULE",
         { MODULE: true },
-        "contextQuery",
+        "middlewareQuery",
       ],
     },
   ],
   [
-    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true }).context
-      .query,
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true })
+      .middlewareModule.query,
     {
-      name: "module.MODULE.context.query",
+      name: "module.MODULE.middlewareModule.query",
       response: {
         MODULE: true,
         module: true,
-        context: true,
+        middlewareModule: true,
         query: true,
       },
       queryKey: [
@@ -607,7 +666,7 @@ export const queries = [
         { module: true },
         "MODULE",
         { MODULE: true },
-        "context",
+        "middlewareModule",
         "query",
       ],
     },
@@ -616,13 +675,13 @@ export const queries = [
     () =>
       QUERY_FACTORY.module({ module: true })
         .MODULE({ MODULE: true })
-        .context.inputQuery({ inputQuery: true }),
+        .middlewareModule.inputQuery({ inputQuery: true }),
     {
-      name: "module.MODULE.context.inputQuery",
+      name: "module.MODULE.middlewareModule.inputQuery",
       response: {
         MODULE: true,
         module: true,
-        context: true,
+        middlewareModule: true,
         inputQuery: true,
         query: true,
       },
@@ -631,44 +690,44 @@ export const queries = [
         { module: true },
         "MODULE",
         { MODULE: true },
-        "context",
+        "middlewareModule",
         "inputQuery",
         { [inputSymbol]: { inputQuery: true } },
       ],
     },
   ],
   [
-    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true }).context
-      .contextQuery,
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true })
+      .middlewareModule.middlewareQuery,
     {
-      name: "module.MODULE.context.contextQuery",
+      name: "module.MODULE.middlewareModule.middlewareQuery",
       response: {
         MODULE: true,
         module: true,
-        context: true,
+        middlewareModule: true,
         query: true,
-        contextQuery: true,
+        middlewareQuery: true,
       },
       queryKey: [
         "module",
         { module: true },
         "MODULE",
         { MODULE: true },
-        "context",
-        "contextQuery",
+        "middlewareModule",
+        "middlewareQuery",
       ],
     },
   ],
   [
-    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true }).context
-      .CONTEXT.query,
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true })
+      .middlewareModule.MIDDLEWARE_MODULE.query,
     {
-      name: "module.MODULE.context.CONTEXT.query",
+      name: "module.MODULE.middlewareModule.MIDDLEWARE_MODULE.query",
       response: {
         MODULE: true,
         module: true,
-        context: true,
-        CONTEXT: true,
+        middlewareModule: true,
+        MIDDLEWARE_MODULE: true,
         query: true,
       },
       queryKey: [
@@ -676,8 +735,8 @@ export const queries = [
         { module: true },
         "MODULE",
         { MODULE: true },
-        "context",
-        "CONTEXT",
+        "middlewareModule",
+        "MIDDLEWARE_MODULE",
         "query",
       ],
     },
@@ -686,14 +745,14 @@ export const queries = [
     () =>
       QUERY_FACTORY.module({ module: true })
         .MODULE({ MODULE: true })
-        .context.CONTEXT.inputQuery({ inputQuery: true }),
+        .middlewareModule.MIDDLEWARE_MODULE.inputQuery({ inputQuery: true }),
     {
-      name: "module.MODULE.context.CONTEXT.inputQuery",
+      name: "module.MODULE.middlewareModule.MIDDLEWARE_MODULE.inputQuery",
       response: {
         MODULE: true,
         module: true,
-        context: true,
-        CONTEXT: true,
+        middlewareModule: true,
+        MIDDLEWARE_MODULE: true,
         inputQuery: true,
         query: true,
       },
@@ -702,34 +761,34 @@ export const queries = [
         { module: true },
         "MODULE",
         { MODULE: true },
-        "context",
-        "CONTEXT",
+        "middlewareModule",
+        "MIDDLEWARE_MODULE",
         "inputQuery",
         { [inputSymbol]: { inputQuery: true } },
       ],
     },
   ],
   [
-    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true }).context
-      .CONTEXT.contextQuery,
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true })
+      .middlewareModule.MIDDLEWARE_MODULE.middlewareQuery,
     {
-      name: "module.MODULE.context.CONTEXT.contextQuery",
+      name: "module.MODULE.middlewareModule.MIDDLEWARE_MODULE.middlewareQuery",
       response: {
         MODULE: true,
         module: true,
-        context: true,
-        CONTEXT: true,
+        middlewareModule: true,
+        MIDDLEWARE_MODULE: true,
         query: true,
-        contextQuery: true,
+        middlewareQuery: true,
       },
       queryKey: [
         "module",
         { module: true },
         "MODULE",
         { MODULE: true },
-        "context",
-        "CONTEXT",
-        "contextQuery",
+        "middlewareModule",
+        "MIDDLEWARE_MODULE",
+        "middlewareQuery",
       ],
     },
   ],
@@ -775,120 +834,124 @@ export const mutations = [
     },
   ],
   [
-    QUERY_FACTORY.contextMutation,
+    QUERY_FACTORY.middlewareMutation,
     {
-      name: "contextMutation",
+      name: "middlewareMutation",
       ctx: {
-        contextMutation: true,
+        middlewareMutation: true,
       },
       input: undefined,
       response: {
         mutation: true,
-        contextMutation: true,
+        middlewareMutation: true,
       },
-      mutationKey: ["contextMutation"],
+      mutationKey: ["middlewareMutation"],
     },
   ],
   [
-    QUERY_FACTORY.context.mutation,
+    QUERY_FACTORY.middlewareModule.mutation,
     {
-      name: "context.mutation",
+      name: "middlewareModule.mutation",
       input: undefined,
       ctx: {
-        context: true,
+        middlewareModule: true,
       },
       response: {
-        context: true,
+        middlewareModule: true,
         mutation: true,
       },
-      mutationKey: ["context", "mutation"],
+      mutationKey: ["middlewareModule", "mutation"],
     },
   ],
   [
-    QUERY_FACTORY.context.inputMutation,
+    QUERY_FACTORY.middlewareModule.inputMutation,
     {
-      name: "context.inputMutation",
+      name: "middlewareModule.inputMutation",
       input: { inputMutation: true },
       ctx: {
-        context: true,
+        middlewareModule: true,
       },
       response: {
-        context: true,
+        middlewareModule: true,
         inputMutation: true,
         mutation: true,
       },
-      mutationKey: ["context", "inputMutation"],
+      mutationKey: ["middlewareModule", "inputMutation"],
     },
   ],
   [
-    QUERY_FACTORY.context.contextMutation,
+    QUERY_FACTORY.middlewareModule.middlewareMutation,
     {
-      name: "context.contextMutation",
+      name: "middlewareModule.middlewareMutation",
       input: undefined,
       ctx: {
-        context: true,
-        contextMutation: true,
+        middlewareModule: true,
+        middlewareMutation: true,
       },
       response: {
-        context: true,
+        middlewareModule: true,
         mutation: true,
-        contextMutation: true,
+        middlewareMutation: true,
       },
-      mutationKey: ["context", "contextMutation"],
+      mutationKey: ["middlewareModule", "middlewareMutation"],
     },
   ],
   [
-    QUERY_FACTORY.context.CONTEXT.mutation,
+    QUERY_FACTORY.middlewareModule.MIDDLEWARE_MODULE.mutation,
     {
-      name: "context.CONTEXT.mutation",
+      name: "middlewareModule.MIDDLEWARE_MODULE.mutation",
       input: undefined,
       ctx: {
-        context: true,
-        CONTEXT: true,
+        middlewareModule: true,
+        MIDDLEWARE_MODULE: true,
       },
       response: {
-        context: true,
-        CONTEXT: true,
+        middlewareModule: true,
+        MIDDLEWARE_MODULE: true,
         mutation: true,
       },
-      mutationKey: ["context", "CONTEXT", "mutation"],
+      mutationKey: ["middlewareModule", "MIDDLEWARE_MODULE", "mutation"],
     },
   ],
   [
-    QUERY_FACTORY.context.CONTEXT.inputMutation,
+    QUERY_FACTORY.middlewareModule.MIDDLEWARE_MODULE.inputMutation,
     {
-      name: "context.CONTEXT.inputMutation",
+      name: "middlewareModule.MIDDLEWARE_MODULE.inputMutation",
       input: { inputMutation: true },
       ctx: {
-        context: true,
-        CONTEXT: true,
+        middlewareModule: true,
+        MIDDLEWARE_MODULE: true,
       },
       response: {
-        context: true,
-        CONTEXT: true,
+        middlewareModule: true,
+        MIDDLEWARE_MODULE: true,
         inputMutation: true,
         mutation: true,
       },
-      mutationKey: ["context", "CONTEXT", "inputMutation"],
+      mutationKey: ["middlewareModule", "MIDDLEWARE_MODULE", "inputMutation"],
     },
   ],
   [
-    QUERY_FACTORY.context.CONTEXT.contextMutation,
+    QUERY_FACTORY.middlewareModule.MIDDLEWARE_MODULE.middlewareMutation,
     {
-      name: "context.CONTEXT.contextMutation",
+      name: "middlewareModule.MIDDLEWARE_MODULE.middlewareMutation",
       ctx: {
-        context: true,
-        CONTEXT: true,
-        contextMutation: true,
+        middlewareModule: true,
+        MIDDLEWARE_MODULE: true,
+        middlewareMutation: true,
       },
       response: {
-        context: true,
-        CONTEXT: true,
+        middlewareModule: true,
+        MIDDLEWARE_MODULE: true,
         mutation: true,
-        contextMutation: true,
+        middlewareMutation: true,
       },
       input: undefined,
-      mutationKey: ["context", "CONTEXT", "contextMutation"],
+      mutationKey: [
+        "middlewareModule",
+        "MIDDLEWARE_MODULE",
+        "middlewareMutation",
+      ],
     },
   ],
   [
@@ -921,131 +984,148 @@ export const mutations = [
     },
   ],
   [
-    QUERY_FACTORY.module({ module: true }).contextMutation,
+    QUERY_FACTORY.module({ module: true }).middlewareMutation,
     {
-      name: "module.contextMutation",
+      name: "module.middlewareMutation",
       input: undefined,
       ctx: {
-        contextMutation: true,
+        middlewareMutation: true,
       },
       response: {
         module: true,
         mutation: true,
-        contextMutation: true,
+        middlewareMutation: true,
       },
-      mutationKey: ["module", { module: true }, "contextMutation"],
+      mutationKey: ["module", { module: true }, "middlewareMutation"],
     },
   ],
   [
-    QUERY_FACTORY.module({ module: true }).context.mutation,
+    QUERY_FACTORY.module({ module: true }).middlewareModule.mutation,
     {
-      name: "module.context.mutation",
+      name: "module.middlewareModule.mutation",
       input: undefined,
-      ctx: { context: true },
+      ctx: { middlewareModule: true },
       response: {
         module: true,
-        context: true,
+        middlewareModule: true,
         mutation: true,
       },
-      mutationKey: ["module", { module: true }, "context", "mutation"],
+      mutationKey: ["module", { module: true }, "middlewareModule", "mutation"],
     },
   ],
   [
-    QUERY_FACTORY.module({ module: true }).context.inputMutation,
+    QUERY_FACTORY.module({ module: true }).middlewareModule.inputMutation,
     {
-      name: "module.context.inputMutation",
+      name: "module.middlewareModule.inputMutation",
       input: {
         inputMutation: true,
       },
-      ctx: { context: true },
+      ctx: { middlewareModule: true },
       response: {
         module: true,
-        context: true,
-        inputMutation: true,
-        mutation: true,
-      },
-      mutationKey: ["module", { module: true }, "context", "inputMutation"],
-    },
-  ],
-  [
-    QUERY_FACTORY.module({ module: true }).context.contextMutation,
-    {
-      name: "module.context.contextMutation",
-      input: undefined,
-      ctx: { context: true, contextMutation: true },
-      response: {
-        module: true,
-        context: true,
-        contextMutation: true,
-        mutation: true,
-      },
-      mutationKey: ["module", { module: true }, "context", "contextMutation"],
-    },
-  ],
-  [
-    QUERY_FACTORY.module({ module: true }).context.CONTEXT.mutation,
-    {
-      name: "module.context.CONTEXT.mutation",
-      input: undefined,
-      ctx: { context: true, CONTEXT: true },
-      response: {
-        module: true,
-        context: true,
-        CONTEXT: true,
-        mutation: true,
-      },
-      mutationKey: [
-        "module",
-        { module: true },
-        "context",
-        "CONTEXT",
-        "mutation",
-      ],
-    },
-  ],
-  [
-    QUERY_FACTORY.module({ module: true }).context.CONTEXT.inputMutation,
-    {
-      name: "module.context.CONTEXT.inputMutation",
-      input: {
-        inputMutation: true,
-      },
-      ctx: { context: true, CONTEXT: true },
-      response: {
-        module: true,
-        context: true,
-        CONTEXT: true,
+        middlewareModule: true,
         inputMutation: true,
         mutation: true,
       },
       mutationKey: [
         "module",
         { module: true },
-        "context",
-        "CONTEXT",
+        "middlewareModule",
         "inputMutation",
       ],
     },
   ],
   [
-    QUERY_FACTORY.module({ module: true }).context.CONTEXT.contextMutation,
+    QUERY_FACTORY.module({ module: true }).middlewareModule.middlewareMutation,
     {
-      name: "module.context.CONTEXT.contextMutation",
+      name: "module.middlewareModule.middlewareMutation",
+      input: undefined,
+      ctx: { middlewareModule: true, middlewareMutation: true },
       response: {
         module: true,
-        context: true,
-        CONTEXT: true,
+        middlewareModule: true,
+        middlewareMutation: true,
         mutation: true,
-        contextMutation: true,
       },
-      input: undefined,
-      ctx: { context: true, CONTEXT: true, contextMutation: true },
       mutationKey: [
         "module",
         { module: true },
-        "context",
-        "CONTEXT",
-        "contextMutation",
+        "middlewareModule",
+        "middlewareMutation",
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).middlewareModule.MIDDLEWARE_MODULE
+      .mutation,
+    {
+      name: "module.middlewareModule.MIDDLEWARE_MODULE.mutation",
+      input: undefined,
+      ctx: { middlewareModule: true, MIDDLEWARE_MODULE: true },
+      response: {
+        module: true,
+        middlewareModule: true,
+        MIDDLEWARE_MODULE: true,
+        mutation: true,
+      },
+      mutationKey: [
+        "module",
+        { module: true },
+        "middlewareModule",
+        "MIDDLEWARE_MODULE",
+        "mutation",
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).middlewareModule.MIDDLEWARE_MODULE
+      .inputMutation,
+    {
+      name: "module.middlewareModule.MIDDLEWARE_MODULE.inputMutation",
+      input: {
+        inputMutation: true,
+      },
+      ctx: { middlewareModule: true, MIDDLEWARE_MODULE: true },
+      response: {
+        module: true,
+        middlewareModule: true,
+        MIDDLEWARE_MODULE: true,
+        inputMutation: true,
+        mutation: true,
+      },
+      mutationKey: [
+        "module",
+        { module: true },
+        "middlewareModule",
+        "MIDDLEWARE_MODULE",
+        "inputMutation",
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.module({ module: true }).middlewareModule.MIDDLEWARE_MODULE
+      .middlewareMutation,
+    {
+      name: "module.middlewareModule.MIDDLEWARE_MODULE.middlewareMutation",
+      response: {
+        module: true,
+        middlewareModule: true,
+        MIDDLEWARE_MODULE: true,
+        mutation: true,
+        middlewareMutation: true,
+      },
+      input: undefined,
+      ctx: {
+        middlewareModule: true,
+        MIDDLEWARE_MODULE: true,
+        middlewareMutation: true,
+      },
+      mutationKey: [
+        "module",
+        { module: true },
+        "middlewareModule",
+        "MIDDLEWARE_MODULE",
+        "middlewareMutation",
       ],
     },
   ],
@@ -1095,175 +1175,179 @@ export const mutations = [
   ],
   [
     QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true })
-      .contextMutation,
+      .middlewareMutation,
     {
-      name: "module.MODULE.contextMutation",
+      name: "module.MODULE.middlewareMutation",
       response: {
         MODULE: true,
         module: true,
         mutation: true,
-        contextMutation: true,
+        middlewareMutation: true,
       },
       input: undefined,
-      ctx: { contextMutation: true },
+      ctx: { middlewareMutation: true },
       mutationKey: [
         "module",
         { module: true },
         "MODULE",
         { MODULE: true },
-        "contextMutation",
+        "middlewareMutation",
       ],
     },
   ],
   [
-    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true }).context
-      .mutation,
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true })
+      .middlewareModule.mutation,
     {
-      name: "module.MODULE.context.mutation",
+      name: "module.MODULE.middlewareModule.mutation",
       response: {
         MODULE: true,
         module: true,
-        context: true,
+        middlewareModule: true,
         mutation: true,
       },
       input: undefined,
-      ctx: { context: true },
+      ctx: { middlewareModule: true },
       mutationKey: [
         "module",
         { module: true },
         "MODULE",
         { MODULE: true },
-        "context",
+        "middlewareModule",
         "mutation",
       ],
     },
   ],
   [
-    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true }).context
-      .inputMutation,
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true })
+      .middlewareModule.inputMutation,
     {
-      name: "module.MODULE.context.inputMutation",
+      name: "module.MODULE.middlewareModule.inputMutation",
       response: {
         MODULE: true,
         module: true,
-        context: true,
+        middlewareModule: true,
         inputMutation: true,
         mutation: true,
       },
       input: {
         inputMutation: true,
       },
-      ctx: { context: true },
+      ctx: { middlewareModule: true },
       mutationKey: [
         "module",
         { module: true },
         "MODULE",
         { MODULE: true },
-        "context",
+        "middlewareModule",
         "inputMutation",
       ],
     },
   ],
   [
-    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true }).context
-      .contextMutation,
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true })
+      .middlewareModule.middlewareMutation,
     {
-      name: "module.MODULE.context.contextMutation",
+      name: "module.MODULE.middlewareModule.middlewareMutation",
       response: {
         MODULE: true,
         module: true,
-        context: true,
+        middlewareModule: true,
         mutation: true,
-        contextMutation: true,
+        middlewareMutation: true,
       },
-      ctx: { context: true, contextMutation: true },
+      ctx: { middlewareModule: true, middlewareMutation: true },
       input: undefined,
       mutationKey: [
         "module",
         { module: true },
         "MODULE",
         { MODULE: true },
-        "context",
-        "contextMutation",
+        "middlewareModule",
+        "middlewareMutation",
       ],
     },
   ],
   [
-    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true }).context
-      .CONTEXT.mutation,
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true })
+      .middlewareModule.MIDDLEWARE_MODULE.mutation,
     {
-      name: "module.MODULE.context.CONTEXT.mutation",
+      name: "module.MODULE.middlewareModule.MIDDLEWARE_MODULE.mutation",
       response: {
         MODULE: true,
         module: true,
-        context: true,
-        CONTEXT: true,
+        middlewareModule: true,
+        MIDDLEWARE_MODULE: true,
         mutation: true,
       },
       input: undefined,
-      ctx: { context: true, CONTEXT: true },
+      ctx: { middlewareModule: true, MIDDLEWARE_MODULE: true },
       mutationKey: [
         "module",
         { module: true },
         "MODULE",
         { MODULE: true },
-        "context",
-        "CONTEXT",
+        "middlewareModule",
+        "MIDDLEWARE_MODULE",
         "mutation",
       ],
     },
   ],
   [
-    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true }).context
-      .CONTEXT.inputMutation,
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true })
+      .middlewareModule.MIDDLEWARE_MODULE.inputMutation,
     {
-      name: "module.MODULE.context.CONTEXT.inputMutation",
+      name: "module.MODULE.middlewareModule.MIDDLEWARE_MODULE.inputMutation",
       response: {
         MODULE: true,
         module: true,
-        context: true,
-        CONTEXT: true,
+        middlewareModule: true,
+        MIDDLEWARE_MODULE: true,
         inputMutation: true,
         mutation: true,
       },
       input: {
         inputMutation: true,
       },
-      ctx: { context: true, CONTEXT: true },
+      ctx: { middlewareModule: true, MIDDLEWARE_MODULE: true },
       mutationKey: [
         "module",
         { module: true },
         "MODULE",
         { MODULE: true },
-        "context",
-        "CONTEXT",
+        "middlewareModule",
+        "MIDDLEWARE_MODULE",
         "inputMutation",
       ],
     },
   ],
   [
-    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true }).context
-      .CONTEXT.contextMutation,
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true })
+      .middlewareModule.MIDDLEWARE_MODULE.middlewareMutation,
     {
-      name: "module.MODULE.context.CONTEXT.contextMutation",
+      name: "module.MODULE.middlewareModule.MIDDLEWARE_MODULE.middlewareMutation",
       response: {
         MODULE: true,
         module: true,
-        context: true,
-        CONTEXT: true,
+        middlewareModule: true,
+        MIDDLEWARE_MODULE: true,
         mutation: true,
-        contextMutation: true,
+        middlewareMutation: true,
       },
       input: undefined,
-      ctx: { context: true, CONTEXT: true, contextMutation: true },
+      ctx: {
+        middlewareModule: true,
+        MIDDLEWARE_MODULE: true,
+        middlewareMutation: true,
+      },
       mutationKey: [
         "module",
         { module: true },
         "MODULE",
         { MODULE: true },
-        "context",
-        "CONTEXT",
-        "contextMutation",
+        "middlewareModule",
+        "MIDDLEWARE_MODULE",
+        "middlewareMutation",
       ],
     },
   ],
@@ -1277,7 +1361,7 @@ type Keys = [
   },
 ][];
 
-export const keys = [
+const baseKeys = [
   [
     QUERY_FACTORY.module({ module: true }),
     {
@@ -1285,18 +1369,27 @@ export const keys = [
       key: ["module", { module: true }],
     },
   ],
+] as const satisfies Keys;
+
+export const keys = [
+  ...baseKeys,
   [
-    QUERY_FACTORY.module({ module: true }).context,
+    QUERY_FACTORY.module({ module: true }).middlewareModule,
     {
-      name: "module.context",
-      key: ["module", { module: true }, "context"],
+      name: "module.middlewareModule",
+      key: ["module", { module: true }, "middlewareModule"],
     },
   ],
   [
-    QUERY_FACTORY.module({ module: true }).context.CONTEXT,
+    QUERY_FACTORY.module({ module: true }).middlewareModule.MIDDLEWARE_MODULE,
     {
-      name: "module.context.CONTEXT",
-      key: ["module", { module: true }, "context", "CONTEXT"],
+      name: "module.middlewareModule.MIDDLEWARE_MODULE",
+      key: [
+        "module",
+        { module: true },
+        "middlewareModule",
+        "MIDDLEWARE_MODULE",
+      ],
     },
   ],
   [
@@ -1307,25 +1400,46 @@ export const keys = [
     },
   ],
   [
-    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true }).context,
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true })
+      .middlewareModule,
     {
-      name: "module.MODULE.context",
-      key: ["module", { module: true }, "MODULE", { MODULE: true }, "context"],
-    },
-  ],
-  [
-    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true }).context
-      .CONTEXT,
-    {
-      name: "module.MODULE.context.CONTEXT",
+      name: "module.MODULE.middlewareModule",
       key: [
         "module",
         { module: true },
         "MODULE",
         { MODULE: true },
-        "context",
-        "CONTEXT",
+        "middlewareModule",
       ],
     },
   ],
-] satisfies Keys;
+  [
+    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true })
+      .middlewareModule.MIDDLEWARE_MODULE,
+    {
+      name: "module.MODULE.middlewareModule.MIDDLEWARE_MODULE",
+      key: [
+        "module",
+        { module: true },
+        "MODULE",
+        { MODULE: true },
+        "middlewareModule",
+        "MIDDLEWARE_MODULE",
+      ],
+    },
+  ],
+  [
+    QUERY_FACTORY.middlewareModule,
+    {
+      name: "middlewareModule",
+      key: ["middlewareModule"],
+    },
+  ],
+  [
+    QUERY_FACTORY.middlewareModule.MIDDLEWARE_MODULE,
+    {
+      name: "middlewareModule.MIDDLEWARE_MODULE",
+      key: ["middlewareModule", "MIDDLEWARE_MODULE"],
+    },
+  ],
+] satisfies Keys as unknown as typeof baseKeys;
