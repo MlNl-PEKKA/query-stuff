@@ -2,75 +2,72 @@ import { createProxyNode } from "./createProxyNode.js";
 import { QueryStuffUndefinedInput } from "./queryStuff.js";
 import { factory } from "./index.js";
 import type * as _ from "../node_modules/.pnpm/@tanstack+query-core@5.64.1/node_modules/@tanstack/query-core/build/modern/hydration-DpBMnFDT.js";
+import { z } from "zod";
 
 export const nodes = new QueryStuffUndefinedInput().module()((q) => ({
   a: q.query(() => ({ a: 1 })),
   b: q.mutation(async () => ({ b: 2 })),
-  c: q.input().query(() => ({ c: 3 })),
-  d: q.input().mutation(async () => ({ d: 4 })),
-  e: q.input<{ e: number }>().query(({ input: { e } }) => ({ e })),
-  f: q.input<{ f: number }>().mutation(async ({ input: { f } }) => ({ f })),
+  e: q.input(z.object({ e: z.number() })).query(({ input: { e } }) => ({ e })),
+  f: q
+    .input(z.object({ f: z.number() }))
+    .mutation(async ({ input: { f } }) => ({ f })),
   g: q.module()((q) => ({
     a: q.query(() => ({ a: 1 })),
     b: q.mutation(async () => ({ b: 2 })),
-    c: q.input().query(() => ({ c: 3 })),
-    d: q.input().mutation(async () => ({ d: 4 })),
-    e: q.input<{ e: number }>().query(({ input: { e } }) => ({ e })),
-    f: q.input<{ f: number }>().mutation(async ({ input: { f } }) => ({ f })),
+    e: q
+      .input(z.object({ e: z.number() }))
+      .query(({ input: { e } }) => ({ e })),
+    f: q
+      .input(z.object({ f: z.number() }))
+      .mutation(async ({ input: { f } }) => ({ f })),
     gg: q.module()((q) => ({
       a: q.query(() => ({ a: 1 })),
       b: q.mutation(async () => ({ b: 2 })),
-      c: q.input().query(() => ({ c: 3 })),
-      d: q.input().mutation(async () => ({ d: 4 })),
-      e: q.input<{ e: number }>().query(({ input: { e } }) => ({ e })),
-      f: q.input<{ f: number }>().mutation(async ({ input: { f } }) => ({ f })),
+      e: q
+        .input(z.object({ e: z.number() }))
+        .query(({ input: { e } }) => ({ e })),
+      f: q
+        .input(z.object({ f: z.number() }))
+        .mutation(async ({ input: { f } }) => ({ f })),
     })),
     h: q.module<{ h: number }>()((q) => ({
       a: q.query(({ ctx: { h } }) => ({ a: 1, h })),
       b: q.mutation(async ({ ctx: { h } }) => ({ b: 2, h })),
-      c: q.input().query(({ ctx: { h } }) => ({ c: 3, h })),
-      d: q.input().mutation(async ({ ctx: { h } }) => ({ d: 4, h })),
       e: q
-        .input<{ e: number }>()
+        .input(z.object({ e: z.number() }))
         .query(({ input: { e }, ctx: { h } }) => ({ e, h })),
       f: q
-        .input<{ f: number }>()
+        .input(z.object({ f: z.number() }))
         .mutation(async ({ input: { f }, ctx: { h } }) => ({ f, h })),
     })),
   })),
   h: q.module<{ h: number }>()((q) => ({
     a: q.query(({ ctx: { h } }) => ({ a: 1, h })),
     b: q.mutation(async ({ ctx: { h } }) => ({ b: 2, h })),
-    c: q.input().query(({ ctx: { h } }) => ({ c: 3, h })),
-    d: q.input().mutation(async ({ ctx: { h } }) => ({ d: 4, h })),
     e: q
-      .input<{ e: number }>()
+      .input(z.object({ e: z.number() }))
       .query(({ input: { e }, ctx: { h } }) => ({ e, h })),
     f: q
-      .input<{ f: number }>()
+      .input(z.object({ f: z.number() }))
       .mutation(async ({ input: { f }, ctx: { h } }) => ({ f, h })),
     g: q.module()((q) => ({
       a: q.query(({ ctx: { h } }) => ({ a: 1, h })),
       b: q.mutation(async ({ ctx: { h } }) => ({ b: 2, h })),
-      c: q.input().query(({ ctx: { h } }) => ({ c: 3, h })),
-      d: q.input().mutation(async ({ ctx: { h } }) => ({ d: 4, h })),
       e: q
-        .input<{ e: number }>()
+        .input(z.object({ e: z.number() }))
         .query(({ input: { e }, ctx: { h } }) => ({ e, h })),
       f: q
-        .input<{ f: number }>()
+        .input(z.object({ f: z.number() }))
         .mutation(async ({ input: { f }, ctx: { h } }) => ({ f, h })),
     })),
     hh: q.module<{ hh: number }>()((q) => ({
       a: q.query(({ ctx: { h, hh } }) => ({ a: 1, h, hh })),
       b: q.mutation(async ({ ctx: { h, hh } }) => ({ b: 2, h, hh })),
-      c: q.input().query(({ ctx: { h, hh } }) => ({ c: 3, h, hh })),
-      d: q.input().mutation(async ({ ctx: { h, hh } }) => ({ d: 4, h, hh })),
       e: q
-        .input<{ e: number }>()
+        .input(z.object({ e: z.number() }))
         .query(({ input: { e }, ctx: { h, hh } }) => ({ e, h, hh })),
       f: q
-        .input<{ f: number }>()
+        .input(z.object({ f: z.number() }))
         .mutation(async ({ input: { f }, ctx: { h, hh } }) => ({ f, h, hh })),
     })),
   })),
@@ -79,13 +76,11 @@ export const nodes = new QueryStuffUndefinedInput().module()((q) => ({
 export const NODES = new QueryStuffUndefinedInput().module()((q) => ({
   query: q.query(() => ({ query: true })),
   mutation: q.mutation(async () => ({ mutation: true })),
-  voidInputQuery: q.input().query(() => ({ query: true })),
-  voidInputMutation: q.input().mutation(async () => ({ mutation: true })),
   inputQuery: q
-    .input<{ inputQuery: boolean }>()
+    .input(z.object({ inputQuery: z.boolean() }))
     .query((opts) => ({ ...opts.input, query: true })),
   inputMutation: q
-    .input<{ inputMutation: boolean }>()
+    .input(z.object({ inputMutation: z.boolean() }))
     .mutation(async (opts) => ({ ...opts.input, mutation: true })),
   contextQuery: q
     .use(async ({ next }) => await next({ ctx: { contextQuery: true } }))
@@ -96,15 +91,11 @@ export const NODES = new QueryStuffUndefinedInput().module()((q) => ({
   module: q.module<{ module: boolean }>()((q) => ({
     query: q.query((opts) => ({ ...opts.ctx, query: true })),
     mutation: q.mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
-    voidInputQuery: q.input().query((opts) => ({ ...opts.ctx, query: true })),
-    voidInputMutation: q
-      .input()
-      .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
     inputQuery: q
-      .input<{ inputQuery: boolean }>()
+      .input(z.object({ inputQuery: z.boolean() }))
       .query((opts) => ({ ...opts.ctx, ...opts.input, query: true })),
     inputMutation: q
-      .input<{ inputMutation: boolean }>()
+      .input(z.object({ inputMutation: z.boolean() }))
       .mutation(async (opts) => ({
         ...opts.ctx,
         ...opts.input,
@@ -119,15 +110,11 @@ export const NODES = new QueryStuffUndefinedInput().module()((q) => ({
     MODULE: q.module<{ MODULE: boolean }>()((q) => ({
       query: q.query((opts) => ({ ...opts.ctx, query: true })),
       mutation: q.mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
-      voidInputQuery: q.input().query((opts) => ({ ...opts.ctx, query: true })),
-      voidInputMutation: q
-        .input()
-        .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
       inputQuery: q
-        .input<{ inputQuery: boolean }>()
+        .input(z.object({ inputQuery: z.boolean() }))
         .query((opts) => ({ ...opts.ctx, ...opts.input, query: true })),
       inputMutation: q
-        .input<{ inputMutation: boolean }>()
+        .input(z.object({ inputMutation: z.boolean() }))
         .mutation(async (opts) => ({
           ...opts.ctx,
           ...opts.input,
@@ -144,17 +131,11 @@ export const NODES = new QueryStuffUndefinedInput().module()((q) => ({
         .module()((q) => ({
         query: q.query((opts) => ({ ...opts.ctx, query: true })),
         mutation: q.mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
-        voidInputQuery: q
-          .input()
-          .query((opts) => ({ ...opts.ctx, query: true })),
-        voidInputMutation: q
-          .input()
-          .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
         inputQuery: q
-          .input<{ inputQuery: boolean }>()
+          .input(z.object({ inputQuery: z.boolean() }))
           .query((opts) => ({ ...opts.ctx, ...opts.input, query: true })),
         inputMutation: q
-          .input<{ inputMutation: boolean }>()
+          .input(z.object({ inputMutation: z.boolean() }))
           .mutation(async (opts) => ({
             ...opts.ctx,
             ...opts.input,
@@ -176,17 +157,11 @@ export const NODES = new QueryStuffUndefinedInput().module()((q) => ({
             ...opts.ctx,
             mutation: true,
           })),
-          voidInputQuery: q
-            .input()
-            .query((opts) => ({ ...opts.ctx, query: true })),
-          voidInputMutation: q
-            .input()
-            .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
           inputQuery: q
-            .input<{ inputQuery: boolean }>()
+            .input(z.object({ inputQuery: z.boolean() }))
             .query((opts) => ({ ...opts.ctx, ...opts.input, query: true })),
           inputMutation: q
-            .input<{ inputMutation: boolean }>()
+            .input(z.object({ inputMutation: z.boolean() }))
             .mutation(async (opts) => ({
               ...opts.ctx,
               ...opts.input,
@@ -211,15 +186,11 @@ export const NODES = new QueryStuffUndefinedInput().module()((q) => ({
       .module()((q) => ({
       query: q.query((opts) => ({ ...opts.ctx, query: true })),
       mutation: q.mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
-      voidInputQuery: q.input().query((opts) => ({ ...opts.ctx, query: true })),
-      voidInputMutation: q
-        .input()
-        .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
       inputQuery: q
-        .input<{ inputQuery: boolean }>()
+        .input(z.object({ inputQuery: z.boolean() }))
         .query((opts) => ({ ...opts.ctx, ...opts.input, query: true })),
       inputMutation: q
-        .input<{ inputMutation: boolean }>()
+        .input(z.object({ inputMutation: z.boolean() }))
         .mutation(async (opts) => ({
           ...opts.ctx,
           ...opts.input,
@@ -236,17 +207,11 @@ export const NODES = new QueryStuffUndefinedInput().module()((q) => ({
         .module()((q) => ({
         query: q.query((opts) => ({ ...opts.ctx, query: true })),
         mutation: q.mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
-        voidInputQuery: q
-          .input()
-          .query((opts) => ({ ...opts.ctx, query: true })),
-        voidInputMutation: q
-          .input()
-          .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
         inputQuery: q
-          .input<{ inputQuery: boolean }>()
+          .input(z.object({ inputQuery: z.boolean() }))
           .query((opts) => ({ ...opts.ctx, ...opts.input, query: true })),
         inputMutation: q
-          .input<{ inputMutation: boolean }>()
+          .input(z.object({ inputMutation: z.boolean() }))
           .mutation(async (opts) => ({
             ...opts.ctx,
             ...opts.input,
@@ -268,15 +233,11 @@ export const NODES = new QueryStuffUndefinedInput().module()((q) => ({
     .module()((q) => ({
     query: q.query((opts) => ({ ...opts.ctx, query: true })),
     mutation: q.mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
-    voidInputQuery: q.input().query((opts) => ({ ...opts.ctx, query: true })),
-    voidInputMutation: q
-      .input()
-      .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
     inputQuery: q
-      .input<{ inputQuery: boolean }>()
+      .input(z.object({ inputQuery: z.boolean() }))
       .query((opts) => ({ ...opts.ctx, ...opts.input, query: true })),
     inputMutation: q
-      .input<{ inputMutation: boolean }>()
+      .input(z.object({ inputMutation: z.boolean() }))
       .mutation(async (opts) => ({
         ...opts.ctx,
         ...opts.input,
@@ -293,15 +254,11 @@ export const NODES = new QueryStuffUndefinedInput().module()((q) => ({
       .module()((q) => ({
       query: q.query((opts) => ({ ...opts.ctx, query: true })),
       mutation: q.mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
-      voidInputQuery: q.input().query((opts) => ({ ...opts.ctx, query: true })),
-      voidInputMutation: q
-        .input()
-        .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
       inputQuery: q
-        .input<{ inputQuery: boolean }>()
+        .input(z.object({ inputQuery: z.boolean() }))
         .query((opts) => ({ ...opts.ctx, ...opts.input, query: true })),
       inputMutation: q
-        .input<{ inputMutation: boolean }>()
+        .input(z.object({ inputMutation: z.boolean() }))
         .mutation(async (opts) => ({
           ...opts.ctx,
           ...opts.input,

@@ -39,21 +39,6 @@ describe("queryFactories", () => {
       ] as const) satisfies typeof key;
       expect(key).toStrictEqual(value);
     });
-    it(`${module}: returns queryKey for nodes.c`, () => {
-      const key = q.c().queryKey;
-      const _key = nodes().c().queryKey;
-      const value = getQueryKey<{ c: number }>()([
-        "c",
-      ] as const) satisfies typeof key satisfies typeof _key;
-      expect(key).toStrictEqual(value);
-    });
-    it(`${module}: returns mutationKey for nodes.d`, () => {
-      const key = q.d().mutationKey;
-      const value = getMutationKey<{ d: number }, void>()([
-        "d",
-      ] as const) satisfies typeof key;
-      expect(key).toStrictEqual(value);
-    });
     it(`${module}: returns queryKey for nodes.e`, () => {
       const input = { e: 1 };
       const key = q.e(input).queryKey;
@@ -90,23 +75,6 @@ describe("queryFactories", () => {
       const value = getMutationKey<{ b: number }, void>()([
         "g",
         "b",
-      ] as const) satisfies typeof key;
-      expect(key).toStrictEqual(value);
-    });
-    it(`${module}: returns queryKey for nodes.g.c`, () => {
-      const key = q.g().c().queryKey;
-      const _key = nodes().g().c().queryKey;
-      const value = getQueryKey<{ c: number }>()([
-        "g",
-        "c",
-      ] as const) satisfies typeof key satisfies typeof _key;
-      expect(key).toStrictEqual(value);
-    });
-    it(`${module}: returns mutationKey for nodes.g.d`, () => {
-      const key = q.g().d().mutationKey;
-      const value = getMutationKey<{ d: number }, void>()([
-        "g",
-        "d",
       ] as const) satisfies typeof key;
       expect(key).toStrictEqual(value);
     });
@@ -156,29 +124,6 @@ describe("queryFactories", () => {
         },
         void
       >()(["h", input, "b"] as const) satisfies typeof key;
-      expect(key).toStrictEqual(value);
-    });
-    it(`${module}: returns queryKey for nodes.h.c`, () => {
-      const input = { h: 8 };
-      const key = q.h(input).c().queryKey;
-      const _key = nodes().h(input).c().queryKey;
-      const value = getQueryKey<{ c: number; h: number }>()([
-        "h",
-        input,
-        "c",
-      ] as const) satisfies typeof key satisfies typeof _key;
-      expect(key).toStrictEqual(value);
-    });
-    it(`${module}: returns mutationKey for nodes.h.d`, () => {
-      const input = { h: 8 };
-      const key = q.h(input).d().mutationKey;
-      const value = getMutationKey<
-        {
-          d: number;
-          h: number;
-        },
-        void
-      >()(["h", input, "d"] as const) satisfies typeof key;
       expect(key).toStrictEqual(value);
     });
     it(`${module}: returns queryKey for nodes.h.e`, () => {

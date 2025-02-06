@@ -365,14 +365,6 @@ const baseQuery = [
 const queries = [
   ...baseQuery,
   [
-    QUERY_FACTORY.voidInputQuery,
-    {
-      name: "voidInputQuery",
-      response: { query: true },
-      queryKey: ["voidInputQuery"],
-    },
-  ],
-  [
     () => QUERY_FACTORY.inputQuery({ inputQuery: true }),
     {
       name: "inputQuery",
@@ -394,14 +386,6 @@ const queries = [
       name: "context.query",
       response: { context: true, query: true },
       queryKey: ["context", "query"],
-    },
-  ],
-  [
-    QUERY_FACTORY.context().voidInputQuery,
-    {
-      name: "context.voidInputQuery",
-      response: { context: true, query: true },
-      queryKey: ["context", "voidInputQuery"],
     },
   ],
   [
@@ -430,14 +414,6 @@ const queries = [
       name: "context.CONTEXT.query",
       response: { context: true, CONTEXT: true, query: true },
       queryKey: ["context", "CONTEXT", "query"],
-    },
-  ],
-  [
-    QUERY_FACTORY.context().CONTEXT().voidInputQuery,
-    {
-      name: "context.CONTEXT.voidInputQuery",
-      response: { context: true, CONTEXT: true, query: true },
-      queryKey: ["context", "CONTEXT", "voidInputQuery"],
     },
   ],
   [
@@ -475,14 +451,6 @@ const queries = [
     },
   ],
   [
-    QUERY_FACTORY.module({ module: true }).voidInputQuery,
-    {
-      name: "module.voidInputQuery",
-      response: { module: true, query: true },
-      queryKey: ["module", { module: true }, "voidInputQuery"],
-    },
-  ],
-  [
     () =>
       QUERY_FACTORY.module({ module: true }).inputQuery({ inputQuery: true }),
     {
@@ -510,14 +478,6 @@ const queries = [
       name: "module.context.query",
       response: { module: true, context: true, query: true },
       queryKey: ["module", { module: true }, "context", "query"],
-    },
-  ],
-  [
-    QUERY_FACTORY.module({ module: true }).context().voidInputQuery,
-    {
-      name: "module.context.voidInputQuery",
-      response: { module: true, context: true, query: true },
-      queryKey: ["module", { module: true }, "context", "voidInputQuery"],
     },
   ],
   [
@@ -556,20 +516,6 @@ const queries = [
       name: "module.context.CONTEXT.query",
       response: { module: true, context: true, CONTEXT: true, query: true },
       queryKey: ["module", { module: true }, "context", "CONTEXT", "query"],
-    },
-  ],
-  [
-    QUERY_FACTORY.module({ module: true }).context().CONTEXT().voidInputQuery,
-    {
-      name: "module.context.CONTEXT.voidInputQuery",
-      response: { module: true, context: true, CONTEXT: true, query: true },
-      queryKey: [
-        "module",
-        { module: true },
-        "context",
-        "CONTEXT",
-        "voidInputQuery",
-      ],
     },
   ],
   [
@@ -636,25 +582,6 @@ const queries = [
     },
   ],
   [
-    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true })
-      .voidInputQuery,
-    {
-      name: "module.MODULE.voidInputQuery",
-      response: {
-        MODULE: true,
-        module: true,
-        query: true,
-      },
-      queryKey: [
-        "module",
-        { module: true },
-        "MODULE",
-        { MODULE: true },
-        "voidInputQuery",
-      ],
-    },
-  ],
-  [
     () =>
       QUERY_FACTORY.module({ module: true })
         .MODULE({ MODULE: true })
@@ -715,27 +642,6 @@ const queries = [
         { MODULE: true },
         "context",
         "query",
-      ],
-    },
-  ],
-  [
-    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true }).context()
-      .voidInputQuery,
-    {
-      name: "module.MODULE.context.voidInputQuery",
-      response: {
-        MODULE: true,
-        module: true,
-        context: true,
-        query: true,
-      },
-      queryKey: [
-        "module",
-        { module: true },
-        "MODULE",
-        { MODULE: true },
-        "context",
-        "voidInputQuery",
       ],
     },
   ],
@@ -809,31 +715,6 @@ const queries = [
         "context",
         "CONTEXT",
         "query",
-      ],
-    },
-  ],
-  [
-    QUERY_FACTORY.module({ module: true })
-      .MODULE({ MODULE: true })
-      .context()
-      .CONTEXT().voidInputQuery,
-    {
-      name: "module.MODULE.context.CONTEXT.voidInputQuery",
-      response: {
-        MODULE: true,
-        module: true,
-        context: true,
-        CONTEXT: true,
-        query: true,
-      },
-      queryKey: [
-        "module",
-        { module: true },
-        "MODULE",
-        { MODULE: true },
-        "context",
-        "CONTEXT",
-        "voidInputQuery",
       ],
     },
   ],
@@ -921,18 +802,6 @@ const baseMutation = [
 const mutations = [
   ...baseMutation,
   [
-    QUERY_FACTORY.voidInputMutation,
-    {
-      name: "voidInputMutation",
-      input: undefined,
-      ctx: undefined,
-      response: {
-        mutation: true,
-      },
-      mutationKey: ["voidInputMutation"],
-    },
-  ],
-  [
     QUERY_FACTORY.inputMutation,
     {
       name: "inputMutation",
@@ -973,21 +842,6 @@ const mutations = [
         mutation: true,
       },
       mutationKey: ["context", "mutation"],
-    },
-  ],
-  [
-    QUERY_FACTORY.context().voidInputMutation,
-    {
-      name: "context.voidInputMutation",
-      input: undefined,
-      ctx: {
-        context: true,
-      },
-      response: {
-        context: true,
-        mutation: true,
-      },
-      mutationKey: ["context", "voidInputMutation"],
     },
   ],
   [
@@ -1041,23 +895,6 @@ const mutations = [
     },
   ],
   [
-    QUERY_FACTORY.context().CONTEXT().voidInputMutation,
-    {
-      name: "context.CONTEXT.voidInputMutation",
-      input: undefined,
-      ctx: {
-        context: true,
-        CONTEXT: true,
-      },
-      response: {
-        context: true,
-        CONTEXT: true,
-        mutation: true,
-      },
-      mutationKey: ["context", "CONTEXT", "voidInputMutation"],
-    },
-  ],
-  [
     QUERY_FACTORY.context().CONTEXT().inputMutation,
     {
       name: "context.CONTEXT.inputMutation",
@@ -1108,19 +945,6 @@ const mutations = [
     },
   ],
   [
-    QUERY_FACTORY.module({ module: true }).voidInputMutation,
-    {
-      name: "module.voidInputMutation",
-      input: undefined,
-      ctx: undefined,
-      response: {
-        module: true,
-        mutation: true,
-      },
-      mutationKey: ["module", { module: true }, "voidInputMutation"],
-    },
-  ],
-  [
     QUERY_FACTORY.module({ module: true }).inputMutation,
     {
       name: "module.inputMutation",
@@ -1164,20 +988,6 @@ const mutations = [
         mutation: true,
       },
       mutationKey: ["module", { module: true }, "context", "mutation"],
-    },
-  ],
-  [
-    QUERY_FACTORY.module({ module: true }).context().voidInputMutation,
-    {
-      name: "module.context.voidInputMutation",
-      input: undefined,
-      ctx: { context: true },
-      response: {
-        module: true,
-        context: true,
-        mutation: true,
-      },
-      mutationKey: ["module", { module: true }, "context", "voidInputMutation"],
     },
   ],
   [
@@ -1230,28 +1040,6 @@ const mutations = [
         "context",
         "CONTEXT",
         "mutation",
-      ],
-    },
-  ],
-  [
-    QUERY_FACTORY.module({ module: true }).context().CONTEXT()
-      .voidInputMutation,
-    {
-      name: "module.context.CONTEXT.voidInputMutation",
-      input: undefined,
-      ctx: { context: true, CONTEXT: true },
-      response: {
-        module: true,
-        context: true,
-        CONTEXT: true,
-        mutation: true,
-      },
-      mutationKey: [
-        "module",
-        { module: true },
-        "context",
-        "CONTEXT",
-        "voidInputMutation",
       ],
     },
   ],
@@ -1323,27 +1111,6 @@ const mutations = [
   ],
   [
     QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true })
-      .voidInputMutation,
-    {
-      name: "module.MODULE.voidInputMutation",
-      response: {
-        MODULE: true,
-        module: true,
-        mutation: true,
-      },
-      input: undefined,
-      ctx: undefined,
-      mutationKey: [
-        "module",
-        { module: true },
-        "MODULE",
-        { MODULE: true },
-        "voidInputMutation",
-      ],
-    },
-  ],
-  [
-    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true })
       .inputMutation,
     {
       name: "module.MODULE.inputMutation",
@@ -1408,29 +1175,6 @@ const mutations = [
         { MODULE: true },
         "context",
         "mutation",
-      ],
-    },
-  ],
-  [
-    QUERY_FACTORY.module({ module: true }).MODULE({ MODULE: true }).context()
-      .voidInputMutation,
-    {
-      name: "module.MODULE.context.voidInputMutation",
-      response: {
-        MODULE: true,
-        module: true,
-        context: true,
-        mutation: true,
-      },
-      ctx: { context: true },
-      input: undefined,
-      mutationKey: [
-        "module",
-        { module: true },
-        "MODULE",
-        { MODULE: true },
-        "context",
-        "voidInputMutation",
       ],
     },
   ],
@@ -1508,33 +1252,6 @@ const mutations = [
         "context",
         "CONTEXT",
         "mutation",
-      ],
-    },
-  ],
-  [
-    QUERY_FACTORY.module({ module: true })
-      .MODULE({ MODULE: true })
-      .context()
-      .CONTEXT().voidInputMutation,
-    {
-      name: "module.MODULE.context.CONTEXT.voidInputMutation",
-      response: {
-        MODULE: true,
-        module: true,
-        context: true,
-        CONTEXT: true,
-        mutation: true,
-      },
-      input: undefined,
-      ctx: { context: true, CONTEXT: true },
-      mutationKey: [
-        "module",
-        { module: true },
-        "MODULE",
-        { MODULE: true },
-        "context",
-        "CONTEXT",
-        "voidInputMutation",
       ],
     },
   ],

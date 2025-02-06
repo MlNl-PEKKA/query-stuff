@@ -29,6 +29,7 @@ import type {
   QUnusedSkipTokenOptionsOut,
   UnknownRecord,
 } from "./types.ts";
+import type { StandardSchemaV1 } from "@standard-schema/spec";
 import { mutationOptions } from "./utils.js";
 
 type MiddlewareResponse<TContext> = {
@@ -77,9 +78,9 @@ export type AnyMiddlewares = AnyMiddlewareFn[];
 type Opts<
   TContext = void,
   TOverrides extends Overrides = [],
-  TInput = void,
+  TSchema = void,
 > = CtxOpts<TContext, TOverrides> & {
-  input: TInput;
+  input: TSchema;
 };
 
 class QueryStuffRoot<
@@ -105,33 +106,33 @@ class QueryStuffRoot<
     opts: CtxOpts<TContext, TOverrides>;
     run: () => TData;
   }>;
-  protected async execute<TData, TInput>(
-    fn: (opts: Opts<TContext, TOverrides, TInput>) => TData,
-    input: TInput,
+  protected async execute<TData, TSchema>(
+    fn: (opts: Opts<TContext, TOverrides, TSchema>) => TData,
+    input: TSchema,
   ): Promise<{
     opts: CtxOpts<TContext, TOverrides>;
-    run: (input: TInput) => TData;
+    run: (input: TSchema) => TData;
   }>;
-  protected async execute<TData, TInput>(
-    fn: (opts: Opts<TContext, TOverrides, TInput>) => TData,
+  protected async execute<TData, TSchema>(
+    fn: (opts: Opts<TContext, TOverrides, TSchema>) => TData,
     input: void,
   ): Promise<{
     opts: CtxOpts<TContext, TOverrides>;
-    run: (input: TInput) => TData;
+    run: (input: TSchema) => TData;
   }>;
-  protected async execute<TData, TInput>(
-    fn: (opts: Opts<TContext, TOverrides, TInput>) => TData,
-    input: TInput,
+  protected async execute<TData, TSchema>(
+    fn: (opts: Opts<TContext, TOverrides, TSchema>) => TData,
+    input: TSchema,
   ): Promise<{
     opts: CtxOpts<TContext, TOverrides>;
-    run: (input: TInput) => TData;
+    run: (input: TSchema) => TData;
   }> {
     const run = async (
       index: number,
       opts: CtxOpts<TContext, TOverrides>,
     ): Promise<{
       opts: CtxOpts<TContext, TOverrides>;
-      run: (input: TInput) => TData;
+      run: (input: TSchema) => TData;
     }> => {
       if (index >= this._middlewares.length)
         return {
@@ -218,13 +219,13 @@ export class QueryStuffUndefinedInput<
       [...TMiddlewares, MiddlewareFn<TContext, TOverride>]
     >(this._ctx, [...this._middlewares, fn]);
   }
-  input<TInput = void>() {
+  input<TSchema extends StandardSchemaV1>(schema: TSchema) {
     return new QueryStuffDefinedInput<
+      TSchema,
       TContext,
       TOverrides,
-      TMiddlewares,
-      TInput
-    >(this._ctx, this._middlewares);
+      TMiddlewares
+    >(schema, this._ctx, this._middlewares);
   }
   query<TData = unknown, TError = DefaultError>(
     queryFn: (opts: CtxOpts<TContext, TOverrides>) => TData,
@@ -334,11 +335,31 @@ export class QueryStuffUndefinedInput<
 }
 
 export class QueryStuffDefinedInput<
+  TSchema extends StandardSchemaV1,
   TContext = void,
   TOverrides extends Overrides = [],
   TMiddlewares extends AnyMiddlewares = Middlewares<TOverrides>,
-  TInput = unknown,
+  TInput extends
+    StandardSchemaV1.InferInput<TSchema> = StandardSchemaV1.InferInput<TSchema>,
 > extends QueryStuffRoot<TContext, TOverrides, TMiddlewares> {
+  constructor(
+    private _schema: TSchema,
+    protected _ctx: TContext = {} as TContext,
+    protected _middlewares: TMiddlewares = [] as unknown as TMiddlewares,
+  ) {
+    super(_ctx, _middlewares);
+  }
+  private validate<T, U extends unknown[]>(fn: (...args: [TInput, ...U]) => T) {
+    return (input: TInput, ...rest: U) => {
+      const result = this._schema["~standard"].validate(input);
+      if (result instanceof Promise) {
+        throw new TypeError("Schema validation must be synchronous");
+      }
+      if (result.issues)
+        throw new Error(JSON.stringify(result.issues, null, 2));
+      return fn(input, ...rest);
+    };
+  }
   query<TData = unknown, TError = DefaultError>(
     queryFn: (opts: Opts<TContext, TOverrides, TInput>) => TData,
     options?: QDefinedInitialDataOptionsIn<TData, TError>,
@@ -371,7 +392,7 @@ export class QueryStuffDefinedInput<
   ) => QQueryOptionsOut<NoInfer<TData>, NoInfer<TError>> {
     const execute = async (input: TInput) => await this.execute(queryFn, input);
     let result: Awaited<ReturnType<typeof execute>>;
-    return (input, overrideOptions = {}) => ({
+    return this.validate((input, overrideOptions = {}) => ({
       ...queryOptions({
         ...options,
         ...overrideOptions,
@@ -382,7 +403,7 @@ export class QueryStuffDefinedInput<
         },
       }),
       [queryNodeDefinedInput]: {},
-    });
+    }));
   }
   mutation<TData = unknown, TError = DefaultError, TMutationContext = unknown>(
     mutationFn: MutationFunction<TData, Opts<TContext, TOverrides, TInput>>,
@@ -413,10 +434,10 @@ export class QueryStuffDefinedInput<
         ...options,
         ...overrideOptions,
         mutationKey: [],
-        mutationFn: async (input) => {
+        mutationFn: this.validate(async (input) => {
           result ??= await execute(input);
           return await result.run(input);
-        },
+        }),
         onMutate: async (input) => {
           result ??= await execute(input);
           const variables = { ...result.opts, input };
