@@ -312,7 +312,7 @@ export type ProxyNode<
       : never;
 };
 
-type MiddlewareResponse<TContext> = {
+export type MiddlewareResponse<TContext> = {
   [middlewareData]: {
     opts: any;
     run: (input: any) => any;
@@ -333,7 +333,7 @@ export type CtxOpts<TContext = void, TOverrides extends Overrides = []> = {
 
 export type Overrides = readonly UnknownRecord[];
 
-type OverridesRecord<TOverrides extends Overrides> = TOverrides extends [
+export type OverridesRecord<TOverrides extends Overrides> = TOverrides extends [
   infer Head,
   ...infer Tail,
 ]
