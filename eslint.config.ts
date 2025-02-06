@@ -21,7 +21,7 @@ export default tseslint.config(
       },
     },
     rules: {
-      "@typescript-eslint/consistent-type-definitions": "off",
+      "@typescript-eslint/consistent-type-definitions": ["warn", "type"],
       "@typescript-eslint/no-empty-object-type": "off",
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/require-await": "off",
