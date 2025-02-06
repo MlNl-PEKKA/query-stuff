@@ -134,13 +134,6 @@ export class QueryStuffUndefinedInput<
   TOverrides extends Overrides = [],
   TMiddlewares extends AnyMiddlewares = Middlewares<TOverrides>,
 > extends QueryStuffRoot<TContext, TOverrides, TMiddlewares> {
-  use<TOverride extends UnknownRecord>(fn: MiddlewareFn<TContext, TOverride>) {
-    return new QueryStuffUndefinedInput<
-      TContext,
-      [...TOverrides, TOverride],
-      [...TMiddlewares, MiddlewareFn<TContext, TOverride>]
-    >(this._ctx, [...this._middlewares, fn]);
-  }
   input<TSchema extends StandardSchemaV1<UnknownRecord>>(
     schema: TSchema,
   ): QueryStuffDefinedRecordInput<TSchema, TContext, TOverrides, TMiddlewares>;
@@ -161,6 +154,18 @@ export class QueryStuffUndefinedInput<
     fn: (q: QueryStuffUndefinedInput<TContext, TOverrides, TMiddlewares>) => T,
   ) {
     return fn(new QueryStuffUndefinedInput(this._ctx, this._middlewares));
+  }
+  use<TOverride extends UnknownRecord>(
+    fn: MiddlewareFn<CtxOpts<TContext, TOverrides>["ctx"], TOverride>,
+  ) {
+    return new QueryStuffUndefinedInput<
+      TContext,
+      [...TOverrides, TOverride],
+      [
+        ...TMiddlewares,
+        MiddlewareFn<CtxOpts<TContext, TOverrides>["ctx"], TOverride>,
+      ]
+    >(this._ctx, [...this._middlewares, fn]);
   }
   query<TData = unknown, TError = DefaultError>(
     queryFn: (opts: CtxOpts<TContext, TOverrides>) => TData,
