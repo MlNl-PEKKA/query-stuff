@@ -267,31 +267,33 @@ export class QueryStuffUndefinedInput<
         },
         onMutate: async () => {
           result ??= await execute();
-          return (
-            overrideOptions.onMutate?.(result.opts) ??
-            options.onMutate?.(result.opts)
-          );
+          return await (overrideOptions.onMutate?.(result.opts) ??
+            options.onMutate?.(result.opts));
         },
         onSuccess: async (data, _, context) => {
           result ??= await execute();
-          return (
-            overrideOptions.onSuccess?.(data, result.opts, context) ??
-            options.onSuccess?.(data, result.opts, context)
-          );
+          return await (overrideOptions.onSuccess?.(
+            data,
+            result.opts,
+            context,
+          ) ?? options.onSuccess?.(data, result.opts, context));
         },
         onError: async (error, _, context) => {
           result ??= await execute();
-          return (
-            overrideOptions.onError?.(error, result.opts, context) ??
-            options.onError?.(error, result.opts, context)
-          );
+          return await (overrideOptions.onError?.(
+            error,
+            result.opts,
+            context,
+          ) ?? options.onError?.(error, result.opts, context));
         },
         onSettled: async (data, error, _, context) => {
           result ??= await execute();
-          return (
-            overrideOptions.onSettled?.(data, error, result.opts, context) ??
-            options.onSettled?.(data, error, result.opts, context)
-          );
+          return await (overrideOptions.onSettled?.(
+            data,
+            error,
+            result.opts,
+            context,
+          ) ?? options.onSettled?.(data, error, result.opts, context));
         },
       }),
       [mutationNode]: {},
@@ -408,34 +410,30 @@ export class QueryStuffDefinedInput<
         onMutate: async (input) => {
           result ??= await execute(input);
           const variables = { ...result.opts, input };
-          return (
-            overrideOptions.onMutate?.(variables) ??
-            options.onMutate?.(variables)
-          );
+          return await (overrideOptions.onMutate?.(variables) ??
+            options.onMutate?.(variables));
         },
         onSuccess: async (data, input, context) => {
           result ??= await execute(input);
           const variables = { ...result.opts, input };
-          return (
-            overrideOptions.onSuccess?.(data, variables, context) ??
-            options.onSuccess?.(data, variables, context)
-          );
+          return await (overrideOptions.onSuccess?.(data, variables, context) ??
+            options.onSuccess?.(data, variables, context));
         },
         onError: async (error, input, context) => {
           result ??= await execute(input);
           const variables = { ...result.opts, input };
-          return (
-            overrideOptions.onError?.(error, variables, context) ??
-            options.onError?.(error, variables, context)
-          );
+          return await (overrideOptions.onError?.(error, variables, context) ??
+            options.onError?.(error, variables, context));
         },
         onSettled: async (data, error, input, context) => {
           result ??= await execute(input);
           const variables = { ...result.opts, input };
-          return (
-            overrideOptions.onSettled?.(data, error, variables, context) ??
-            options.onSettled?.(data, error, variables, context)
-          );
+          return await (overrideOptions.onSettled?.(
+            data,
+            error,
+            variables,
+            context,
+          ) ?? options.onSettled?.(data, error, variables, context));
         },
       }),
       [mutationNode]: {},
