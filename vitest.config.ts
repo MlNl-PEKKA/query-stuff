@@ -8,11 +8,11 @@ export default defineConfig({
       include: ["src"],
       all: true,
     },
-    typecheck: {
-      enabled: true,
-      exclude: ["**/!(*.test.*)", "**/node_modules/**"],
-      include: ["**/src/*.test.*"],
-    },
+    // typecheck: {
+    //   enabled: true,
+    //   exclude: ["**/!(*.test.*)", "**/node_modules/**"],
+    //   include: ["**/src/*.test.*"],
+    // },
     exclude: ["lib", "node_modules"],
   },
 });

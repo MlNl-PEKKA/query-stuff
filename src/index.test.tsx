@@ -42,7 +42,7 @@ function renderHook<U = unknown, T = unknown>(
 }
 
 describe(`QueryStuff`, () => {
-  queries.forEach(([q, { name, response, queryKey }]) => {
+  queries().forEach(([q, { name, response, queryKey }]) => {
     describe(`${name}: query`, () => {
       it(`${name}: useQuery Error`, async () => {
         const { result: query } = renderHook(() =>
@@ -172,7 +172,7 @@ describe(`QueryStuff`, () => {
       });
     });
   });
-  mutations.forEach(
+  mutations().forEach(
     ([m, { name, input, response, mutationKey, ctx: innerCtx }]) => {
       describe(`${name}: mutation`, () => {
         it(`${name}: useMutation, useMutationState, onMutate, onSuccess, onSettled, onError`, async () => {
@@ -331,7 +331,7 @@ describe(`QueryStuff`, () => {
       });
     },
   );
-  keys.forEach(([k, { name, key }]) => {
+  keys().forEach(([k, { name, key }]) => {
     it(`${name}: key`, () => {
       expect(k._key).toStrictEqual(key);
     });

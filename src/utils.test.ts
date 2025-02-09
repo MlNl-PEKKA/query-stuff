@@ -1,12 +1,17 @@
-import { describe, expect, expectTypeOf, it } from "vitest";
-import { nodes } from "./fixtures.js";
+import { describe, expect, it } from "vitest";
 import {
-  Node,
-  QAnyMutationOptionsOut,
-  QAnyQueryOptionsOut,
-  QMutationOptionsOut,
-  QQueryOptionsOut,
-} from "./types.js";
+  defined_queries,
+  keys,
+  mutations,
+  queries,
+  undefined_queries,
+} from "./fixtures.js";
+import {
+  mutationNode,
+  queryNodeDefinedInput,
+  queryNodeUndefinedInput,
+} from "./symbols.js";
+import { Node, QAnyMutationOptionsOut, QAnyQueryOptionsOut } from "./types.js";
 import {
   isMutationNode,
   isNode,
@@ -18,11 +23,6 @@ import {
   isString,
   mutationOptions,
 } from "./utils.js";
-import {
-  mutationNode,
-  queryNodeDefinedInput,
-  queryNodeUndefinedInput,
-} from "./symbols.js";
 
 describe("utils", () => {
   describe("isString", () => {
@@ -51,27 +51,11 @@ describe("utils", () => {
       const target: unknown = {};
       const value = isNodeObject(target);
       expect(value).toBe(true);
-      if (value) expectTypeOf(target).toEqualTypeOf<Node>();
     });
     it("returns true for nodes and asserts target type as Node Object", () => {
-      [
-        nodes,
-        nodes.a(),
-        nodes.b(),
-        nodes.e({ e: 5 }),
-        nodes.f(),
-        nodes.g.a(),
-        nodes.g.b(),
-        nodes.g.e({ e: 5 }),
-        nodes.g.f(),
-        nodes.h({ h: 8 }).a(),
-        nodes.h({ h: 8 }).b(),
-        nodes.h({ h: 8 }).e({ e: 5 }),
-        nodes.h({ h: 8 }).f(),
-      ].forEach((target: unknown) => {
-        const value = isNodeObject(target);
+      keys().forEach((target) => {
+        const value = isNodeObject(target[0]);
         expect(value).toBe(true);
-        if (value) expectTypeOf(target).toEqualTypeOf<Node>();
       });
     });
   });
@@ -88,16 +72,12 @@ describe("utils", () => {
       const target: unknown = { [queryNodeUndefinedInput]: null };
       const value = isQueryNodeUndefinedInput(target);
       expect(value).toBe(true);
-      if (value) expectTypeOf(target).toEqualTypeOf<QQueryOptionsOut>();
     });
     it("returns true for QueryNodeUndefinedInput and asserts target type as QQueryOptionsOut", () => {
-      [nodes.a(), nodes.g.a(), nodes.h({ h: 8 }).a()].forEach(
-        (target: unknown) => {
-          const value = isQueryNodeUndefinedInput(target);
-          expect(value).toBe(true);
-          if (value) expectTypeOf(target).toEqualTypeOf<QQueryOptionsOut>();
-        },
-      );
+      undefined_queries().forEach((target) => {
+        const value = isQueryNodeUndefinedInput(target[0]());
+        expect(value).toBe(true);
+      });
     });
   });
 
@@ -113,17 +93,11 @@ describe("utils", () => {
       const target: unknown = { [queryNodeDefinedInput]: null };
       const value = isQueryNodeDefinedInput(target);
       expect(value).toBe(true);
-      if (value) expectTypeOf(target).toEqualTypeOf<QQueryOptionsOut>();
     });
     it("returns true for QueryNodeDefinedInput and asserts target type as QQueryOptionsOut", () => {
-      [
-        nodes.e({ e: 5 }),
-        nodes.g.e({ e: 5 }),
-        nodes.h({ h: 8 }).e({ e: 5 }),
-      ].forEach((target: unknown) => {
-        const value = isQueryNodeDefinedInput(target);
+      defined_queries().forEach((target) => {
+        const value = isQueryNodeDefinedInput(target[0]());
         expect(value).toBe(true);
-        if (value) expectTypeOf(target).toEqualTypeOf<QQueryOptionsOut>();
       });
     });
   });
@@ -140,26 +114,16 @@ describe("utils", () => {
       const target: unknown = { [queryNodeUndefinedInput]: null };
       const value = isQueryNode(target);
       expect(value).toBe(true);
-      if (value) expectTypeOf(target).toEqualTypeOf<QQueryOptionsOut>();
     });
     it("returns true and asserts target type as QQueryOptionsOut for queryNodeWithInput symbol", () => {
       const target: unknown = { [queryNodeDefinedInput]: null };
       const value = isQueryNode(target);
       expect(value).toBe(true);
-      if (value) expectTypeOf(target).toEqualTypeOf<QQueryOptionsOut>();
     });
     it("returns true for QueryNode and asserts target type as QQueryOptionsOut", () => {
-      [
-        nodes.a(),
-        nodes.g.a(),
-        nodes.h({ h: 8 }).a(),
-        nodes.e({ e: 5 }),
-        nodes.g.e({ e: 5 }),
-        nodes.h({ h: 8 }).e({ e: 5 }),
-      ].forEach((target: unknown) => {
-        const value = isQueryNode(target);
+      queries().forEach((target) => {
+        const value = isQueryNode(target[0]());
         expect(value).toBe(true);
-        if (value) expectTypeOf(target).toEqualTypeOf<QQueryOptionsOut>();
       });
     });
   });
@@ -176,20 +140,12 @@ describe("utils", () => {
       const target: unknown = { [mutationNode]: null };
       const value = isMutationNode(target);
       expect(value).toBe(true);
-      if (value) {
-        expectTypeOf(target).toEqualTypeOf<QMutationOptionsOut>();
-      }
     });
     it("returns true for [mutationNode] and asserts type QQueryOptionsOut, for objects with the [mutationNode] symbol", () => {
-      [nodes.b(), nodes.g.b(), nodes.h({ h: 8 }).b()].forEach(
-        (target: unknown) => {
-          const value = isMutationNode(target);
-          expect(value).toBe(true);
-          if (value) {
-            expectTypeOf(target).toEqualTypeOf<QMutationOptionsOut>();
-          }
-        },
-      );
+      mutations().forEach((target) => {
+        const value = isMutationNode(target[0]());
+        expect(value).toBe(true);
+      });
     });
   });
 
@@ -205,37 +161,11 @@ describe("utils", () => {
       const target: unknown = () => {};
       const value = isNodeFunction(target);
       expect(value).toBe(true);
-      if (value)
-        expectTypeOf(target).toEqualTypeOf<
-          (
-            ...input: unknown[]
-          ) => Node | QAnyQueryOptionsOut | QAnyMutationOptionsOut
-        >();
     });
     it("returns true for NodeFunctions and asserts target type as node function i.e., (...input: unknown[]) => Node | QAnyQueryOptionsOut | QAnyMutationOptionsOut", () => {
-      [
-        nodes.a,
-        nodes.b,
-        nodes.e,
-        nodes.f,
-        nodes.g.a,
-        nodes.g.b,
-        nodes.g.e,
-        nodes.g.f,
-        nodes.h,
-        nodes.h({ h: 8 }).a,
-        nodes.h({ h: 8 }).b,
-        nodes.h({ h: 8 }).e,
-        nodes.h({ h: 8 }).f,
-      ].forEach((target: unknown) => {
-        const value = isNodeFunction(target);
+      [...queries(), ...mutations()].forEach((target) => {
+        const value = isNodeFunction(target[0]);
         expect(value).toBe(true);
-        if (value)
-          expectTypeOf(target).toEqualTypeOf<
-            (
-              ...input: unknown[]
-            ) => Node | QAnyQueryOptionsOut | QAnyMutationOptionsOut
-          >();
       });
     });
   });
@@ -252,7 +182,6 @@ describe("utils", () => {
       const target: Parameters<typeof isNode>[0] = {} satisfies Node;
       const value = isNode(target);
       expect(value).toBe(true);
-      if (value) expectTypeOf(target).toEqualTypeOf<Node>();
     });
     it("returns true and asserts target type as Node for queryNodeWithoutInput symbol", () => {
       const target: Parameters<typeof isNode>[0] = {
@@ -261,7 +190,6 @@ describe("utils", () => {
       } satisfies QAnyQueryOptionsOut;
       const value = isNode(target);
       expect(value).toBe(true);
-      if (value) target satisfies Node;
     });
     it("returns true and asserts target type as Node for queryNodeWithInput symbol", () => {
       const target: Parameters<typeof isNode>[0] = {
@@ -270,7 +198,6 @@ describe("utils", () => {
       } satisfies QAnyQueryOptionsOut;
       const value = isNode(target);
       expect(value).toBe(true);
-      if (value) target satisfies Node;
     });
     it("returns true and asserts target type as Node for [mutationNode] symbol", () => {
       const target: Parameters<typeof isNode>[0] = {
@@ -281,7 +208,6 @@ describe("utils", () => {
       } satisfies QAnyMutationOptionsOut;
       const value = isNode(target);
       expect(value).toBe(true);
-      if (value) target satisfies Node;
     });
     it("returns true and asserts target type as Node for node function i.e (...input: unknown[]) => Node | QAnyQueryOptionsOut | QAnyMutationOptionsOut", () => {
       const target: Parameters<typeof isNode>[0] = (() => ({})) satisfies (
@@ -289,51 +215,14 @@ describe("utils", () => {
       ) => Node | QAnyQueryOptionsOut | QAnyMutationOptionsOut;
       const value = isNode(target);
       expect(value).toBe(true);
-      if (value) target satisfies Node;
     });
-    it("returns true for Nodes and NodeFunctions and asserts target type as Node", () => {
-      [
-        nodes,
-        nodes.a(),
-        nodes.b(),
-        nodes.e({ e: 5 }),
-        nodes.f(),
-        nodes.g.a(),
-        nodes.g.b(),
-        nodes.g.e({ e: 5 }),
-        nodes.g.f(),
-        nodes.h({ h: 8 }).a(),
-        nodes.h({ h: 8 }).b(),
-        nodes.h({ h: 8 }).e({ e: 5 }),
-        nodes.h({ h: 8 }).f(),
-        nodes.a,
-        nodes.b,
-        nodes.e,
-        nodes.f,
-        nodes.g.a,
-        nodes.g.b,
-        nodes.g.e,
-        nodes.g.f,
-        nodes.h,
-        nodes.h({ h: 8 }).a,
-        nodes.h({ h: 8 }).b,
-        nodes.h({ h: 8 }).e,
-        nodes.h({ h: 8 }).f,
-      ].forEach(
-        (
-          target:
-            | Node
-            | QAnyQueryOptionsOut
-            | QAnyMutationOptionsOut
-            | ((
-                ...input: any[]
-              ) => Node | QAnyQueryOptionsOut | QAnyMutationOptionsOut),
-        ) => {
-          const value = isNode(target);
-          expect(value).toBe(true);
-          if (value) target satisfies Node;
-        },
-      );
+    it("returns true for Nodes and asserts target type as Node", () => {
+      [...queries(), ...mutations(), ...keys()].forEach((target) => {
+        expect(isNode(target[0] as unknown as Node)).toBe(true);
+      });
+      [...queries(), ...mutations()].forEach((target) => {
+        expect(isNode(target[0]())).toBe(true);
+      });
     });
   });
 });

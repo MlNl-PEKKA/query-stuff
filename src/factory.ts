@@ -42,7 +42,7 @@ export const factory = <
   T extends Node,
   TContext = void,
   TOverrides extends Overrides = [],
-  TMiddlewares extends AnyMiddlewares = Middlewares<TOverrides>,
+  TMiddlewares extends AnyMiddlewares = Middlewares<TContext, TOverrides>,
 >(
   fn: (q: QueryStuffUndefinedInput<TContext, TOverrides, TMiddlewares>) => T,
 ): ProxyNode<T> => {
@@ -54,7 +54,7 @@ export const factory = <
 export class QueryStuffRoot<
   TContext = void,
   TOverrides extends Overrides = [],
-  TMiddlewares extends AnyMiddlewares = Middlewares<TOverrides>,
+  TMiddlewares extends AnyMiddlewares = Middlewares<TContext, TOverrides>,
 > {
   constructor(
     protected _ctx: TContext = {} as TContext,
@@ -132,7 +132,7 @@ export class QueryStuffRoot<
 export class QueryStuffUndefinedInput<
   TContext = void,
   TOverrides extends Overrides = [],
-  TMiddlewares extends AnyMiddlewares = Middlewares<TOverrides>,
+  TMiddlewares extends AnyMiddlewares = Middlewares<TContext, TOverrides>,
 > extends QueryStuffRoot<TContext, TOverrides, TMiddlewares> {
   input<TSchema extends StandardSchemaV1<UnknownRecord>>(
     schema: TSchema,
@@ -305,7 +305,7 @@ export class QueryStuffDefinedInput<
   TSchema extends StandardSchemaV1,
   TContext = void,
   TOverrides extends Overrides = [],
-  TMiddlewares extends AnyMiddlewares = Middlewares<TOverrides>,
+  TMiddlewares extends AnyMiddlewares = Middlewares<TContext, TOverrides>,
   TInput extends
     StandardSchemaV1.InferInput<TSchema> = StandardSchemaV1.InferInput<TSchema>,
 > extends QueryStuffRoot<TContext, TOverrides, TMiddlewares> {
@@ -445,7 +445,7 @@ export class QueryStuffDefinedRecordInput<
   TSchema extends StandardSchemaV1<UnknownRecord>,
   TContext = void,
   TOverrides extends Overrides = [],
-  TMiddlewares extends AnyMiddlewares = Middlewares<TOverrides>,
+  TMiddlewares extends AnyMiddlewares = Middlewares<TContext, TOverrides>,
   TInput extends
     StandardSchemaV1.InferInput<TSchema> = StandardSchemaV1.InferInput<TSchema>,
 > extends QueryStuffDefinedInput<
