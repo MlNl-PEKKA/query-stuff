@@ -3,7 +3,6 @@ import type {
   AnyUseQueryOptions,
   DataTag,
   DefaultError,
-  DefinedInitialDataOptions,
   MutationKey,
   OmitKeyof,
   QueryKey,
@@ -90,31 +89,6 @@ export type QBaseQueryOptionsOut<
     )
 >;
 
-export type QDefinedInitialDataOptionsIn<
-  TQueryFnData = unknown,
-  TError = DefaultError,
-  TData = TQueryFnData,
-  TQueryKey extends QueryKey = QueryKey,
-> = Prettify<
-  QBaseQueryOptions<
-    DefinedInitialDataOptions<TQueryFnData, TError, TData, TQueryKey>
-  >
->;
-
-export type QDefinedInitialDataOptionsOut<
-  TQueryFnData = unknown,
-  TError = DefaultError,
-  TData = TQueryFnData,
-  TQueryKey extends QueryKey = QueryKey,
-> = Prettify<
-  QBaseQueryOptionsOut<
-    DefinedInitialDataOptions<TQueryFnData, TError, TData, TQueryKey>,
-    TQueryFnData,
-    TError,
-    TQueryKey
-  >
->;
-
 export type QUnusedSkipTokenOptionsIn<
   TQueryFnData = unknown,
   TError = DefaultError,
@@ -171,7 +145,6 @@ export type QQueryOptionsIn<
   TData = TQueryFnData,
   TQueryKey extends QueryKey = QueryKey,
 > =
-  | QDefinedInitialDataOptionsIn<TQueryFnData, TError, TData, TQueryKey>
   | QUnusedSkipTokenOptionsIn<TQueryFnData, TError, TData, TQueryKey>
   | QUndefinedInitialDataOptionsIn<TQueryFnData, TError, TData, TQueryKey>;
 
@@ -183,7 +156,6 @@ export type QQueryOptionsOut<
   TData = TQueryFnData,
   TQueryKey extends QueryKey = QueryKey,
 > =
-  | QDefinedInitialDataOptionsOut<TQueryFnData, TError, TData, TQueryKey>
   | QUnusedSkipTokenOptionsOut<TQueryFnData, TError, TData, TQueryKey>
   | QUndefinedInitialDataOptionsOut<TQueryFnData, TError, TData, TQueryKey>;
 

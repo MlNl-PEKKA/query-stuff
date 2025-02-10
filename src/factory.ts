@@ -1,7 +1,8 @@
+import type { StandardSchemaV1 } from "@standard-schema/spec";
 import type {
   DefaultError,
   MutationFunction,
-  OmitKeyof,
+  SkipToken,
 } from "@tanstack/react-query";
 import { queryOptions } from "@tanstack/react-query";
 import { createProxyNode } from "./createProxyNode.js";
@@ -13,12 +14,16 @@ import {
   queryNodeUndefinedInput,
 } from "./symbols.js";
 import type {
+  AnyMiddlewares,
+  CtxOpts,
   Merge,
+  MiddlewareFn,
+  Middlewares,
   Node,
+  Opts,
+  Overrides,
   Prettify,
   ProxyNode,
-  QDefinedInitialDataOptionsIn,
-  QDefinedInitialDataOptionsOut,
   QMutationOptionsIn,
   QMutationOptionsOut,
   QQueryOptionsIn,
@@ -28,14 +33,7 @@ import type {
   QUnusedSkipTokenOptionsIn,
   QUnusedSkipTokenOptionsOut,
   UnknownRecord,
-  CtxOpts,
-  Overrides,
-  Middlewares,
-  AnyMiddlewares,
-  Opts,
-  MiddlewareFn,
 } from "./types.js";
-import type { StandardSchemaV1 } from "@standard-schema/spec";
 import { mutationOptions } from "./utils.js";
 
 export const factory = <
@@ -156,64 +154,34 @@ export class QueryStuffUndefinedInput<
     return fn(new QueryStuffUndefinedInput(this._ctx, this._middlewares));
   }
   use<TOverride extends UnknownRecord>(
-    fn: MiddlewareFn<void, TOverride>,
+    fn: MiddlewareFn<Prettify<CtxOpts<TContext, TOverrides>>["ctx"], TOverride>,
   ): QueryStuffUndefinedInput<
     TContext,
     [...TOverrides, TOverride],
-    [...TMiddlewares, MiddlewareFn<TContext, TOverride>]
-  >;
-  use<TOverride extends UnknownRecord>(
-    fn: MiddlewareFn<CtxOpts<TContext, TOverrides>["ctx"], TOverride>,
-  ): QueryStuffUndefinedInput<
-    TContext,
-    [...TOverrides, TOverride],
-    [
-      ...TMiddlewares,
-      MiddlewareFn<CtxOpts<TContext, TOverrides>["ctx"], TOverride>,
-    ]
-  >;
-  use<
-    TOverride extends UnknownRecord,
-    U extends void | CtxOpts<TContext, TOverrides>["ctx"],
-  >(
-    fn: MiddlewareFn<U, TOverride>,
-  ): QueryStuffUndefinedInput<
-    TContext,
-    [...TOverrides, TOverride],
-    [...TMiddlewares, MiddlewareFn<U extends void ? TContext : U, TOverride>]
+    [...TMiddlewares, typeof fn]
   > {
-    const middlewares = [...this._middlewares, fn] as [
-      ...TMiddlewares,
-      MiddlewareFn<U extends void ? TContext : U, TOverride>,
-    ];
     return new QueryStuffUndefinedInput<
       TContext,
       [...TOverrides, TOverride],
-      [...TMiddlewares, MiddlewareFn<U extends void ? TContext : U, TOverride>]
-    >(this._ctx, middlewares);
+      [...TMiddlewares, typeof fn]
+    >(this._ctx, [...this._middlewares, fn]);
   }
   query<TData = unknown, TError = DefaultError>(
-    queryFn: (opts: CtxOpts<TContext, TOverrides>) => TData,
-    options?: QDefinedInitialDataOptionsIn<TData, TError>,
-  ): (
-    overrideOptions?: Prettify<
-      OmitKeyof<QDefinedInitialDataOptionsIn<TData, TError>, "initialData">
-    >,
-  ) => QDefinedInitialDataOptionsOut<NoInfer<TData>, NoInfer<TError>>;
-  query<TData = unknown, TError = DefaultError>(
-    queryFn: (opts: CtxOpts<TContext, TOverrides>) => TData,
+    queryFn:
+      | SkipToken
+      | ((opts: Prettify<CtxOpts<TContext, TOverrides>>) => TData),
     options?: QUnusedSkipTokenOptionsIn<TData, TError>,
   ): (
     overrideOptions?: QUnusedSkipTokenOptionsIn<TData, TError>,
   ) => QUnusedSkipTokenOptionsOut<NoInfer<TData>, NoInfer<TError>>;
   query<TData = unknown, TError = DefaultError>(
-    queryFn: (opts: CtxOpts<TContext, TOverrides>) => TData,
+    queryFn: (opts: Prettify<CtxOpts<TContext, TOverrides>>) => TData,
     options?: QUndefinedInitialDataOptionsIn<TData, TError>,
   ): (
     overrideOptions?: QUndefinedInitialDataOptionsIn<TData, TError>,
   ) => QUndefinedInitialDataOptionsOut<NoInfer<TData>, NoInfer<TError>>;
   query<TData = unknown, TError = DefaultError>(
-    queryFn: (opts: CtxOpts<TContext, TOverrides>) => TData,
+    queryFn: (opts: Prettify<CtxOpts<TContext, TOverrides>>) => TData,
     options: QQueryOptionsIn<TData, TError> = {},
   ): (
     overrideOptions?: QQueryOptionsIn<TData, TError>,
@@ -234,18 +202,21 @@ export class QueryStuffUndefinedInput<
     });
   }
   mutation<TData = unknown, TError = DefaultError, TMutationContext = unknown>(
-    mutationFn: MutationFunction<TData, CtxOpts<TContext, TOverrides>>,
+    mutationFn: MutationFunction<
+      TData,
+      Prettify<CtxOpts<TContext, TOverrides>>
+    >,
     options: QMutationOptionsIn<
       TData,
       TError,
-      CtxOpts<TContext, TOverrides>,
+      Prettify<CtxOpts<TContext, TOverrides>>,
       TMutationContext
     > = {},
   ): (
     overrideOptions?: QMutationOptionsIn<
       TData,
       TError,
-      CtxOpts<TContext, TOverrides>,
+      Prettify<CtxOpts<TContext, TOverrides>>,
       TMutationContext
     >,
   ) => QMutationOptionsOut<
@@ -330,30 +301,23 @@ export class QueryStuffDefinedInput<
     };
   }
   query<TData = unknown, TError = DefaultError>(
-    queryFn: (opts: Opts<TContext, TOverrides, TInput>) => TData,
-    options?: QDefinedInitialDataOptionsIn<TData, TError>,
-  ): (
-    input: TInput,
-    overrideOptions?: Prettify<
-      OmitKeyof<QDefinedInitialDataOptionsIn<TData, TError>, "initialData">
-    >,
-  ) => QDefinedInitialDataOptionsOut<NoInfer<TData>, NoInfer<TError>>;
-  query<TData = unknown, TError = DefaultError>(
-    queryFn: (opts: Opts<TContext, TOverrides, TInput>) => TData,
+    queryFn:
+      | SkipToken
+      | ((opts: Prettify<Opts<TContext, TOverrides, TInput>>) => TData),
     options?: QUnusedSkipTokenOptionsIn<TData, TError>,
   ): (
     input: TInput,
     overrideOptions?: QUnusedSkipTokenOptionsIn<TData, TError>,
   ) => QUnusedSkipTokenOptionsOut<NoInfer<TData>, NoInfer<TError>>;
   query<TData = unknown, TError = DefaultError>(
-    queryFn: (opts: Opts<TContext, TOverrides, TInput>) => TData,
+    queryFn: (opts: Prettify<Opts<TContext, TOverrides, TInput>>) => TData,
     options?: QUndefinedInitialDataOptionsIn<TData, TError>,
   ): (
     input: TInput,
     overrideOptions?: QUndefinedInitialDataOptionsIn<TData, TError>,
   ) => QUndefinedInitialDataOptionsOut<NoInfer<TData>, NoInfer<TError>>;
   query<TData = unknown, TError = DefaultError>(
-    queryFn: (opts: Opts<TContext, TOverrides, TInput>) => TData,
+    queryFn: (opts: Prettify<Opts<TContext, TOverrides, TInput>>) => TData,
     options: QQueryOptionsIn<TData, TError> = {},
   ): (
     input: TInput,
@@ -375,18 +339,21 @@ export class QueryStuffDefinedInput<
     }));
   }
   mutation<TData = unknown, TError = DefaultError, TMutationContext = unknown>(
-    mutationFn: MutationFunction<TData, Opts<TContext, TOverrides, TInput>>,
+    mutationFn: MutationFunction<
+      TData,
+      Prettify<Opts<TContext, TOverrides, TInput>>
+    >,
     options: QMutationOptionsIn<
       TData,
       TError,
-      Opts<TContext, TOverrides, TInput>,
+      Prettify<Opts<TContext, TOverrides, TInput>>,
       TMutationContext
     > = {},
   ): (
     overrideOptions?: QMutationOptionsIn<
       TData,
       TError,
-      Opts<TContext, TOverrides, TInput>,
+      Prettify<Opts<TContext, TOverrides, TInput>>,
       TMutationContext
     >,
   ) => QMutationOptionsOut<

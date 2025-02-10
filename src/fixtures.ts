@@ -7,24 +7,41 @@ import {
   QAnyMutationOptionsOut,
   QAnyQueryOptionsOut,
   UnknownRecord,
-  middlewareBuilder,
+  unstable_middlewareBuilder,
 } from "./index.js";
 import type * as _ from "../node_modules/.pnpm/@tanstack+query-core@5.64.1/node_modules/@tanstack/query-core/build/modern/hydration-DpBMnFDT.js";
 import { z } from "zod";
 import { MutationKey, QueryKey } from "@tanstack/react-query";
 
-const middlewareQuery = middlewareBuilder(
+const middlewareQuery = unstable_middlewareBuilder(
   async ({ next }) => await next({ ctx: { middlewareQuery: true } }),
 );
 
-const middlewareModule = middlewareBuilder(
+const middlewareModule = unstable_middlewareBuilder(
   async ({ next }) => await next({ ctx: { middlewareModule: true } }),
 );
 
-const MIDDLEWARE_MODULE = middlewareBuilder(
+const MIDDLEWARE_MODULE = unstable_middlewareBuilder(
   middlewareModule.middleware,
 ).descendant(
-  async ({ next }) => await next({ ctx: { MIDDLEWARE_MODULE: true } }),
+  async ({ next, ctx }) =>
+    await next({ ctx: { ...ctx, MIDDLEWARE_MODULE: true } }),
+);
+
+const EXTENDED_MIDDLEWARE_MODULE = unstable_middlewareBuilder(
+  middlewareModule.middleware,
+).extend(
+  async ({ next, ctx }) =>
+    await next({ ctx: { ...ctx, EXTENDED_MIDDLEWARE_MODULE: true } }),
+);
+
+const EXTENDED_DESCENDANT_MIDDLEWARE_MODULE = unstable_middlewareBuilder(
+  EXTENDED_MIDDLEWARE_MODULE.middleware,
+).descendant(
+  async ({ next, ctx }) =>
+    await next({
+      ctx: { ...ctx, EXTENDED_DESCENDANT_MIDDLEWARE_MODULE: true },
+    }),
 );
 
 export const NODES = new QueryStuffUndefinedInput().module((q) => ({
@@ -243,6 +260,60 @@ export const NODES = new QueryStuffUndefinedInput().module((q) => ({
         .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
     })),
   })),
+  EXTENDED_MIDDLEWARE_MODULE: q
+    .use(EXTENDED_MIDDLEWARE_MODULE.middleware)
+    .module((q) => ({
+      query: q.query((opts) => ({ ...opts.ctx, query: true })),
+      mutation: q.mutation(async (opts) => ({
+        ...opts.ctx,
+        mutation: true,
+      })),
+      inputQuery: q
+        .input(z.object({ inputQuery: z.boolean() }))
+        .query((opts) => ({ ...opts.ctx, ...opts.input, query: true })),
+      inputMutation: q
+        .input(z.object({ inputMutation: z.boolean() }))
+        .mutation(async (opts) => ({
+          ...opts.ctx,
+          ...opts.input,
+          mutation: true,
+        })),
+      middlewareQuery: q
+        .use(middlewareQuery.middleware)
+        .query((opts) => ({ ...opts.ctx, query: true })),
+      middlewareMutation: q
+        .use(
+          async ({ next }) => await next({ ctx: { middlewareMutation: true } }),
+        )
+        .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+    })),
+  EXTENDED_DESCENDANT_MIDDLEWARE_MODULE: q
+    .use(EXTENDED_DESCENDANT_MIDDLEWARE_MODULE.middleware)
+    .module((q) => ({
+      query: q.query((opts) => ({ ...opts.ctx, query: true })),
+      mutation: q.mutation(async (opts) => ({
+        ...opts.ctx,
+        mutation: true,
+      })),
+      inputQuery: q
+        .input(z.object({ inputQuery: z.boolean() }))
+        .query((opts) => ({ ...opts.ctx, ...opts.input, query: true })),
+      inputMutation: q
+        .input(z.object({ inputMutation: z.boolean() }))
+        .mutation(async (opts) => ({
+          ...opts.ctx,
+          ...opts.input,
+          mutation: true,
+        })),
+      middlewareQuery: q
+        .use(middlewareQuery.middleware)
+        .query((opts) => ({ ...opts.ctx, query: true })),
+      middlewareMutation: q
+        .use(
+          async ({ next }) => await next({ ctx: { middlewareMutation: true } }),
+        )
+        .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+    })),
 }));
 
 export const QUERY_FACTORY = factory(() => NODES);
@@ -448,6 +519,26 @@ export const defined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           { MODULE: true },
           "middlewareModule",
           "MIDDLEWARE_MODULE",
+          "inputQuery",
+          { [inputSymbol]: { inputQuery: true } },
+        ],
+      },
+    ],
+    [
+      () =>
+        q.EXTENDED_MIDDLEWARE_MODULE.inputQuery({
+          inputQuery: true,
+        }),
+      {
+        name: "EXTENDED_MIDDLEWARE_MODULE.inputQuery",
+        response: {
+          middlewareModule: true,
+          EXTENDED_MIDDLEWARE_MODULE: true,
+          inputQuery: true,
+          query: true,
+        },
+        queryKey: [
+          "EXTENDED_MIDDLEWARE_MODULE",
           "inputQuery",
           { [inputSymbol]: { inputQuery: true } },
         ],
@@ -718,6 +809,31 @@ export const undefined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           "MIDDLEWARE_MODULE",
           "middlewareQuery",
         ],
+      },
+    ],
+    [
+      q.EXTENDED_MIDDLEWARE_MODULE.query,
+      {
+        name: "EXTENDED_MIDDLEWARE_MODULE.query",
+        response: {
+          middlewareModule: true,
+          EXTENDED_MIDDLEWARE_MODULE: true,
+          query: true,
+        },
+        queryKey: ["EXTENDED_MIDDLEWARE_MODULE", "query"],
+      },
+    ],
+    [
+      q.EXTENDED_MIDDLEWARE_MODULE.middlewareQuery,
+      {
+        name: "EXTENDED_MIDDLEWARE_MODULE.middlewareQuery",
+        response: {
+          middlewareModule: true,
+          EXTENDED_MIDDLEWARE_MODULE: true,
+          query: true,
+          middlewareQuery: true,
+        },
+        queryKey: ["EXTENDED_MIDDLEWARE_MODULE", "middlewareQuery"],
       },
     ],
   ] satisfies Queries as unknown as ReturnType<typeof baseQuery>;
@@ -1289,6 +1405,41 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
         ],
       },
     ],
+    [
+      q.EXTENDED_MIDDLEWARE_MODULE.mutation,
+      {
+        name: "EXTENDED_MIDDLEWARE_MODULE.mutation",
+        input: undefined,
+        ctx: {
+          middlewareModule: true,
+          EXTENDED_MIDDLEWARE_MODULE: true,
+        },
+        response: {
+          middlewareModule: true,
+          EXTENDED_MIDDLEWARE_MODULE: true,
+          mutation: true,
+        },
+        mutationKey: ["EXTENDED_MIDDLEWARE_MODULE", "mutation"],
+      },
+    ],
+    [
+      q.EXTENDED_MIDDLEWARE_MODULE.inputMutation,
+      {
+        name: "EXTENDED_MIDDLEWARE_MODULE.inputMutation",
+        input: { inputMutation: true },
+        ctx: {
+          middlewareModule: true,
+          EXTENDED_MIDDLEWARE_MODULE: true,
+        },
+        response: {
+          middlewareModule: true,
+          EXTENDED_MIDDLEWARE_MODULE: true,
+          inputMutation: true,
+          mutation: true,
+        },
+        mutationKey: ["EXTENDED_MIDDLEWARE_MODULE", "inputMutation"],
+      },
+    ],
   ] satisfies Mutations as unknown as ReturnType<typeof baseMutation>;
 
 type Keys = [
@@ -1379,6 +1530,13 @@ export const keys = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
       {
         name: "middlewareModule.MIDDLEWARE_MODULE",
         key: ["middlewareModule", "MIDDLEWARE_MODULE"],
+      },
+    ],
+    [
+      q.EXTENDED_MIDDLEWARE_MODULE,
+      {
+        name: "EXTENDED_MIDDLEWARE_MODULE",
+        key: ["EXTENDED_MIDDLEWARE_MODULE"],
       },
     ],
   ] satisfies Keys as unknown as ReturnType<typeof baseKeys>;
