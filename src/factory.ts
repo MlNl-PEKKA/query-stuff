@@ -151,7 +151,7 @@ export class QueryStuffUndefinedInput<
       TMiddlewares
     >(schema, this._ctx, this._middlewares);
   }
-  module<T extends Node>(
+  group<T extends Node>(
     fn: (q: QueryStuffUndefinedInput<TContext, TOverrides, TMiddlewares>) => T,
   ) {
     return fn(new QueryStuffUndefinedInput(this._ctx, this._middlewares));
@@ -425,7 +425,7 @@ export class QueryStuffDefinedRecordInput<
   TMiddlewares,
   TInput
 > {
-  module<T extends Node>(
+  group<T extends Node>(
     fn: (
       q: QueryStuffUndefinedInput<
         Merge<TContext, TInput>,

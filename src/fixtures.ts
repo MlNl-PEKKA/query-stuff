@@ -17,34 +17,34 @@ const middlewareQuery = unstable_middlewareBuilder(
   async ({ next }) => await next({ ctx: { middlewareQuery: true } }),
 );
 
-const middlewareModule = unstable_middlewareBuilder(
-  async ({ next }) => await next({ ctx: { middlewareModule: true } }),
+const middlewareGroup = unstable_middlewareBuilder(
+  async ({ next }) => await next({ ctx: { middlewareGroup: true } }),
 );
 
-const MIDDLEWARE_MODULE = unstable_middlewareBuilder(
-  middlewareModule.middleware,
+const MIDDLEWARE_GROUP = unstable_middlewareBuilder(
+  middlewareGroup.middleware,
 ).inherit(
   async ({ next, ctx }) =>
-    await next({ ctx: { ...ctx, MIDDLEWARE_MODULE: true } }),
+    await next({ ctx: { ...ctx, MIDDLEWARE_GROUP: true } }),
 );
 
-const EXTENDED_MIDDLEWARE_MODULE = unstable_middlewareBuilder(
-  middlewareModule.middleware,
+const EXTENDED_MIDDLEWARE_GROUP = unstable_middlewareBuilder(
+  middlewareGroup.middleware,
 ).extend(
   async ({ next, ctx }) =>
-    await next({ ctx: { ...ctx, EXTENDED_MIDDLEWARE_MODULE: true } }),
+    await next({ ctx: { ...ctx, EXTENDED_MIDDLEWARE_GROUP: true } }),
 );
 
-const EXTENDED_DESCENDANT_MIDDLEWARE_MODULE = unstable_middlewareBuilder(
-  EXTENDED_MIDDLEWARE_MODULE.middleware,
+const EXTENDED_DESCENDANT_MIDDLEWARE_GROUP = unstable_middlewareBuilder(
+  EXTENDED_MIDDLEWARE_GROUP.middleware,
 ).inherit(
   async ({ next, ctx }) =>
     await next({
-      ctx: { ...ctx, EXTENDED_DESCENDANT_MIDDLEWARE_MODULE: true },
+      ctx: { ...ctx, EXTENDED_DESCENDANT_MIDDLEWARE_GROUP: true },
     }),
 );
 
-export const NODES = new QueryStuffUndefinedInput().module((q) => ({
+export const NODES = new QueryStuffUndefinedInput().group((q) => ({
   query: q.query(() => ({ query: true })),
   mutation: q.mutation(async () => ({ mutation: true })),
   inputQuery: q
@@ -59,7 +59,7 @@ export const NODES = new QueryStuffUndefinedInput().module((q) => ({
   middlewareMutation: q
     .use(async ({ next }) => await next({ ctx: { middlewareMutation: true } }))
     .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
-  module: q.input(z.object({ module: z.boolean() })).module((q) => ({
+  group: q.input(z.object({ group: z.boolean() })).group((q) => ({
     query: q.query((opts) => ({ ...opts.ctx, query: true })),
     mutation: q.mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
     inputQuery: q
@@ -80,7 +80,7 @@ export const NODES = new QueryStuffUndefinedInput().module((q) => ({
         async ({ next }) => await next({ ctx: { middlewareMutation: true } }),
       )
       .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
-    MODULE: q.input(z.object({ MODULE: z.boolean() })).module((q) => ({
+    GROUP: q.input(z.object({ GROUP: z.boolean() })).group((q) => ({
       query: q.query((opts) => ({ ...opts.ctx, query: true })),
       mutation: q.mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
       inputQuery: q
@@ -101,7 +101,7 @@ export const NODES = new QueryStuffUndefinedInput().module((q) => ({
           async ({ next }) => await next({ ctx: { middlewareMutation: true } }),
         )
         .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
-      middlewareModule: q.use(middlewareModule.middleware).module((q) => ({
+      middlewareGroup: q.use(middlewareGroup.middleware).group((q) => ({
         query: q.query((opts) => ({ ...opts.ctx, query: true })),
         mutation: q.mutation(async (opts) => ({
           ...opts.ctx,
@@ -126,12 +126,11 @@ export const NODES = new QueryStuffUndefinedInput().module((q) => ({
               await next({ ctx: { middlewareMutation: true } }),
           )
           .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
-        MIDDLEWARE_MODULE: q
+        MIDDLEWARE_GROUP: q
           .use(
-            async ({ next }) =>
-              await next({ ctx: { MIDDLEWARE_MODULE: true } }),
+            async ({ next }) => await next({ ctx: { MIDDLEWARE_GROUP: true } }),
           )
-          .module((q) => ({
+          .group((q) => ({
             query: q.query((opts) => ({ ...opts.ctx, query: true })),
             mutation: q.mutation(async (opts) => ({
               ...opts.ctx,
@@ -162,7 +161,7 @@ export const NODES = new QueryStuffUndefinedInput().module((q) => ({
           })),
       })),
     })),
-    middlewareModule: q.use(middlewareModule.middleware).module((q) => ({
+    middlewareGroup: q.use(middlewareGroup.middleware).group((q) => ({
       query: q.query((opts) => ({ ...opts.ctx, query: true })),
       mutation: q.mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
       inputQuery: q
@@ -183,7 +182,7 @@ export const NODES = new QueryStuffUndefinedInput().module((q) => ({
           async ({ next }) => await next({ ctx: { middlewareMutation: true } }),
         )
         .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
-      MIDDLEWARE_MODULE: q.use(MIDDLEWARE_MODULE.middleware).module((q) => ({
+      MIDDLEWARE_GROUP: q.use(MIDDLEWARE_GROUP.middleware).group((q) => ({
         query: q.query((opts) => ({ ...opts.ctx, query: true })),
         mutation: q.mutation(async (opts) => ({
           ...opts.ctx,
@@ -213,7 +212,7 @@ export const NODES = new QueryStuffUndefinedInput().module((q) => ({
       })),
     })),
   })),
-  middlewareModule: q.use(middlewareModule.middleware).module((q) => ({
+  middlewareGroup: q.use(middlewareGroup.middleware).group((q) => ({
     query: q.query((opts) => ({ ...opts.ctx, query: true })),
     mutation: q.mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
     inputQuery: q
@@ -234,7 +233,7 @@ export const NODES = new QueryStuffUndefinedInput().module((q) => ({
         async ({ next }) => await next({ ctx: { middlewareMutation: true } }),
       )
       .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
-    MIDDLEWARE_MODULE: q.use(MIDDLEWARE_MODULE.middleware).module((q) => ({
+    MIDDLEWARE_GROUP: q.use(MIDDLEWARE_GROUP.middleware).group((q) => ({
       query: q.query((opts) => ({ ...opts.ctx, query: true })),
       mutation: q.mutation(async (opts) => ({
         ...opts.ctx,
@@ -260,9 +259,9 @@ export const NODES = new QueryStuffUndefinedInput().module((q) => ({
         .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
     })),
   })),
-  EXTENDED_MIDDLEWARE_MODULE: q
-    .use(EXTENDED_MIDDLEWARE_MODULE.middleware)
-    .module((q) => ({
+  EXTENDED_MIDDLEWARE_GROUP: q
+    .use(EXTENDED_MIDDLEWARE_GROUP.middleware)
+    .group((q) => ({
       query: q.query((opts) => ({ ...opts.ctx, query: true })),
       mutation: q.mutation(async (opts) => ({
         ...opts.ctx,
@@ -287,9 +286,9 @@ export const NODES = new QueryStuffUndefinedInput().module((q) => ({
         )
         .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
     })),
-  EXTENDED_DESCENDANT_MIDDLEWARE_MODULE: q
-    .use(EXTENDED_DESCENDANT_MIDDLEWARE_MODULE.middleware)
-    .module((q) => ({
+  EXTENDED_DESCENDANT_MIDDLEWARE_GROUP: q
+    .use(EXTENDED_DESCENDANT_MIDDLEWARE_GROUP.middleware)
+    .group((q) => ({
       query: q.query((opts) => ({ ...opts.ctx, query: true })),
       mutation: q.mutation(async (opts) => ({
         ...opts.ctx,
@@ -355,13 +354,13 @@ export const defined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
       },
     ],
     [
-      () => q.middlewareModule.inputQuery({ inputQuery: true }),
+      () => q.middlewareGroup.inputQuery({ inputQuery: true }),
       {
-        name: "middlewareModule.inputQuery",
-        response: { middlewareModule: true, inputQuery: true, query: true },
+        name: "middlewareGroup.inputQuery",
+        response: { middlewareGroup: true, inputQuery: true, query: true },
         queryKey: [
           "app",
-          "middlewareModule",
+          "middlewareGroup",
           "inputQuery",
           { [inputSymbol]: { inputQuery: true } },
         ],
@@ -369,35 +368,35 @@ export const defined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
     ],
     [
       () =>
-        q.middlewareModule.MIDDLEWARE_MODULE.inputQuery({
+        q.middlewareGroup.MIDDLEWARE_GROUP.inputQuery({
           inputQuery: true,
         }),
       {
-        name: "middlewareModule.MIDDLEWARE_MODULE.inputQuery",
+        name: "middlewareGroup.MIDDLEWARE_GROUP.inputQuery",
         response: {
-          middlewareModule: true,
-          MIDDLEWARE_MODULE: true,
+          middlewareGroup: true,
+          MIDDLEWARE_GROUP: true,
           inputQuery: true,
           query: true,
         },
         queryKey: [
           "app",
-          "middlewareModule",
-          "MIDDLEWARE_MODULE",
+          "middlewareGroup",
+          "MIDDLEWARE_GROUP",
           "inputQuery",
           { [inputSymbol]: { inputQuery: true } },
         ],
       },
     ],
     [
-      () => q.module({ module: true }).inputQuery({ inputQuery: true }),
+      () => q.group({ group: true }).inputQuery({ inputQuery: true }),
       {
-        name: "module.inputQuery",
-        response: { module: true, inputQuery: true, query: true },
+        name: "group.inputQuery",
+        response: { group: true, inputQuery: true, query: true },
         queryKey: [
           "app",
-          "module",
-          { module: true },
+          "group",
+          { group: true },
           "inputQuery",
           { [inputSymbol]: { inputQuery: true } },
         ],
@@ -405,22 +404,22 @@ export const defined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
     ],
     [
       () =>
-        q.module({ module: true }).middlewareModule.inputQuery({
+        q.group({ group: true }).middlewareGroup.inputQuery({
           inputQuery: true,
         }),
       {
-        name: "module.middlewareModule.inputQuery",
+        name: "group.middlewareGroup.inputQuery",
         response: {
-          module: true,
-          middlewareModule: true,
+          group: true,
+          middlewareGroup: true,
           inputQuery: true,
           query: true,
         },
         queryKey: [
           "app",
-          "module",
-          { module: true },
-          "middlewareModule",
+          "group",
+          { group: true },
+          "middlewareGroup",
           "inputQuery",
           { [inputSymbol]: { inputQuery: true } },
         ],
@@ -429,27 +428,27 @@ export const defined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
     [
       () =>
         q
-          .module({
-            module: true,
+          .group({
+            group: true,
           })
-          .middlewareModule.MIDDLEWARE_MODULE.inputQuery({
+          .middlewareGroup.MIDDLEWARE_GROUP.inputQuery({
             inputQuery: true,
           }),
       {
-        name: "module.middlewareModule.MIDDLEWARE_MODULE.inputQuery",
+        name: "group.middlewareGroup.MIDDLEWARE_GROUP.inputQuery",
         response: {
-          module: true,
-          middlewareModule: true,
-          MIDDLEWARE_MODULE: true,
+          group: true,
+          middlewareGroup: true,
+          MIDDLEWARE_GROUP: true,
           inputQuery: true,
           query: true,
         },
         queryKey: [
           "app",
-          "module",
-          { module: true },
-          "middlewareModule",
-          "MIDDLEWARE_MODULE",
+          "group",
+          { group: true },
+          "middlewareGroup",
+          "MIDDLEWARE_GROUP",
           "inputQuery",
           { [inputSymbol]: { inputQuery: true } },
         ],
@@ -458,23 +457,23 @@ export const defined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
     [
       () =>
         q
-          .module({ module: true })
-          .MODULE({ MODULE: true })
+          .group({ group: true })
+          .GROUP({ GROUP: true })
           .inputQuery({ inputQuery: true }),
       {
-        name: "module.MODULE.inputQuery",
+        name: "group.GROUP.inputQuery",
         response: {
-          MODULE: true,
-          module: true,
+          GROUP: true,
+          group: true,
           inputQuery: true,
           query: true,
         },
         queryKey: [
           "app",
-          "module",
-          { module: true },
-          "MODULE",
-          { MODULE: true },
+          "group",
+          { group: true },
+          "GROUP",
+          { GROUP: true },
           "inputQuery",
           { [inputSymbol]: { inputQuery: true } },
         ],
@@ -483,25 +482,25 @@ export const defined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
     [
       () =>
         q
-          .module({ module: true })
-          .MODULE({ MODULE: true })
-          .middlewareModule.inputQuery({ inputQuery: true }),
+          .group({ group: true })
+          .GROUP({ GROUP: true })
+          .middlewareGroup.inputQuery({ inputQuery: true }),
       {
-        name: "module.MODULE.middlewareModule.inputQuery",
+        name: "group.GROUP.middlewareGroup.inputQuery",
         response: {
-          MODULE: true,
-          module: true,
-          middlewareModule: true,
+          GROUP: true,
+          group: true,
+          middlewareGroup: true,
           inputQuery: true,
           query: true,
         },
         queryKey: [
           "app",
-          "module",
-          { module: true },
-          "MODULE",
-          { MODULE: true },
-          "middlewareModule",
+          "group",
+          { group: true },
+          "GROUP",
+          { GROUP: true },
+          "middlewareGroup",
           "inputQuery",
           { [inputSymbol]: { inputQuery: true } },
         ],
@@ -510,27 +509,27 @@ export const defined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
     [
       () =>
         q
-          .module({ module: true })
-          .MODULE({ MODULE: true })
-          .middlewareModule.MIDDLEWARE_MODULE.inputQuery({ inputQuery: true }),
+          .group({ group: true })
+          .GROUP({ GROUP: true })
+          .middlewareGroup.MIDDLEWARE_GROUP.inputQuery({ inputQuery: true }),
       {
-        name: "module.MODULE.middlewareModule.MIDDLEWARE_MODULE.inputQuery",
+        name: "group.GROUP.middlewareGroup.MIDDLEWARE_GROUP.inputQuery",
         response: {
-          MODULE: true,
-          module: true,
-          middlewareModule: true,
-          MIDDLEWARE_MODULE: true,
+          GROUP: true,
+          group: true,
+          middlewareGroup: true,
+          MIDDLEWARE_GROUP: true,
           inputQuery: true,
           query: true,
         },
         queryKey: [
           "app",
-          "module",
-          { module: true },
-          "MODULE",
-          { MODULE: true },
-          "middlewareModule",
-          "MIDDLEWARE_MODULE",
+          "group",
+          { group: true },
+          "GROUP",
+          { GROUP: true },
+          "middlewareGroup",
+          "MIDDLEWARE_GROUP",
           "inputQuery",
           { [inputSymbol]: { inputQuery: true } },
         ],
@@ -538,20 +537,20 @@ export const defined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
     ],
     [
       () =>
-        q.EXTENDED_MIDDLEWARE_MODULE.inputQuery({
+        q.EXTENDED_MIDDLEWARE_GROUP.inputQuery({
           inputQuery: true,
         }),
       {
-        name: "EXTENDED_MIDDLEWARE_MODULE.inputQuery",
+        name: "EXTENDED_MIDDLEWARE_GROUP.inputQuery",
         response: {
-          middlewareModule: true,
-          EXTENDED_MIDDLEWARE_MODULE: true,
+          middlewareGroup: true,
+          EXTENDED_MIDDLEWARE_GROUP: true,
           inputQuery: true,
           query: true,
         },
         queryKey: [
           "app",
-          "EXTENDED_MIDDLEWARE_MODULE",
+          "EXTENDED_MIDDLEWARE_GROUP",
           "inputQuery",
           { [inputSymbol]: { inputQuery: true } },
         ],
@@ -571,302 +570,294 @@ export const undefined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
       },
     ],
     [
-      q.middlewareModule.query,
+      q.middlewareGroup.query,
       {
-        name: "middlewareModule.query",
-        response: { middlewareModule: true, query: true },
-        queryKey: ["app", "middlewareModule", "query"],
+        name: "middlewareGroup.query",
+        response: { middlewareGroup: true, query: true },
+        queryKey: ["app", "middlewareGroup", "query"],
       },
     ],
     [
-      q.middlewareModule.middlewareQuery,
+      q.middlewareGroup.middlewareQuery,
       {
-        name: "middlewareModule.middlewareQuery",
+        name: "middlewareGroup.middlewareQuery",
         response: {
-          middlewareModule: true,
+          middlewareGroup: true,
           query: true,
           middlewareQuery: true,
         },
-        queryKey: ["app", "middlewareModule", "middlewareQuery"],
+        queryKey: ["app", "middlewareGroup", "middlewareQuery"],
       },
     ],
     [
-      q.middlewareModule.MIDDLEWARE_MODULE.query,
+      q.middlewareGroup.MIDDLEWARE_GROUP.query,
       {
-        name: "middlewareModule.MIDDLEWARE_MODULE.query",
+        name: "middlewareGroup.MIDDLEWARE_GROUP.query",
         response: {
-          middlewareModule: true,
-          MIDDLEWARE_MODULE: true,
+          middlewareGroup: true,
+          MIDDLEWARE_GROUP: true,
           query: true,
         },
-        queryKey: ["app", "middlewareModule", "MIDDLEWARE_MODULE", "query"],
+        queryKey: ["app", "middlewareGroup", "MIDDLEWARE_GROUP", "query"],
       },
     ],
     [
-      q.middlewareModule.MIDDLEWARE_MODULE.middlewareQuery,
+      q.middlewareGroup.MIDDLEWARE_GROUP.middlewareQuery,
       {
-        name: "middlewareModule.MIDDLEWARE_MODULE.middlewareQuery",
+        name: "middlewareGroup.MIDDLEWARE_GROUP.middlewareQuery",
         response: {
-          middlewareModule: true,
-          MIDDLEWARE_MODULE: true,
+          middlewareGroup: true,
+          MIDDLEWARE_GROUP: true,
           query: true,
           middlewareQuery: true,
         },
         queryKey: [
           "app",
-          "middlewareModule",
-          "MIDDLEWARE_MODULE",
+          "middlewareGroup",
+          "MIDDLEWARE_GROUP",
           "middlewareQuery",
         ],
       },
     ],
     [
-      q.module({ module: true }).query,
+      q.group({ group: true }).query,
       {
-        name: "module.query",
-        response: { module: true, query: true },
-        queryKey: ["app", "module", { module: true }, "query"],
+        name: "group.query",
+        response: { group: true, query: true },
+        queryKey: ["app", "group", { group: true }, "query"],
       },
     ],
     [
-      q.module({ module: true }).middlewareQuery,
+      q.group({ group: true }).middlewareQuery,
       {
-        name: "module.middlewareQuery",
-        response: { module: true, query: true, middlewareQuery: true },
-        queryKey: ["app", "module", { module: true }, "middlewareQuery"],
+        name: "group.middlewareQuery",
+        response: { group: true, query: true, middlewareQuery: true },
+        queryKey: ["app", "group", { group: true }, "middlewareQuery"],
       },
     ],
     [
-      q.module({ module: true }).middlewareModule.query,
+      q.group({ group: true }).middlewareGroup.query,
       {
-        name: "module.middlewareModule.query",
-        response: { module: true, middlewareModule: true, query: true },
-        queryKey: [
-          "app",
-          "module",
-          { module: true },
-          "middlewareModule",
-          "query",
-        ],
+        name: "group.middlewareGroup.query",
+        response: { group: true, middlewareGroup: true, query: true },
+        queryKey: ["app", "group", { group: true }, "middlewareGroup", "query"],
       },
     ],
     [
-      q.module({ module: true }).middlewareModule.middlewareQuery,
+      q.group({ group: true }).middlewareGroup.middlewareQuery,
       {
-        name: "module.middlewareModule.middlewareQuery",
+        name: "group.middlewareGroup.middlewareQuery",
         response: {
-          module: true,
-          middlewareModule: true,
+          group: true,
+          middlewareGroup: true,
           query: true,
           middlewareQuery: true,
         },
         queryKey: [
           "app",
-          "module",
-          { module: true },
-          "middlewareModule",
+          "group",
+          { group: true },
+          "middlewareGroup",
           "middlewareQuery",
         ],
       },
     ],
     [
-      q.module({ module: true }).middlewareModule.MIDDLEWARE_MODULE.query,
+      q.group({ group: true }).middlewareGroup.MIDDLEWARE_GROUP.query,
       {
-        name: "module.middlewareModule.MIDDLEWARE_MODULE.query",
+        name: "group.middlewareGroup.MIDDLEWARE_GROUP.query",
         response: {
-          module: true,
-          middlewareModule: true,
-          MIDDLEWARE_MODULE: true,
+          group: true,
+          middlewareGroup: true,
+          MIDDLEWARE_GROUP: true,
           query: true,
         },
         queryKey: [
           "app",
-          "module",
-          { module: true },
-          "middlewareModule",
-          "MIDDLEWARE_MODULE",
+          "group",
+          { group: true },
+          "middlewareGroup",
+          "MIDDLEWARE_GROUP",
           "query",
         ],
       },
     ],
     [
-      q.module({ module: true }).middlewareModule.MIDDLEWARE_MODULE
+      q.group({ group: true }).middlewareGroup.MIDDLEWARE_GROUP.middlewareQuery,
+      {
+        name: "group.middlewareGroup.MIDDLEWARE_GROUP.middlewareQuery",
+        response: {
+          group: true,
+          middlewareGroup: true,
+          MIDDLEWARE_GROUP: true,
+          query: true,
+          middlewareQuery: true,
+        },
+        queryKey: [
+          "app",
+          "group",
+          { group: true },
+          "middlewareGroup",
+          "MIDDLEWARE_GROUP",
+          "middlewareQuery",
+        ],
+      },
+    ],
+    [
+      q.group({ group: true }).GROUP({ GROUP: true }).query,
+      {
+        name: "group.GROUP.query",
+        response: {
+          GROUP: true,
+          group: true,
+          query: true,
+        },
+        queryKey: [
+          "app",
+          "group",
+          { group: true },
+          "GROUP",
+          { GROUP: true },
+          "query",
+        ],
+      },
+    ],
+    [
+      q.group({ group: true }).GROUP({ GROUP: true }).middlewareQuery,
+      {
+        name: "group.GROUP.middlewareQuery",
+        response: {
+          GROUP: true,
+          group: true,
+          query: true,
+          middlewareQuery: true,
+        },
+        queryKey: [
+          "app",
+          "group",
+          { group: true },
+          "GROUP",
+          { GROUP: true },
+          "middlewareQuery",
+        ],
+      },
+    ],
+    [
+      q.group({ group: true }).GROUP({ GROUP: true }).middlewareGroup.query,
+      {
+        name: "group.GROUP.middlewareGroup.query",
+        response: {
+          GROUP: true,
+          group: true,
+          middlewareGroup: true,
+          query: true,
+        },
+        queryKey: [
+          "app",
+          "group",
+          { group: true },
+          "GROUP",
+          { GROUP: true },
+          "middlewareGroup",
+          "query",
+        ],
+      },
+    ],
+    [
+      q.group({ group: true }).GROUP({ GROUP: true }).middlewareGroup
         .middlewareQuery,
       {
-        name: "module.middlewareModule.MIDDLEWARE_MODULE.middlewareQuery",
+        name: "group.GROUP.middlewareGroup.middlewareQuery",
         response: {
-          module: true,
-          middlewareModule: true,
-          MIDDLEWARE_MODULE: true,
+          GROUP: true,
+          group: true,
+          middlewareGroup: true,
           query: true,
           middlewareQuery: true,
         },
         queryKey: [
           "app",
-          "module",
-          { module: true },
-          "middlewareModule",
-          "MIDDLEWARE_MODULE",
+          "group",
+          { group: true },
+          "GROUP",
+          { GROUP: true },
+          "middlewareGroup",
           "middlewareQuery",
         ],
       },
     ],
     [
-      q.module({ module: true }).MODULE({ MODULE: true }).query,
+      q.group({ group: true }).GROUP({ GROUP: true }).middlewareGroup
+        .MIDDLEWARE_GROUP.query,
       {
-        name: "module.MODULE.query",
+        name: "group.GROUP.middlewareGroup.MIDDLEWARE_GROUP.query",
         response: {
-          MODULE: true,
-          module: true,
+          GROUP: true,
+          group: true,
+          middlewareGroup: true,
+          MIDDLEWARE_GROUP: true,
           query: true,
         },
         queryKey: [
           "app",
-          "module",
-          { module: true },
-          "MODULE",
-          { MODULE: true },
+          "group",
+          { group: true },
+          "GROUP",
+          { GROUP: true },
+          "middlewareGroup",
+          "MIDDLEWARE_GROUP",
           "query",
         ],
       },
     ],
     [
-      q.module({ module: true }).MODULE({ MODULE: true }).middlewareQuery,
+      q.group({ group: true }).GROUP({ GROUP: true }).middlewareGroup
+        .MIDDLEWARE_GROUP.middlewareQuery,
       {
-        name: "module.MODULE.middlewareQuery",
+        name: "group.GROUP.middlewareGroup.MIDDLEWARE_GROUP.middlewareQuery",
         response: {
-          MODULE: true,
-          module: true,
+          GROUP: true,
+          group: true,
+          middlewareGroup: true,
+          MIDDLEWARE_GROUP: true,
           query: true,
           middlewareQuery: true,
         },
         queryKey: [
           "app",
-          "module",
-          { module: true },
-          "MODULE",
-          { MODULE: true },
+          "group",
+          { group: true },
+          "GROUP",
+          { GROUP: true },
+          "middlewareGroup",
+          "MIDDLEWARE_GROUP",
           "middlewareQuery",
         ],
       },
     ],
     [
-      q.module({ module: true }).MODULE({ MODULE: true }).middlewareModule
-        .query,
+      q.EXTENDED_MIDDLEWARE_GROUP.query,
       {
-        name: "module.MODULE.middlewareModule.query",
+        name: "EXTENDED_MIDDLEWARE_GROUP.query",
         response: {
-          MODULE: true,
-          module: true,
-          middlewareModule: true,
+          middlewareGroup: true,
+          EXTENDED_MIDDLEWARE_GROUP: true,
           query: true,
         },
-        queryKey: [
-          "app",
-          "module",
-          { module: true },
-          "MODULE",
-          { MODULE: true },
-          "middlewareModule",
-          "query",
-        ],
+        queryKey: ["app", "EXTENDED_MIDDLEWARE_GROUP", "query"],
       },
     ],
     [
-      q.module({ module: true }).MODULE({ MODULE: true }).middlewareModule
-        .middlewareQuery,
+      q.EXTENDED_MIDDLEWARE_GROUP.middlewareQuery,
       {
-        name: "module.MODULE.middlewareModule.middlewareQuery",
+        name: "EXTENDED_MIDDLEWARE_GROUP.middlewareQuery",
         response: {
-          MODULE: true,
-          module: true,
-          middlewareModule: true,
+          middlewareGroup: true,
+          EXTENDED_MIDDLEWARE_GROUP: true,
           query: true,
           middlewareQuery: true,
         },
-        queryKey: [
-          "app",
-          "module",
-          { module: true },
-          "MODULE",
-          { MODULE: true },
-          "middlewareModule",
-          "middlewareQuery",
-        ],
-      },
-    ],
-    [
-      q.module({ module: true }).MODULE({ MODULE: true }).middlewareModule
-        .MIDDLEWARE_MODULE.query,
-      {
-        name: "module.MODULE.middlewareModule.MIDDLEWARE_MODULE.query",
-        response: {
-          MODULE: true,
-          module: true,
-          middlewareModule: true,
-          MIDDLEWARE_MODULE: true,
-          query: true,
-        },
-        queryKey: [
-          "app",
-          "module",
-          { module: true },
-          "MODULE",
-          { MODULE: true },
-          "middlewareModule",
-          "MIDDLEWARE_MODULE",
-          "query",
-        ],
-      },
-    ],
-    [
-      q.module({ module: true }).MODULE({ MODULE: true }).middlewareModule
-        .MIDDLEWARE_MODULE.middlewareQuery,
-      {
-        name: "module.MODULE.middlewareModule.MIDDLEWARE_MODULE.middlewareQuery",
-        response: {
-          MODULE: true,
-          module: true,
-          middlewareModule: true,
-          MIDDLEWARE_MODULE: true,
-          query: true,
-          middlewareQuery: true,
-        },
-        queryKey: [
-          "app",
-          "module",
-          { module: true },
-          "MODULE",
-          { MODULE: true },
-          "middlewareModule",
-          "MIDDLEWARE_MODULE",
-          "middlewareQuery",
-        ],
-      },
-    ],
-    [
-      q.EXTENDED_MIDDLEWARE_MODULE.query,
-      {
-        name: "EXTENDED_MIDDLEWARE_MODULE.query",
-        response: {
-          middlewareModule: true,
-          EXTENDED_MIDDLEWARE_MODULE: true,
-          query: true,
-        },
-        queryKey: ["app", "EXTENDED_MIDDLEWARE_MODULE", "query"],
-      },
-    ],
-    [
-      q.EXTENDED_MIDDLEWARE_MODULE.middlewareQuery,
-      {
-        name: "EXTENDED_MIDDLEWARE_MODULE.middlewareQuery",
-        response: {
-          middlewareModule: true,
-          EXTENDED_MIDDLEWARE_MODULE: true,
-          query: true,
-          middlewareQuery: true,
-        },
-        queryKey: ["app", "EXTENDED_MIDDLEWARE_MODULE", "middlewareQuery"],
+        queryKey: ["app", "EXTENDED_MIDDLEWARE_GROUP", "middlewareQuery"],
       },
     ],
   ] satisfies Queries as unknown as ReturnType<typeof baseQuery>;
@@ -934,335 +925,329 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
       },
     ],
     [
-      q.middlewareModule.mutation,
+      q.middlewareGroup.mutation,
       {
-        name: "middlewareModule.mutation",
+        name: "middlewareGroup.mutation",
         input: undefined,
         ctx: {
-          middlewareModule: true,
+          middlewareGroup: true,
         },
         response: {
-          middlewareModule: true,
+          middlewareGroup: true,
           mutation: true,
         },
-        mutationKey: ["app", "middlewareModule", "mutation"],
+        mutationKey: ["app", "middlewareGroup", "mutation"],
       },
     ],
     [
-      q.middlewareModule.inputMutation,
+      q.middlewareGroup.inputMutation,
       {
-        name: "middlewareModule.inputMutation",
+        name: "middlewareGroup.inputMutation",
         input: { inputMutation: true },
         ctx: {
-          middlewareModule: true,
+          middlewareGroup: true,
         },
         response: {
-          middlewareModule: true,
+          middlewareGroup: true,
           inputMutation: true,
           mutation: true,
         },
-        mutationKey: ["app", "middlewareModule", "inputMutation"],
+        mutationKey: ["app", "middlewareGroup", "inputMutation"],
       },
     ],
     [
-      q.middlewareModule.middlewareMutation,
+      q.middlewareGroup.middlewareMutation,
       {
-        name: "middlewareModule.middlewareMutation",
+        name: "middlewareGroup.middlewareMutation",
         input: undefined,
         ctx: {
-          middlewareModule: true,
+          middlewareGroup: true,
           middlewareMutation: true,
         },
         response: {
-          middlewareModule: true,
+          middlewareGroup: true,
           mutation: true,
           middlewareMutation: true,
         },
-        mutationKey: ["app", "middlewareModule", "middlewareMutation"],
+        mutationKey: ["app", "middlewareGroup", "middlewareMutation"],
       },
     ],
     [
-      q.middlewareModule.MIDDLEWARE_MODULE.mutation,
+      q.middlewareGroup.MIDDLEWARE_GROUP.mutation,
       {
-        name: "middlewareModule.MIDDLEWARE_MODULE.mutation",
+        name: "middlewareGroup.MIDDLEWARE_GROUP.mutation",
         input: undefined,
         ctx: {
-          middlewareModule: true,
-          MIDDLEWARE_MODULE: true,
+          middlewareGroup: true,
+          MIDDLEWARE_GROUP: true,
         },
         response: {
-          middlewareModule: true,
-          MIDDLEWARE_MODULE: true,
+          middlewareGroup: true,
+          MIDDLEWARE_GROUP: true,
           mutation: true,
         },
-        mutationKey: [
-          "app",
-          "middlewareModule",
-          "MIDDLEWARE_MODULE",
-          "mutation",
-        ],
+        mutationKey: ["app", "middlewareGroup", "MIDDLEWARE_GROUP", "mutation"],
       },
     ],
     [
-      q.middlewareModule.MIDDLEWARE_MODULE.inputMutation,
+      q.middlewareGroup.MIDDLEWARE_GROUP.inputMutation,
       {
-        name: "middlewareModule.MIDDLEWARE_MODULE.inputMutation",
+        name: "middlewareGroup.MIDDLEWARE_GROUP.inputMutation",
         input: { inputMutation: true },
         ctx: {
-          middlewareModule: true,
-          MIDDLEWARE_MODULE: true,
+          middlewareGroup: true,
+          MIDDLEWARE_GROUP: true,
         },
         response: {
-          middlewareModule: true,
-          MIDDLEWARE_MODULE: true,
+          middlewareGroup: true,
+          MIDDLEWARE_GROUP: true,
           inputMutation: true,
           mutation: true,
         },
         mutationKey: [
           "app",
-          "middlewareModule",
-          "MIDDLEWARE_MODULE",
+          "middlewareGroup",
+          "MIDDLEWARE_GROUP",
           "inputMutation",
         ],
       },
     ],
     [
-      q.middlewareModule.MIDDLEWARE_MODULE.middlewareMutation,
+      q.middlewareGroup.MIDDLEWARE_GROUP.middlewareMutation,
       {
-        name: "middlewareModule.MIDDLEWARE_MODULE.middlewareMutation",
+        name: "middlewareGroup.MIDDLEWARE_GROUP.middlewareMutation",
         ctx: {
-          middlewareModule: true,
-          MIDDLEWARE_MODULE: true,
+          middlewareGroup: true,
+          MIDDLEWARE_GROUP: true,
           middlewareMutation: true,
         },
         response: {
-          middlewareModule: true,
-          MIDDLEWARE_MODULE: true,
+          middlewareGroup: true,
+          MIDDLEWARE_GROUP: true,
           mutation: true,
           middlewareMutation: true,
         },
         input: undefined,
         mutationKey: [
           "app",
-          "middlewareModule",
-          "MIDDLEWARE_MODULE",
+          "middlewareGroup",
+          "MIDDLEWARE_GROUP",
           "middlewareMutation",
         ],
       },
     ],
     [
-      q.module({ module: true }).mutation,
+      q.group({ group: true }).mutation,
       {
-        name: "module.mutation",
+        name: "group.mutation",
         input: undefined,
         ctx: undefined,
         response: {
-          module: true,
+          group: true,
           mutation: true,
         },
-        mutationKey: ["app", "module", { module: true }, "mutation"],
+        mutationKey: ["app", "group", { group: true }, "mutation"],
       },
     ],
     [
-      q.module({ module: true }).inputMutation,
+      q.group({ group: true }).inputMutation,
       {
-        name: "module.inputMutation",
+        name: "group.inputMutation",
         input: {
           inputMutation: true,
         },
         ctx: undefined,
         response: {
-          module: true,
+          group: true,
           inputMutation: true,
           mutation: true,
         },
-        mutationKey: ["app", "module", { module: true }, "inputMutation"],
+        mutationKey: ["app", "group", { group: true }, "inputMutation"],
       },
     ],
     [
-      q.module({ module: true }).middlewareMutation,
+      q.group({ group: true }).middlewareMutation,
       {
-        name: "module.middlewareMutation",
+        name: "group.middlewareMutation",
         input: undefined,
         ctx: {
           middlewareMutation: true,
         },
         response: {
-          module: true,
+          group: true,
           mutation: true,
           middlewareMutation: true,
         },
-        mutationKey: ["app", "module", { module: true }, "middlewareMutation"],
+        mutationKey: ["app", "group", { group: true }, "middlewareMutation"],
       },
     ],
     [
-      q.module({ module: true }).middlewareModule.mutation,
+      q.group({ group: true }).middlewareGroup.mutation,
       {
-        name: "module.middlewareModule.mutation",
+        name: "group.middlewareGroup.mutation",
         input: undefined,
-        ctx: { middlewareModule: true },
+        ctx: { middlewareGroup: true },
         response: {
-          module: true,
-          middlewareModule: true,
+          group: true,
+          middlewareGroup: true,
           mutation: true,
         },
         mutationKey: [
           "app",
-          "module",
-          { module: true },
-          "middlewareModule",
+          "group",
+          { group: true },
+          "middlewareGroup",
           "mutation",
         ],
       },
     ],
     [
-      q.module({ module: true }).middlewareModule.inputMutation,
+      q.group({ group: true }).middlewareGroup.inputMutation,
       {
-        name: "module.middlewareModule.inputMutation",
+        name: "group.middlewareGroup.inputMutation",
         input: {
           inputMutation: true,
         },
-        ctx: { middlewareModule: true },
+        ctx: { middlewareGroup: true },
         response: {
-          module: true,
-          middlewareModule: true,
+          group: true,
+          middlewareGroup: true,
           inputMutation: true,
           mutation: true,
         },
         mutationKey: [
           "app",
-          "module",
-          { module: true },
-          "middlewareModule",
+          "group",
+          { group: true },
+          "middlewareGroup",
           "inputMutation",
         ],
       },
     ],
     [
-      q.module({ module: true }).middlewareModule.middlewareMutation,
+      q.group({ group: true }).middlewareGroup.middlewareMutation,
       {
-        name: "module.middlewareModule.middlewareMutation",
+        name: "group.middlewareGroup.middlewareMutation",
         input: undefined,
-        ctx: { middlewareModule: true, middlewareMutation: true },
+        ctx: { middlewareGroup: true, middlewareMutation: true },
         response: {
-          module: true,
-          middlewareModule: true,
+          group: true,
+          middlewareGroup: true,
           middlewareMutation: true,
           mutation: true,
         },
         mutationKey: [
           "app",
-          "module",
-          { module: true },
-          "middlewareModule",
+          "group",
+          { group: true },
+          "middlewareGroup",
           "middlewareMutation",
         ],
       },
     ],
     [
-      q.module({ module: true }).middlewareModule.MIDDLEWARE_MODULE.mutation,
+      q.group({ group: true }).middlewareGroup.MIDDLEWARE_GROUP.mutation,
       {
-        name: "module.middlewareModule.MIDDLEWARE_MODULE.mutation",
+        name: "group.middlewareGroup.MIDDLEWARE_GROUP.mutation",
         input: undefined,
-        ctx: { middlewareModule: true, MIDDLEWARE_MODULE: true },
+        ctx: { middlewareGroup: true, MIDDLEWARE_GROUP: true },
         response: {
-          module: true,
-          middlewareModule: true,
-          MIDDLEWARE_MODULE: true,
+          group: true,
+          middlewareGroup: true,
+          MIDDLEWARE_GROUP: true,
           mutation: true,
         },
         mutationKey: [
           "app",
-          "module",
-          { module: true },
-          "middlewareModule",
-          "MIDDLEWARE_MODULE",
+          "group",
+          { group: true },
+          "middlewareGroup",
+          "MIDDLEWARE_GROUP",
           "mutation",
         ],
       },
     ],
     [
-      q.module({ module: true }).middlewareModule.MIDDLEWARE_MODULE
-        .inputMutation,
+      q.group({ group: true }).middlewareGroup.MIDDLEWARE_GROUP.inputMutation,
       {
-        name: "module.middlewareModule.MIDDLEWARE_MODULE.inputMutation",
+        name: "group.middlewareGroup.MIDDLEWARE_GROUP.inputMutation",
         input: {
           inputMutation: true,
         },
-        ctx: { middlewareModule: true, MIDDLEWARE_MODULE: true },
+        ctx: { middlewareGroup: true, MIDDLEWARE_GROUP: true },
         response: {
-          module: true,
-          middlewareModule: true,
-          MIDDLEWARE_MODULE: true,
+          group: true,
+          middlewareGroup: true,
+          MIDDLEWARE_GROUP: true,
           inputMutation: true,
           mutation: true,
         },
         mutationKey: [
           "app",
-          "module",
-          { module: true },
-          "middlewareModule",
-          "MIDDLEWARE_MODULE",
+          "group",
+          { group: true },
+          "middlewareGroup",
+          "MIDDLEWARE_GROUP",
           "inputMutation",
         ],
       },
     ],
     [
-      q.module({ module: true }).middlewareModule.MIDDLEWARE_MODULE
+      q.group({ group: true }).middlewareGroup.MIDDLEWARE_GROUP
         .middlewareMutation,
       {
-        name: "module.middlewareModule.MIDDLEWARE_MODULE.middlewareMutation",
+        name: "group.middlewareGroup.MIDDLEWARE_GROUP.middlewareMutation",
         response: {
-          module: true,
-          middlewareModule: true,
-          MIDDLEWARE_MODULE: true,
+          group: true,
+          middlewareGroup: true,
+          MIDDLEWARE_GROUP: true,
           mutation: true,
           middlewareMutation: true,
         },
         input: undefined,
         ctx: {
-          middlewareModule: true,
-          MIDDLEWARE_MODULE: true,
+          middlewareGroup: true,
+          MIDDLEWARE_GROUP: true,
           middlewareMutation: true,
         },
         mutationKey: [
           "app",
-          "module",
-          { module: true },
-          "middlewareModule",
-          "MIDDLEWARE_MODULE",
+          "group",
+          { group: true },
+          "middlewareGroup",
+          "MIDDLEWARE_GROUP",
           "middlewareMutation",
         ],
       },
     ],
     [
-      q.module({ module: true }).MODULE({ MODULE: true }).mutation,
+      q.group({ group: true }).GROUP({ GROUP: true }).mutation,
       {
-        name: "module.MODULE.mutation",
+        name: "group.GROUP.mutation",
         response: {
-          MODULE: true,
-          module: true,
+          GROUP: true,
+          group: true,
           mutation: true,
         },
         input: undefined,
         ctx: undefined,
         mutationKey: [
           "app",
-          "module",
-          { module: true },
-          "MODULE",
-          { MODULE: true },
+          "group",
+          { group: true },
+          "GROUP",
+          { GROUP: true },
           "mutation",
         ],
       },
     ],
     [
-      q.module({ module: true }).MODULE({ MODULE: true }).inputMutation,
+      q.group({ group: true }).GROUP({ GROUP: true }).inputMutation,
       {
-        name: "module.MODULE.inputMutation",
+        name: "group.GROUP.inputMutation",
         response: {
-          MODULE: true,
-          module: true,
+          GROUP: true,
+          group: true,
           inputMutation: true,
           mutation: true,
         },
@@ -1272,21 +1257,21 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
         ctx: undefined,
         mutationKey: [
           "app",
-          "module",
-          { module: true },
-          "MODULE",
-          { MODULE: true },
+          "group",
+          { group: true },
+          "GROUP",
+          { GROUP: true },
           "inputMutation",
         ],
       },
     ],
     [
-      q.module({ module: true }).MODULE({ MODULE: true }).middlewareMutation,
+      q.group({ group: true }).GROUP({ GROUP: true }).middlewareMutation,
       {
-        name: "module.MODULE.middlewareMutation",
+        name: "group.GROUP.middlewareMutation",
         response: {
-          MODULE: true,
-          module: true,
+          GROUP: true,
+          group: true,
           mutation: true,
           middlewareMutation: true,
         },
@@ -1294,209 +1279,208 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
         ctx: { middlewareMutation: true },
         mutationKey: [
           "app",
-          "module",
-          { module: true },
-          "MODULE",
-          { MODULE: true },
+          "group",
+          { group: true },
+          "GROUP",
+          { GROUP: true },
           "middlewareMutation",
         ],
       },
     ],
     [
-      q.module({ module: true }).MODULE({ MODULE: true }).middlewareModule
-        .mutation,
+      q.group({ group: true }).GROUP({ GROUP: true }).middlewareGroup.mutation,
       {
-        name: "module.MODULE.middlewareModule.mutation",
+        name: "group.GROUP.middlewareGroup.mutation",
         response: {
-          MODULE: true,
-          module: true,
-          middlewareModule: true,
+          GROUP: true,
+          group: true,
+          middlewareGroup: true,
           mutation: true,
         },
         input: undefined,
-        ctx: { middlewareModule: true },
+        ctx: { middlewareGroup: true },
         mutationKey: [
           "app",
-          "module",
-          { module: true },
-          "MODULE",
-          { MODULE: true },
-          "middlewareModule",
+          "group",
+          { group: true },
+          "GROUP",
+          { GROUP: true },
+          "middlewareGroup",
           "mutation",
         ],
       },
     ],
     [
-      q.module({ module: true }).MODULE({ MODULE: true }).middlewareModule
+      q.group({ group: true }).GROUP({ GROUP: true }).middlewareGroup
         .inputMutation,
       {
-        name: "module.MODULE.middlewareModule.inputMutation",
+        name: "group.GROUP.middlewareGroup.inputMutation",
         response: {
-          MODULE: true,
-          module: true,
-          middlewareModule: true,
+          GROUP: true,
+          group: true,
+          middlewareGroup: true,
           inputMutation: true,
           mutation: true,
         },
         input: {
           inputMutation: true,
         },
-        ctx: { middlewareModule: true },
+        ctx: { middlewareGroup: true },
         mutationKey: [
           "app",
-          "module",
-          { module: true },
-          "MODULE",
-          { MODULE: true },
-          "middlewareModule",
+          "group",
+          { group: true },
+          "GROUP",
+          { GROUP: true },
+          "middlewareGroup",
           "inputMutation",
         ],
       },
     ],
     [
-      q.module({ module: true }).MODULE({ MODULE: true }).middlewareModule
+      q.group({ group: true }).GROUP({ GROUP: true }).middlewareGroup
         .middlewareMutation,
       {
-        name: "module.MODULE.middlewareModule.middlewareMutation",
+        name: "group.GROUP.middlewareGroup.middlewareMutation",
         response: {
-          MODULE: true,
-          module: true,
-          middlewareModule: true,
+          GROUP: true,
+          group: true,
+          middlewareGroup: true,
           mutation: true,
           middlewareMutation: true,
         },
-        ctx: { middlewareModule: true, middlewareMutation: true },
+        ctx: { middlewareGroup: true, middlewareMutation: true },
         input: undefined,
         mutationKey: [
           "app",
-          "module",
-          { module: true },
-          "MODULE",
-          { MODULE: true },
-          "middlewareModule",
+          "group",
+          { group: true },
+          "GROUP",
+          { GROUP: true },
+          "middlewareGroup",
           "middlewareMutation",
         ],
       },
     ],
     [
-      q.module({ module: true }).MODULE({ MODULE: true }).middlewareModule
-        .MIDDLEWARE_MODULE.mutation,
+      q.group({ group: true }).GROUP({ GROUP: true }).middlewareGroup
+        .MIDDLEWARE_GROUP.mutation,
       {
-        name: "module.MODULE.middlewareModule.MIDDLEWARE_MODULE.mutation",
+        name: "group.GROUP.middlewareGroup.MIDDLEWARE_GROUP.mutation",
         response: {
-          MODULE: true,
-          module: true,
-          middlewareModule: true,
-          MIDDLEWARE_MODULE: true,
+          GROUP: true,
+          group: true,
+          middlewareGroup: true,
+          MIDDLEWARE_GROUP: true,
           mutation: true,
         },
         input: undefined,
-        ctx: { middlewareModule: true, MIDDLEWARE_MODULE: true },
+        ctx: { middlewareGroup: true, MIDDLEWARE_GROUP: true },
         mutationKey: [
           "app",
-          "module",
-          { module: true },
-          "MODULE",
-          { MODULE: true },
-          "middlewareModule",
-          "MIDDLEWARE_MODULE",
+          "group",
+          { group: true },
+          "GROUP",
+          { GROUP: true },
+          "middlewareGroup",
+          "MIDDLEWARE_GROUP",
           "mutation",
         ],
       },
     ],
     [
-      q.module({ module: true }).MODULE({ MODULE: true }).middlewareModule
-        .MIDDLEWARE_MODULE.inputMutation,
+      q.group({ group: true }).GROUP({ GROUP: true }).middlewareGroup
+        .MIDDLEWARE_GROUP.inputMutation,
       {
-        name: "module.MODULE.middlewareModule.MIDDLEWARE_MODULE.inputMutation",
+        name: "group.GROUP.middlewareGroup.MIDDLEWARE_GROUP.inputMutation",
         response: {
-          MODULE: true,
-          module: true,
-          middlewareModule: true,
-          MIDDLEWARE_MODULE: true,
+          GROUP: true,
+          group: true,
+          middlewareGroup: true,
+          MIDDLEWARE_GROUP: true,
           inputMutation: true,
           mutation: true,
         },
         input: {
           inputMutation: true,
         },
-        ctx: { middlewareModule: true, MIDDLEWARE_MODULE: true },
+        ctx: { middlewareGroup: true, MIDDLEWARE_GROUP: true },
         mutationKey: [
           "app",
-          "module",
-          { module: true },
-          "MODULE",
-          { MODULE: true },
-          "middlewareModule",
-          "MIDDLEWARE_MODULE",
+          "group",
+          { group: true },
+          "GROUP",
+          { GROUP: true },
+          "middlewareGroup",
+          "MIDDLEWARE_GROUP",
           "inputMutation",
         ],
       },
     ],
     [
-      q.module({ module: true }).MODULE({ MODULE: true }).middlewareModule
-        .MIDDLEWARE_MODULE.middlewareMutation,
+      q.group({ group: true }).GROUP({ GROUP: true }).middlewareGroup
+        .MIDDLEWARE_GROUP.middlewareMutation,
       {
-        name: "module.MODULE.middlewareModule.MIDDLEWARE_MODULE.middlewareMutation",
+        name: "group.GROUP.middlewareGroup.MIDDLEWARE_GROUP.middlewareMutation",
         response: {
-          MODULE: true,
-          module: true,
-          middlewareModule: true,
-          MIDDLEWARE_MODULE: true,
+          GROUP: true,
+          group: true,
+          middlewareGroup: true,
+          MIDDLEWARE_GROUP: true,
           mutation: true,
           middlewareMutation: true,
         },
         input: undefined,
         ctx: {
-          middlewareModule: true,
-          MIDDLEWARE_MODULE: true,
+          middlewareGroup: true,
+          MIDDLEWARE_GROUP: true,
           middlewareMutation: true,
         },
         mutationKey: [
           "app",
-          "module",
-          { module: true },
-          "MODULE",
-          { MODULE: true },
-          "middlewareModule",
-          "MIDDLEWARE_MODULE",
+          "group",
+          { group: true },
+          "GROUP",
+          { GROUP: true },
+          "middlewareGroup",
+          "MIDDLEWARE_GROUP",
           "middlewareMutation",
         ],
       },
     ],
     [
-      q.EXTENDED_MIDDLEWARE_MODULE.mutation,
+      q.EXTENDED_MIDDLEWARE_GROUP.mutation,
       {
-        name: "EXTENDED_MIDDLEWARE_MODULE.mutation",
+        name: "EXTENDED_MIDDLEWARE_GROUP.mutation",
         input: undefined,
         ctx: {
-          middlewareModule: true,
-          EXTENDED_MIDDLEWARE_MODULE: true,
+          middlewareGroup: true,
+          EXTENDED_MIDDLEWARE_GROUP: true,
         },
         response: {
-          middlewareModule: true,
-          EXTENDED_MIDDLEWARE_MODULE: true,
+          middlewareGroup: true,
+          EXTENDED_MIDDLEWARE_GROUP: true,
           mutation: true,
         },
-        mutationKey: ["app", "EXTENDED_MIDDLEWARE_MODULE", "mutation"],
+        mutationKey: ["app", "EXTENDED_MIDDLEWARE_GROUP", "mutation"],
       },
     ],
     [
-      q.EXTENDED_MIDDLEWARE_MODULE.inputMutation,
+      q.EXTENDED_MIDDLEWARE_GROUP.inputMutation,
       {
-        name: "EXTENDED_MIDDLEWARE_MODULE.inputMutation",
+        name: "EXTENDED_MIDDLEWARE_GROUP.inputMutation",
         input: { inputMutation: true },
         ctx: {
-          middlewareModule: true,
-          EXTENDED_MIDDLEWARE_MODULE: true,
+          middlewareGroup: true,
+          EXTENDED_MIDDLEWARE_GROUP: true,
         },
         response: {
-          middlewareModule: true,
-          EXTENDED_MIDDLEWARE_MODULE: true,
+          middlewareGroup: true,
+          EXTENDED_MIDDLEWARE_GROUP: true,
           inputMutation: true,
           mutation: true,
         },
-        mutationKey: ["app", "EXTENDED_MIDDLEWARE_MODULE", "inputMutation"],
+        mutationKey: ["app", "EXTENDED_MIDDLEWARE_GROUP", "inputMutation"],
       },
     ],
   ] satisfies Mutations as unknown as ReturnType<typeof baseMutation>;
@@ -1512,10 +1496,10 @@ type Keys = [
 const baseKeys = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
   [
     [
-      q.module({ module: true }),
+      q.group({ group: true }),
       {
-        name: "module",
-        key: ["app", "module", { module: true }],
+        name: "group",
+        key: ["app", "group", { group: true }],
       },
     ],
   ] as const satisfies Keys;
@@ -1531,81 +1515,81 @@ export const keys = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
       },
     ],
     [
-      q.module({ module: true }).middlewareModule,
+      q.group({ group: true }).middlewareGroup,
       {
-        name: "module.middlewareModule",
-        key: ["app", "module", { module: true }, "middlewareModule"],
+        name: "group.middlewareGroup",
+        key: ["app", "group", { group: true }, "middlewareGroup"],
       },
     ],
     [
-      q.module({ module: true }).middlewareModule.MIDDLEWARE_MODULE,
+      q.group({ group: true }).middlewareGroup.MIDDLEWARE_GROUP,
       {
-        name: "module.middlewareModule.MIDDLEWARE_MODULE",
+        name: "group.middlewareGroup.MIDDLEWARE_GROUP",
         key: [
           "app",
-          "module",
-          { module: true },
-          "middlewareModule",
-          "MIDDLEWARE_MODULE",
+          "group",
+          { group: true },
+          "middlewareGroup",
+          "MIDDLEWARE_GROUP",
         ],
       },
     ],
     [
-      q.module({ module: true }).MODULE({ MODULE: true }),
+      q.group({ group: true }).GROUP({ GROUP: true }),
       {
-        name: "module.MODULE",
-        key: ["app", "module", { module: true }, "MODULE", { MODULE: true }],
+        name: "group.GROUP",
+        key: ["app", "group", { group: true }, "GROUP", { GROUP: true }],
       },
     ],
     [
-      q.module({ module: true }).MODULE({ MODULE: true }).middlewareModule,
+      q.group({ group: true }).GROUP({ GROUP: true }).middlewareGroup,
       {
-        name: "module.MODULE.middlewareModule",
+        name: "group.GROUP.middlewareGroup",
         key: [
           "app",
-          "module",
-          { module: true },
-          "MODULE",
-          { MODULE: true },
-          "middlewareModule",
+          "group",
+          { group: true },
+          "GROUP",
+          { GROUP: true },
+          "middlewareGroup",
         ],
       },
     ],
     [
-      q.module({ module: true }).MODULE({ MODULE: true }).middlewareModule
-        .MIDDLEWARE_MODULE,
+      q.group({ group: true }).GROUP({ GROUP: true }).middlewareGroup
+        .MIDDLEWARE_GROUP,
       {
-        name: "module.MODULE.middlewareModule.MIDDLEWARE_MODULE",
+        name: "group.GROUP.middlewareGroup.MIDDLEWARE_GROUP",
         key: [
           "app",
-          "module",
-          { module: true },
-          "MODULE",
-          { MODULE: true },
-          "middlewareModule",
-          "MIDDLEWARE_MODULE",
+          "group",
+          { group: true },
+          "GROUP",
+          { GROUP: true },
+          "middlewareGroup",
+          "MIDDLEWARE_GROUP",
         ],
       },
     ],
     [
-      q.middlewareModule,
+      q.middlewareGroup,
       {
-        name: "middlewareModule",
-        key: ["app", "middlewareModule"],
+        name: "middlewareGroup",
+        key: ["app", "middlewareGroup"],
       },
     ],
     [
-      q.middlewareModule.MIDDLEWARE_MODULE,
+      q.middlewareGroup.MIDDLEWARE_GROUP,
       {
-        name: "middlewareModule.MIDDLEWARE_MODULE",
-        key: ["app", "middlewareModule", "MIDDLEWARE_MODULE"],
+        name: "middlewareGroup.MIDDLEWARE_GROUP",
+        key: ["app", "middlewareGroup", "MIDDLEWARE_GROUP"],
       },
     ],
     [
-      q.EXTENDED_MIDDLEWARE_MODULE,
+      q.EXTENDED_MIDDLEWARE_GROUP,
       {
-        name: "EXTENDED_MIDDLEWARE_MODULE",
-        key: ["app", "EXTENDED_MIDDLEWARE_MODULE"],
+        name: "EXTENDED_MIDDLEWARE_GROUP",
+        key: ["app", "EXTENDED_MIDDLEWARE_GROUP"],
       },
     ],
   ] satisfies Keys as unknown as ReturnType<typeof baseKeys>;
