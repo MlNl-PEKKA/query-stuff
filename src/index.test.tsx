@@ -10,7 +10,7 @@ import {
 import { renderHook as rH, waitFor } from "@testing-library/react";
 import type { PropsWithChildren } from "react";
 import { describe, expect, it, vi } from "vitest";
-import { useMutationState } from "./index.js";
+import { useExactMutationState } from "./index.js";
 import { keys, mutations, queries } from "./fixtures.js";
 
 const createTestQueryClient = () =>
@@ -175,7 +175,7 @@ describe(`QueryStuff`, () => {
   mutations().forEach(
     ([m, { name, input, response, mutationKey, ctx: innerCtx }]) => {
       describe(`${name}: mutation`, () => {
-        it(`${name}: useMutation, useMutationState, onMutate, onSuccess, onSettled, onError`, async () => {
+        it(`${name}: useMutation, useExactMutationState, onMutate, onSuccess, onSettled, onError`, async () => {
           const onMutate = vi.fn(() => void 0);
           const onError = vi.fn(() => void 0);
           const onSuccess = vi.fn(() => void 0);
@@ -201,7 +201,7 @@ describe(`QueryStuff`, () => {
           if (!input) delete variables.input;
           const { result: mutationState1, rerender } = renderHook(
             () =>
-              useMutationState({
+              useExactMutationState({
                 filters: {
                   mutationKey: m().mutationKey satisfies typeof mutationKey,
                   status: "pending",
@@ -220,7 +220,7 @@ describe(`QueryStuff`, () => {
           expect(mutationState1.current).toStrictEqual([]);
           const { result: mutationState2 } = renderHook(
             () =>
-              useMutationState({
+              useExactMutationState({
                 filters: {
                   mutationKey: m().mutationKey satisfies typeof mutationKey,
                   status: "success",
@@ -250,7 +250,7 @@ describe(`QueryStuff`, () => {
             undefined,
           );
         });
-        it(`${name}: useMutation Error, useMutationState,  onMutate, onSuccess, onSettled, onError`, async () => {
+        it(`${name}: useMutation Error, useExactMutationState,  onMutate, onSuccess, onSettled, onError`, async () => {
           const onMutate = vi.fn(() => void 0);
           const onError = vi.fn(() => void 0);
           const onSuccess = vi.fn(() => void 0);
@@ -279,7 +279,7 @@ describe(`QueryStuff`, () => {
           if (!input) delete variables.input;
           const { result: mutationState1, rerender } = renderHook(
             () =>
-              useMutationState({
+              useExactMutationState({
                 filters: {
                   mutationKey: m().mutationKey satisfies typeof mutationKey,
                   status: "pending",
@@ -298,7 +298,7 @@ describe(`QueryStuff`, () => {
           expect(mutationState1.current).toStrictEqual([]);
           const { result: mutationState2 } = renderHook(
             () =>
-              useMutationState({
+              useExactMutationState({
                 filters: {
                   mutationKey: m().mutationKey satisfies typeof mutationKey,
                   status: "error",
