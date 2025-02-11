@@ -316,10 +316,10 @@ export const NODES = new QueryStuffUndefinedInput().module((q) => ({
     })),
 }));
 
-export const QUERY_FACTORY = factory(() => NODES);
+export const QUERY_FACTORY = factory("app", () => NODES);
 
 export const queryFactories = [
-  [createProxyNode(NODES), "createProxyNode"],
+  [createProxyNode(NODES, ["app"]), "createProxyNode"],
   [QUERY_FACTORY, "factory"],
 ] as const;
 
@@ -335,7 +335,7 @@ const baseQuery = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
       {
         name: "query",
         response: { query: true },
-        queryKey: ["query"],
+        queryKey: ["app", "query"],
       },
     ],
   ] as const satisfies Queries;
@@ -347,7 +347,11 @@ export const defined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
       {
         name: "inputQuery",
         response: { inputQuery: true, query: true },
-        queryKey: ["inputQuery", { [inputSymbol]: { inputQuery: true } }],
+        queryKey: [
+          "app",
+          "inputQuery",
+          { [inputSymbol]: { inputQuery: true } },
+        ],
       },
     ],
     [
@@ -356,6 +360,7 @@ export const defined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
         name: "middlewareModule.inputQuery",
         response: { middlewareModule: true, inputQuery: true, query: true },
         queryKey: [
+          "app",
           "middlewareModule",
           "inputQuery",
           { [inputSymbol]: { inputQuery: true } },
@@ -376,6 +381,7 @@ export const defined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           query: true,
         },
         queryKey: [
+          "app",
           "middlewareModule",
           "MIDDLEWARE_MODULE",
           "inputQuery",
@@ -389,6 +395,7 @@ export const defined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
         name: "module.inputQuery",
         response: { module: true, inputQuery: true, query: true },
         queryKey: [
+          "app",
           "module",
           { module: true },
           "inputQuery",
@@ -410,6 +417,7 @@ export const defined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           query: true,
         },
         queryKey: [
+          "app",
           "module",
           { module: true },
           "middlewareModule",
@@ -437,6 +445,7 @@ export const defined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           query: true,
         },
         queryKey: [
+          "app",
           "module",
           { module: true },
           "middlewareModule",
@@ -461,6 +470,7 @@ export const defined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           query: true,
         },
         queryKey: [
+          "app",
           "module",
           { module: true },
           "MODULE",
@@ -486,6 +496,7 @@ export const defined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           query: true,
         },
         queryKey: [
+          "app",
           "module",
           { module: true },
           "MODULE",
@@ -513,6 +524,7 @@ export const defined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           query: true,
         },
         queryKey: [
+          "app",
           "module",
           { module: true },
           "MODULE",
@@ -538,6 +550,7 @@ export const defined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           query: true,
         },
         queryKey: [
+          "app",
           "EXTENDED_MIDDLEWARE_MODULE",
           "inputQuery",
           { [inputSymbol]: { inputQuery: true } },
@@ -554,7 +567,7 @@ export const undefined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
       {
         name: "middlewareQuery",
         response: { query: true, middlewareQuery: true },
-        queryKey: ["middlewareQuery"],
+        queryKey: ["app", "middlewareQuery"],
       },
     ],
     [
@@ -562,7 +575,7 @@ export const undefined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
       {
         name: "middlewareModule.query",
         response: { middlewareModule: true, query: true },
-        queryKey: ["middlewareModule", "query"],
+        queryKey: ["app", "middlewareModule", "query"],
       },
     ],
     [
@@ -574,7 +587,7 @@ export const undefined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           query: true,
           middlewareQuery: true,
         },
-        queryKey: ["middlewareModule", "middlewareQuery"],
+        queryKey: ["app", "middlewareModule", "middlewareQuery"],
       },
     ],
     [
@@ -586,7 +599,7 @@ export const undefined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           MIDDLEWARE_MODULE: true,
           query: true,
         },
-        queryKey: ["middlewareModule", "MIDDLEWARE_MODULE", "query"],
+        queryKey: ["app", "middlewareModule", "MIDDLEWARE_MODULE", "query"],
       },
     ],
     [
@@ -599,7 +612,12 @@ export const undefined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           query: true,
           middlewareQuery: true,
         },
-        queryKey: ["middlewareModule", "MIDDLEWARE_MODULE", "middlewareQuery"],
+        queryKey: [
+          "app",
+          "middlewareModule",
+          "MIDDLEWARE_MODULE",
+          "middlewareQuery",
+        ],
       },
     ],
     [
@@ -607,7 +625,7 @@ export const undefined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
       {
         name: "module.query",
         response: { module: true, query: true },
-        queryKey: ["module", { module: true }, "query"],
+        queryKey: ["app", "module", { module: true }, "query"],
       },
     ],
     [
@@ -615,7 +633,7 @@ export const undefined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
       {
         name: "module.middlewareQuery",
         response: { module: true, query: true, middlewareQuery: true },
-        queryKey: ["module", { module: true }, "middlewareQuery"],
+        queryKey: ["app", "module", { module: true }, "middlewareQuery"],
       },
     ],
     [
@@ -623,7 +641,13 @@ export const undefined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
       {
         name: "module.middlewareModule.query",
         response: { module: true, middlewareModule: true, query: true },
-        queryKey: ["module", { module: true }, "middlewareModule", "query"],
+        queryKey: [
+          "app",
+          "module",
+          { module: true },
+          "middlewareModule",
+          "query",
+        ],
       },
     ],
     [
@@ -637,6 +661,7 @@ export const undefined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           middlewareQuery: true,
         },
         queryKey: [
+          "app",
           "module",
           { module: true },
           "middlewareModule",
@@ -655,6 +680,7 @@ export const undefined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           query: true,
         },
         queryKey: [
+          "app",
           "module",
           { module: true },
           "middlewareModule",
@@ -676,6 +702,7 @@ export const undefined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           middlewareQuery: true,
         },
         queryKey: [
+          "app",
           "module",
           { module: true },
           "middlewareModule",
@@ -694,6 +721,7 @@ export const undefined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           query: true,
         },
         queryKey: [
+          "app",
           "module",
           { module: true },
           "MODULE",
@@ -713,6 +741,7 @@ export const undefined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           middlewareQuery: true,
         },
         queryKey: [
+          "app",
           "module",
           { module: true },
           "MODULE",
@@ -733,6 +762,7 @@ export const undefined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           query: true,
         },
         queryKey: [
+          "app",
           "module",
           { module: true },
           "MODULE",
@@ -755,6 +785,7 @@ export const undefined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           middlewareQuery: true,
         },
         queryKey: [
+          "app",
           "module",
           { module: true },
           "MODULE",
@@ -777,6 +808,7 @@ export const undefined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           query: true,
         },
         queryKey: [
+          "app",
           "module",
           { module: true },
           "MODULE",
@@ -801,6 +833,7 @@ export const undefined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           middlewareQuery: true,
         },
         queryKey: [
+          "app",
           "module",
           { module: true },
           "MODULE",
@@ -820,7 +853,7 @@ export const undefined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           EXTENDED_MIDDLEWARE_MODULE: true,
           query: true,
         },
-        queryKey: ["EXTENDED_MIDDLEWARE_MODULE", "query"],
+        queryKey: ["app", "EXTENDED_MIDDLEWARE_MODULE", "query"],
       },
     ],
     [
@@ -833,7 +866,7 @@ export const undefined_queries = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           query: true,
           middlewareQuery: true,
         },
-        queryKey: ["EXTENDED_MIDDLEWARE_MODULE", "middlewareQuery"],
+        queryKey: ["app", "EXTENDED_MIDDLEWARE_MODULE", "middlewareQuery"],
       },
     ],
   ] satisfies Queries as unknown as ReturnType<typeof baseQuery>;
@@ -864,7 +897,7 @@ const baseMutation = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
         input: undefined,
         ctx: undefined,
         response: { mutation: true },
-        mutationKey: ["mutation"],
+        mutationKey: ["app", "mutation"],
       },
     ],
   ] as const satisfies Mutations;
@@ -882,7 +915,7 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           inputMutation: true,
           mutation: true,
         },
-        mutationKey: ["inputMutation"],
+        mutationKey: ["app", "inputMutation"],
       },
     ],
     [
@@ -897,7 +930,7 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           mutation: true,
           middlewareMutation: true,
         },
-        mutationKey: ["middlewareMutation"],
+        mutationKey: ["app", "middlewareMutation"],
       },
     ],
     [
@@ -912,7 +945,7 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           middlewareModule: true,
           mutation: true,
         },
-        mutationKey: ["middlewareModule", "mutation"],
+        mutationKey: ["app", "middlewareModule", "mutation"],
       },
     ],
     [
@@ -928,7 +961,7 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           inputMutation: true,
           mutation: true,
         },
-        mutationKey: ["middlewareModule", "inputMutation"],
+        mutationKey: ["app", "middlewareModule", "inputMutation"],
       },
     ],
     [
@@ -945,7 +978,7 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           mutation: true,
           middlewareMutation: true,
         },
-        mutationKey: ["middlewareModule", "middlewareMutation"],
+        mutationKey: ["app", "middlewareModule", "middlewareMutation"],
       },
     ],
     [
@@ -962,7 +995,12 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           MIDDLEWARE_MODULE: true,
           mutation: true,
         },
-        mutationKey: ["middlewareModule", "MIDDLEWARE_MODULE", "mutation"],
+        mutationKey: [
+          "app",
+          "middlewareModule",
+          "MIDDLEWARE_MODULE",
+          "mutation",
+        ],
       },
     ],
     [
@@ -980,7 +1018,12 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           inputMutation: true,
           mutation: true,
         },
-        mutationKey: ["middlewareModule", "MIDDLEWARE_MODULE", "inputMutation"],
+        mutationKey: [
+          "app",
+          "middlewareModule",
+          "MIDDLEWARE_MODULE",
+          "inputMutation",
+        ],
       },
     ],
     [
@@ -1000,6 +1043,7 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
         },
         input: undefined,
         mutationKey: [
+          "app",
           "middlewareModule",
           "MIDDLEWARE_MODULE",
           "middlewareMutation",
@@ -1016,7 +1060,7 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           module: true,
           mutation: true,
         },
-        mutationKey: ["module", { module: true }, "mutation"],
+        mutationKey: ["app", "module", { module: true }, "mutation"],
       },
     ],
     [
@@ -1032,7 +1076,7 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           inputMutation: true,
           mutation: true,
         },
-        mutationKey: ["module", { module: true }, "inputMutation"],
+        mutationKey: ["app", "module", { module: true }, "inputMutation"],
       },
     ],
     [
@@ -1048,7 +1092,7 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           mutation: true,
           middlewareMutation: true,
         },
-        mutationKey: ["module", { module: true }, "middlewareMutation"],
+        mutationKey: ["app", "module", { module: true }, "middlewareMutation"],
       },
     ],
     [
@@ -1063,6 +1107,7 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           mutation: true,
         },
         mutationKey: [
+          "app",
           "module",
           { module: true },
           "middlewareModule",
@@ -1085,6 +1130,7 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           mutation: true,
         },
         mutationKey: [
+          "app",
           "module",
           { module: true },
           "middlewareModule",
@@ -1105,6 +1151,7 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           mutation: true,
         },
         mutationKey: [
+          "app",
           "module",
           { module: true },
           "middlewareModule",
@@ -1125,6 +1172,7 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           mutation: true,
         },
         mutationKey: [
+          "app",
           "module",
           { module: true },
           "middlewareModule",
@@ -1150,6 +1198,7 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           mutation: true,
         },
         mutationKey: [
+          "app",
           "module",
           { module: true },
           "middlewareModule",
@@ -1177,6 +1226,7 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           middlewareMutation: true,
         },
         mutationKey: [
+          "app",
           "module",
           { module: true },
           "middlewareModule",
@@ -1197,6 +1247,7 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
         input: undefined,
         ctx: undefined,
         mutationKey: [
+          "app",
           "module",
           { module: true },
           "MODULE",
@@ -1220,6 +1271,7 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
         },
         ctx: undefined,
         mutationKey: [
+          "app",
           "module",
           { module: true },
           "MODULE",
@@ -1241,6 +1293,7 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
         input: undefined,
         ctx: { middlewareMutation: true },
         mutationKey: [
+          "app",
           "module",
           { module: true },
           "MODULE",
@@ -1263,6 +1316,7 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
         input: undefined,
         ctx: { middlewareModule: true },
         mutationKey: [
+          "app",
           "module",
           { module: true },
           "MODULE",
@@ -1289,6 +1343,7 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
         },
         ctx: { middlewareModule: true },
         mutationKey: [
+          "app",
           "module",
           { module: true },
           "MODULE",
@@ -1313,6 +1368,7 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
         ctx: { middlewareModule: true, middlewareMutation: true },
         input: undefined,
         mutationKey: [
+          "app",
           "module",
           { module: true },
           "MODULE",
@@ -1337,6 +1393,7 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
         input: undefined,
         ctx: { middlewareModule: true, MIDDLEWARE_MODULE: true },
         mutationKey: [
+          "app",
           "module",
           { module: true },
           "MODULE",
@@ -1365,6 +1422,7 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
         },
         ctx: { middlewareModule: true, MIDDLEWARE_MODULE: true },
         mutationKey: [
+          "app",
           "module",
           { module: true },
           "MODULE",
@@ -1395,6 +1453,7 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           middlewareMutation: true,
         },
         mutationKey: [
+          "app",
           "module",
           { module: true },
           "MODULE",
@@ -1419,7 +1478,7 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           EXTENDED_MIDDLEWARE_MODULE: true,
           mutation: true,
         },
-        mutationKey: ["EXTENDED_MIDDLEWARE_MODULE", "mutation"],
+        mutationKey: ["app", "EXTENDED_MIDDLEWARE_MODULE", "mutation"],
       },
     ],
     [
@@ -1437,7 +1496,7 @@ export const mutations = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
           inputMutation: true,
           mutation: true,
         },
-        mutationKey: ["EXTENDED_MIDDLEWARE_MODULE", "inputMutation"],
+        mutationKey: ["app", "EXTENDED_MIDDLEWARE_MODULE", "inputMutation"],
       },
     ],
   ] satisfies Mutations as unknown as ReturnType<typeof baseMutation>;
@@ -1456,7 +1515,7 @@ const baseKeys = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
       q.module({ module: true }),
       {
         name: "module",
-        key: ["module", { module: true }],
+        key: ["app", "module", { module: true }],
       },
     ],
   ] as const satisfies Keys;
@@ -1468,7 +1527,7 @@ export const keys = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
       q.module({ module: true }).middlewareModule,
       {
         name: "module.middlewareModule",
-        key: ["module", { module: true }, "middlewareModule"],
+        key: ["app", "module", { module: true }, "middlewareModule"],
       },
     ],
     [
@@ -1476,6 +1535,7 @@ export const keys = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
       {
         name: "module.middlewareModule.MIDDLEWARE_MODULE",
         key: [
+          "app",
           "module",
           { module: true },
           "middlewareModule",
@@ -1487,7 +1547,7 @@ export const keys = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
       q.module({ module: true }).MODULE({ MODULE: true }),
       {
         name: "module.MODULE",
-        key: ["module", { module: true }, "MODULE", { MODULE: true }],
+        key: ["app", "module", { module: true }, "MODULE", { MODULE: true }],
       },
     ],
     [
@@ -1495,6 +1555,7 @@ export const keys = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
       {
         name: "module.MODULE.middlewareModule",
         key: [
+          "app",
           "module",
           { module: true },
           "MODULE",
@@ -1509,6 +1570,7 @@ export const keys = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
       {
         name: "module.MODULE.middlewareModule.MIDDLEWARE_MODULE",
         key: [
+          "app",
           "module",
           { module: true },
           "MODULE",
@@ -1522,21 +1584,21 @@ export const keys = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
       q.middlewareModule,
       {
         name: "middlewareModule",
-        key: ["middlewareModule"],
+        key: ["app", "middlewareModule"],
       },
     ],
     [
       q.middlewareModule.MIDDLEWARE_MODULE,
       {
         name: "middlewareModule.MIDDLEWARE_MODULE",
-        key: ["middlewareModule", "MIDDLEWARE_MODULE"],
+        key: ["app", "middlewareModule", "MIDDLEWARE_MODULE"],
       },
     ],
     [
       q.EXTENDED_MIDDLEWARE_MODULE,
       {
         name: "EXTENDED_MIDDLEWARE_MODULE",
-        key: ["EXTENDED_MIDDLEWARE_MODULE"],
+        key: ["app", "EXTENDED_MIDDLEWARE_MODULE"],
       },
     ],
   ] satisfies Keys as unknown as ReturnType<typeof baseKeys>;

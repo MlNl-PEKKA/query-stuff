@@ -11,10 +11,10 @@ import {
 } from "./utils.js";
 import { inputSymbol } from "./symbols.js";
 
-export const createProxyNode = <T extends Node>(
+export const createProxyNode = <T extends Node, U extends QueryKey>(
   node: T,
-  keys: QueryKey = [],
-): ProxyNode<T> => {
+  keys: U,
+): ProxyNode<T, U> => {
   return new Proxy(node, {
     get: (target, p, receiver) => {
       if (!isNodeFunction(target) && isString(p)) {
@@ -51,5 +51,5 @@ export const createProxyNode = <T extends Node>(
         }
       }
     },
-  }) as unknown as ProxyNode<T>;
+  }) as unknown as ProxyNode<T, U>;
 };

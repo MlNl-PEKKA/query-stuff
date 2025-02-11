@@ -38,14 +38,17 @@ import { mutationOptions } from "./utils.js";
 
 export const factory = <
   T extends Node,
+  U extends string,
   TContext = void,
   TOverrides extends Overrides = [],
   TMiddlewares extends AnyMiddlewares = Middlewares<TContext, TOverrides>,
 >(
+  name: U,
   fn: (q: QueryStuffUndefinedInput<TContext, TOverrides, TMiddlewares>) => T,
-): ProxyNode<T> => {
+): ProxyNode<T, [U]> => {
   return createProxyNode(
     fn(new QueryStuffUndefinedInput<TContext, TOverrides, TMiddlewares>()),
+    [name],
   );
 };
 
