@@ -1524,6 +1524,13 @@ export const keys = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
   [
     ...baseKeys(q),
     [
+      q,
+      {
+        name: "app",
+        key: ["app"],
+      },
+    ],
+    [
       q.module({ module: true }).middlewareModule,
       {
         name: "module.middlewareModule",

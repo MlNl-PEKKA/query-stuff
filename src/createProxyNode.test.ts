@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { keys, mutations, queries, queryFactories } from "./fixtures.js";
+import { key } from "./symbols.js";
 
 describe("queryFactories", () => {
   queryFactories.forEach((target) => {
@@ -19,7 +20,7 @@ describe("queryFactories", () => {
       describe("keys", () => {
         keys().forEach((q) =>
           it(`${q[1].name}: mutationKey`, () =>
-            expect(q[0]._key).toStrictEqual(q[1].key)),
+            expect(q[0][key]).toStrictEqual(q[1].key)),
         );
       });
     });

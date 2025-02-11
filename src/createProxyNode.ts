@@ -9,7 +9,7 @@ import {
   isQueryNodeUndefinedInput,
   isString,
 } from "./utils.js";
-import { inputSymbol } from "./symbols.js";
+import { inputSymbol, key } from "./symbols.js";
 
 export const createProxyNode = <T extends Node, U extends QueryKey>(
   node: T,
@@ -18,7 +18,7 @@ export const createProxyNode = <T extends Node, U extends QueryKey>(
   return new Proxy(node, {
     get: (target, p, receiver) => {
       if (!isNodeFunction(target) && isString(p)) {
-        if (p === "_key") {
+        if (p === key) {
           return keys;
         }
         if (isQueryNode(target)) {

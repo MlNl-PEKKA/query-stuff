@@ -333,7 +333,7 @@ describe(`QueryStuff`, () => {
   );
   keys().forEach(([k, { name, key }]) => {
     it(`${name}: key`, () => {
-      expect(k._key).toStrictEqual(key);
+      expect(k["~key"]).toStrictEqual(key);
     });
   });
 });
