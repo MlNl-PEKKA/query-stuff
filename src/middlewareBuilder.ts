@@ -19,7 +19,7 @@ class QueryStuffMiddleware<
   TContextValue = Merge<TContext extends any ? void : TContext, TOverride>,
 > {
   constructor(public middleware: MiddlewareFn<any, TOverride>) {}
-  descendant<TOverrideIn extends UnknownRecord>(
+  inherit<TOverrideIn extends UnknownRecord>(
     fn: MiddlewareFn<TContextValue, TOverrideIn>,
   ): QueryStuffMiddleware<TOverrideIn, TContextValue> {
     return new QueryStuffMiddleware<TOverrideIn, TContextValue>(fn);

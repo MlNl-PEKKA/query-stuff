@@ -23,7 +23,7 @@ const middlewareModule = unstable_middlewareBuilder(
 
 const MIDDLEWARE_MODULE = unstable_middlewareBuilder(
   middlewareModule.middleware,
-).descendant(
+).inherit(
   async ({ next, ctx }) =>
     await next({ ctx: { ...ctx, MIDDLEWARE_MODULE: true } }),
 );
@@ -37,7 +37,7 @@ const EXTENDED_MIDDLEWARE_MODULE = unstable_middlewareBuilder(
 
 const EXTENDED_DESCENDANT_MIDDLEWARE_MODULE = unstable_middlewareBuilder(
   EXTENDED_MIDDLEWARE_MODULE.middleware,
-).descendant(
+).inherit(
   async ({ next, ctx }) =>
     await next({
       ctx: { ...ctx, EXTENDED_DESCENDANT_MIDDLEWARE_MODULE: true },
