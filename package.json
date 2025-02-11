@@ -38,14 +38,7 @@
   ],
   "license": "MIT",
   "peerDependencies": {
-    "@arrirpc/schema": ">=0.71",
-    "@sinclair/typemap": ">=0.8",
-    "@tanstack/react-query": ">=5",
-    "arktype": ">=2",
-    "decoders": ">=2.6",
-    "formgator": ">=0.1",
-    "valibot": ">=1.0.0-beta",
-    "zod": ">=3.24"
+    "@tanstack/react-query": ">=5"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.11",
@@ -66,7 +59,8 @@
     "type-fest": "^4.32.0",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0",
-    "vitest": "^3.0.1"
+    "vitest": "^3.0.1",
+    "zod": ">=3.24"
   },
   "dependencies": {
     "@standard-schema/spec": "^1.0.0"
