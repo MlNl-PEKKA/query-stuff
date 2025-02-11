@@ -10,17 +10,18 @@ import type {
   UnusedSkipTokenOptions,
   UseMutationOptions,
 } from "@tanstack/react-query";
-import type {
-  inputSymbol,
-  middlewareCtx,
-  middlewareData,
-  mutationContext,
-  mutationData,
-  mutationError,
-  mutationNode,
-  mutationVariables,
-  queryNodeDefinedInput,
-  queryNodeUndefinedInput,
+import {
+  key,
+  type inputSymbol,
+  type middlewareCtx,
+  type middlewareData,
+  type mutationContext,
+  type mutationData,
+  type mutationError,
+  type mutationNode,
+  type mutationVariables,
+  type queryNodeDefinedInput,
+  type queryNodeUndefinedInput,
 } from "./symbols.js";
 
 export type UnknownRecord = Record<PropertyKey, unknown>;
@@ -222,7 +223,7 @@ export type QMutationOptionsOut<
 export type QAnyMutationOptionsOut = QMutationOptionsOut<any, any, any, any>;
 
 export type ProxyKeyTag<TKey extends QueryKey = QueryKey> = {
-  _key: TKey;
+  [key]: TKey;
 };
 
 export type ProxyKeyNode = UnknownRecord & ProxyKeyTag;
@@ -267,22 +268,16 @@ export type ProxyNode<
           ? (
               ...input: R
             ) => R[0] extends void | undefined
-              ? Merge<
-                  ProxyNode<S, [...TQueryKey, key]>,
+              ? ProxyNode<S, [...TQueryKey, key]> &
                   ProxyKeyTag<[...TQueryKey, key]>
-                >
-              : Merge<
-                  ProxyNode<S, [...TQueryKey, key, R[0]]>,
+              : ProxyNode<S, [...TQueryKey, key, R[0]]> &
                   ProxyKeyTag<[...TQueryKey, key, R[0]]>
-                >
           : never
     : T[key] extends Node
-      ? Merge<
-          ProxyNode<T[key], [...TQueryKey, key]>,
+      ? ProxyNode<T[key], [...TQueryKey, key]> &
           ProxyKeyTag<[...TQueryKey, key]>
-        >
       : never;
-};
+} & ProxyKeyTag<TQueryKey>;
 
 export type MiddlewareResponse<TContext> = {
   [middlewareData]: {
