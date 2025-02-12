@@ -226,7 +226,11 @@ export type ProxyKeyTag<TKey extends QueryKey = QueryKey> = {
   [key]: TKey;
 };
 
-export type ProxyKeyNode = UnknownRecord & ProxyKeyTag;
+export type ProxyKeyNode = (
+  | UnknownRecord
+  | ((...args: never[]) => UnknownRecord)
+) &
+  ProxyKeyTag;
 
 export type ProxyNode<
   T extends Node = Node,

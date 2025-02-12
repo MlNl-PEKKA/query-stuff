@@ -19,7 +19,7 @@ describe("queryFactories", () => {
       });
       describe("keys", () => {
         keys().forEach((q) =>
-          it(`${q[1].name}: mutationKey`, () =>
+          it(`${q[1].name}: key`, () =>
             expect(q[0][key]).toStrictEqual(q[1].key)),
         );
       });

@@ -3,6 +3,7 @@ import {
   defined_queries,
   keys,
   mutations,
+  objectKeys,
   queries,
   undefined_queries,
 } from "./fixtures.js";
@@ -53,7 +54,7 @@ describe("utils", () => {
       expect(value).toBe(true);
     });
     it("returns true for nodes and asserts target type as Node Object", () => {
-      keys().forEach((target) => {
+      objectKeys().forEach((target) => {
         const value = isNodeObject(target[0]);
         expect(value).toBe(true);
       });

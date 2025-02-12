@@ -12,6 +12,7 @@ import type { PropsWithChildren } from "react";
 import { describe, expect, it, vi } from "vitest";
 import { useExactMutationState } from "./index.js";
 import { keys, mutations, queries } from "./fixtures.js";
+import { key } from "./symbols.js";
 
 const createTestQueryClient = () =>
   new QueryClient({
@@ -331,9 +332,9 @@ describe(`QueryStuff`, () => {
       });
     },
   );
-  keys().forEach(([k, { name, key }]) => {
+  keys().forEach(([k, { name, key: _key }]) => {
     it(`${name}: key`, () => {
-      expect(k._key).toStrictEqual(key);
+      expect(k[key]).toStrictEqual(_key);
     });
   });
 });

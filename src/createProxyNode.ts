@@ -17,20 +17,24 @@ export const createProxyNode = <T extends Node, U extends QueryKey>(
 ): ProxyNode<T, U> => {
   return new Proxy(node, {
     get: (target, p, receiver) => {
-      if (!isNodeFunction(target) && isString(p)) {
-        if (p === key) {
+      if (isString(p)) {
+        if (isNodeFunction(target) && p === key) {
           return keys;
-        }
-        if (isQueryNode(target)) {
-          return Reflect.get({ ...target, queryKey: keys }, p, receiver);
-        }
-        if (isMutationNode(target)) {
-          return Reflect.get({ ...target, mutationKey: keys }, p, receiver);
-        }
-        const nextTarget = target[p];
-        const nextKeys = [...keys, p];
-        if (isNode(nextTarget)) {
-          return createProxyNode(nextTarget, nextKeys);
+        } else {
+          if (p === key) {
+            return keys;
+          }
+          if (isQueryNode(target)) {
+            return Reflect.get({ ...target, queryKey: keys }, p, receiver);
+          }
+          if (isMutationNode(target)) {
+            return Reflect.get({ ...target, mutationKey: keys }, p, receiver);
+          }
+          const nextTarget = target[p];
+          const nextKeys = [...keys, p];
+          if (isNode(nextTarget)) {
+            return createProxyNode(nextTarget, nextKeys);
+          }
         }
       }
     },

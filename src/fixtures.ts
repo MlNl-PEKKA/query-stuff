@@ -1507,22 +1507,22 @@ type Keys = [
 const baseKeys = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
   [
     [
-      q.group({ group: true }),
-      {
-        name: "group",
-        key: ["app", "group", { group: true }],
-      },
-    ],
-  ] as const satisfies Keys;
-
-export const keys = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
-  [
-    ...baseKeys(q),
-    [
       q,
       {
         name: "app",
         key: ["app"],
+      },
+    ],
+  ] as const satisfies Keys;
+
+export const objectKeys = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
+  [
+    ...baseKeys(q),
+    [
+      q.group({ group: true }),
+      {
+        name: "group",
+        key: ["app", "group", { group: true }],
       },
     ],
     [
@@ -1603,4 +1603,27 @@ export const keys = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
         key: ["app", "EXTENDED_MIDDLEWARE_GROUP"],
       },
     ],
+  ] satisfies Keys as unknown as ReturnType<typeof baseKeys>;
+
+export const functionKeys = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
+  [
+    [
+      q.group,
+      {
+        name: "group",
+        key: ["app", "group"],
+      },
+    ],
+    [
+      q.group({ group: true }).GROUP,
+      {
+        name: "group.GROUP",
+        key: ["app", "group", { group: true }, "GROUP"],
+      },
+    ],
+  ] satisfies Keys as unknown as ReturnType<typeof baseKeys>;
+export const keys = (q: typeof QUERY_FACTORY = QUERY_FACTORY) =>
+  [
+    ...objectKeys(q),
+    ...functionKeys(q),
   ] satisfies Keys as unknown as ReturnType<typeof baseKeys>;
