@@ -23,21 +23,21 @@ const middlewareGroup = unstable_middlewareBuilder(
 
 const MIDDLEWARE_GROUP = unstable_middlewareBuilder(
   middlewareGroup.middleware,
-).inherit(
+).unstable_inherit(
   async ({ next, ctx }) =>
     await next({ ctx: { ...ctx, MIDDLEWARE_GROUP: true } }),
 );
 
 const EXTENDED_MIDDLEWARE_GROUP = unstable_middlewareBuilder(
   middlewareGroup.middleware,
-).extend(
+).unstable_extend(
   async ({ next, ctx }) =>
     await next({ ctx: { ...ctx, EXTENDED_MIDDLEWARE_GROUP: true } }),
 );
 
 const EXTENDED_DESCENDANT_MIDDLEWARE_GROUP = unstable_middlewareBuilder(
   EXTENDED_MIDDLEWARE_GROUP.middleware,
-).inherit(
+).unstable_inherit(
   async ({ next, ctx }) =>
     await next({
       ctx: { ...ctx, EXTENDED_DESCENDANT_MIDDLEWARE_GROUP: true },
