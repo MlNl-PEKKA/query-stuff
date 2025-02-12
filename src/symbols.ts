@@ -18,4 +18,4 @@ export const middlewareData = "~middlewareData";
 
 export const middlewareCtx = "~middlewareCtx";
 
-export const key = "~key";
+export const key = "_key";

@@ -265,13 +265,11 @@ export type ProxyNode<
             >
           >
         : S extends Node
-          ? (
+          ? ((
               ...input: R
-            ) => R[0] extends void | undefined
-              ? ProxyNode<S, [...TQueryKey, key]> &
-                  ProxyKeyTag<[...TQueryKey, key]>
-              : ProxyNode<S, [...TQueryKey, key, R[0]]> &
-                  ProxyKeyTag<[...TQueryKey, key, R[0]]>
+            ) => ProxyNode<S, [...TQueryKey, key, R[0]]> &
+              ProxyKeyTag<[...TQueryKey, key, R[0]]>) &
+              ProxyKeyTag<[...TQueryKey, key]>
           : never
     : T[key] extends Node
       ? ProxyNode<T[key], [...TQueryKey, key]> &
