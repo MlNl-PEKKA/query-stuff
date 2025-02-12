@@ -263,7 +263,7 @@ npm i @tanstack/react-query query-stuff
 
 <div id="9"></div>
 
-- ### 🔗 use
+- ### 🔗 use (🧪 Experimental)
 
   The `use` function allows composing middlewares that wrap outgoing functions, such as `queryFn` for queries and `mutationFn` for mutations.
 
@@ -367,7 +367,7 @@ npm i @tanstack/react-query query-stuff
 
 <div id="11"></div>
 
-- ### 🏗️ middlewareBuilder
+- ### 🏗️ middlewareBuilder (🧪 Experimental)
 
   #### 🧪 Experimental
 
@@ -442,7 +442,7 @@ npm i @tanstack/react-query query-stuff
 
 <div id="12"></div>
 
-- ### 🔧 extend
+- ### 🔧 extend (🧪 Experimental)
 
   #### 🧪 Experimental
 
@@ -537,7 +537,7 @@ npm i @tanstack/react-query query-stuff
 
 <div id="13"></div>
 
-- ### 🧬 inherit
+- ### 🧬 inherit (🧪 Experimental)
 
   #### 🧪 Experimental
 

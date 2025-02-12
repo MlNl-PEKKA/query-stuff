@@ -8,30 +8,9 @@ importers:
 
   .:
     dependencies:
-      '@arrirpc/schema':
-        specifier: '>=0.71'
-        version: 0.74.1
-      '@sinclair/typemap':
-        specifier: '>=0.8'
-        version: 0.8.14(@sinclair/typebox@0.34.16)(valibot@1.0.0-beta.15(typescript@5.7.3))(zod@3.24.1)
       '@standard-schema/spec':
         specifier: ^1.0.0
         version: 1.0.0
-      arktype:
-        specifier: '>=2'
-        version: 2.0.4
-      decoders:
-        specifier: '>=2.6'
-        version: 2.6.0
-      formgator:
-        specifier: '>=0.1'
-        version: 0.1.0
-      valibot:
-        specifier: '>=1.0.0-beta'
-        version: 1.0.0-beta.15(typescript@5.7.3)
-      zod:
-        specifier: '>=3.24'
-        version: 3.24.1
     devDependencies:
       '@changesets/cli':
         specifier: ^2.27.11
@@ -90,24 +69,15 @@ importers:
       vitest:
         specifier: ^3.0.1
         version: 3.0.1(@types/node@22.10.7)(jiti@2.4.2)(jsdom@26.0.0)
+      zod:
+        specifier: '>=3.24'
+        version: 3.24.1
 
 packages:
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
-
-  '@ark/schema@0.39.0':
-    resolution: {integrity: sha512-LQbQUb3Sj461LgklXObAyUJNtsUUCBxZlO2HqRLYvRSqpStm0xTMrXn51DwBNNxeSULvKVpXFwoxiSec9kwKww==}
-
-  '@ark/util@0.39.0':
-    resolution: {integrity: sha512-90APHVklk8BP4kku7hIh1BgrhuyKYqoZ4O7EybtFRo7cDl9mIyc/QUbGvYDg//73s0J2H0I/gW9pzroA1R4IBQ==}
-
-  '@arrirpc/schema@0.74.1':
-    resolution: {integrity: sha512-iK0HK34hRTzQIK+NPMh+MTziqIfq8snObECjsrkSUfFcDb8IPEM+k1fBATjNEihCotqv5JRBhZOheR5aEPQNWA==}
-
-  '@arrirpc/type-defs@0.74.1':
-    resolution: {integrity: sha512-VHcV7aFFmC1e8y3GiwJtPmD9oVLgrE6C//vtcQkqsM2g+cBaNauSEAQmgmchOAOiHTEBnN80C8eDeTGJOy+a2Q==}
 
   '@asamuzakjp/css-color@2.8.3':
     resolution: {integrity: sha512-GIc76d9UI1hCvOATjZPyHFmE5qhRccp3/zGfMPapK3jBi+yocEzp6BBB0UnfRYP9NP4FANqUZYb0hnfs3TM3hw==}
@@ -571,16 +541,6 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@sinclair/typebox@0.34.16':
-    resolution: {integrity: sha512-rIljj8VPYAfn26ANY+5pCNVBPiv6hSufuKGe46y65cJZpvx8vHvPXlU0Q/Le4OGtlNaL8Jg2FuhtvQX18lSIqA==}
-
-  '@sinclair/typemap@0.8.14':
-    resolution: {integrity: sha512-TxDicZ/GOu4dxlKYHpfPFHw/qLHZZV3lqnGqkJ4nmR2d7KaONFdbQxMTzNkGdl/Fg3HxVSNkLp/XVaJfZv4qLA==}
-    peerDependencies:
-      '@sinclair/typebox': ^0.34.16
-      valibot: ^1.0.0-beta.15
-      zod: ^3.24.1
-
   '@standard-schema/spec@1.0.0':
     resolution: {integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==}
 
@@ -785,9 +745,6 @@ packages:
   aria-query@5.3.0:
     resolution: {integrity: sha512-b0P0sZPKtyu8HkeRAfCq0IfURZK+SuwMjY1UXGBU27wpAiTwQAIlq56IbIO+ytk/JjS1fMR14ee5WBBfKi5J6A==}
 
-  arktype@2.0.4:
-    resolution: {integrity: sha512-S68rWVDnJauwH7/QCm8zCUM3aTe9Xk6oRihdcc3FSUAtxCo/q1Fwq46JhcwB5Ufv1YStwdQRz+00Y/URlvbhAQ==}
-
   array-union@2.1.0:
     resolution: {integrity: sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw==}
     engines: {node: '>=8'}
@@ -901,9 +858,6 @@ packages:
 
   decimal.js@10.4.3:
     resolution: {integrity: sha512-VBBaLc1MgL5XpzgIP7ny5Z6Nx3UrRkIViUkPUdtl9aya5amy3De1gsUUSB1g3+3sExYNjCAsAznmukyxCb1GRA==}
-
-  decoders@2.6.0:
-    resolution: {integrity: sha512-7AVNiLpvI4erWuTeZ7zNOqSZq4wt12j/Tekz0w6l0AJCDnLSpy3DVqqh+sYbTyJYOtgqMNt1ceFf0IsjlRcp6w==}
 
   deep-eql@5.0.2:
     resolution: {integrity: sha512-h5k/5U50IJJFpzfL6nO9jaaumfjO/f2NjK/oYB2Djzm4p9L+3T9qWpZqZ2hAbLPuuYq9wrU08WQyBTL5GbPk5Q==}
@@ -1075,14 +1029,6 @@ packages:
   form-data@4.0.1:
     resolution: {integrity: sha512-tzN8e4TX8+kkxGPK8D5u0FNmjPUjw3lwC9lSLxxoB/+GtsJG91CO8bSWy73APlgAZzZbXEYZJuxjkHH2w+Ezhw==}
     engines: {node: '>= 6'}
-
-  formgator@0.1.0:
-    resolution: {integrity: sha512-CiDknRMd7CvtqWY7nbwgM+apauZ/US28BfbZcfEWnkWw/R71gNiY+e4gfk84X2mJHOR2H0kMurDEjJS0uZc3mg==}
-    peerDependencies:
-      '@sveltejs/kit': '>=2.0.0'
-    peerDependenciesMeta:
-      '@sveltejs/kit':
-        optional: true
 
   fs-extra@7.0.1:
     resolution: {integrity: sha512-YJDaCJZEnBmcbw13fvdAM9AwNOJwOzrE4pqMqBq5nFiEqXUqHwlK4B+3pUw6JNvfSPtX05xFHtYy/1ni01eGCw==}
@@ -1558,9 +1504,6 @@ packages:
   scheduler@0.25.0:
     resolution: {integrity: sha512-xFVuu11jh+xcO7JOAGJNOXld8/TcEHK/4CituBUeUb5hqxJLj9YuemAEuvm9gQ/+pgXYfbQuqAkiYu+u7YEsNA==}
 
-  scule@1.3.0:
-    resolution: {integrity: sha512-6FtHJEvt+pVMIB9IBY+IcCJ6Z5f1iQnytgyfKMhDKgmzYG+TeH/wx1y3l27rshSbLiSanrR9ffZDrEsmjlQF2g==}
-
   semver@7.6.3:
     resolution: {integrity: sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==}
     engines: {node: '>=10'}
@@ -1756,9 +1699,6 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  uncrypto@0.1.3:
-    resolution: {integrity: sha512-Ql87qFHB3s/De2ClA9e0gsnS6zXG27SkTiSJwjCc9MebbfapQfuPzumMIUMi38ezPZVNFcHI9sUIepeQfw8J8Q==}
-
   undici-types@6.20.0:
     resolution: {integrity: sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==}
 
@@ -1768,14 +1708,6 @@ packages:
 
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
-
-  valibot@1.0.0-beta.15:
-    resolution: {integrity: sha512-BKy8XosZkDHWmYC+cJG74LBzP++Gfntwi33pP3D3RKztz2XV9jmFWnkOi21GoqARP8wAWARwhV6eTr1JcWzjGw==}
-    peerDependencies:
-      typescript: '>=5'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
 
   vite-node@3.0.1:
     resolution: {integrity: sha512-PoH9mCNsSZQXl3gdymM5IE4WR0k0WbnFd89nAyyDvltF2jVGdFcI8vpB1PBdKTcjAR7kkYiHSlIO68X/UT8Q1A==}
@@ -1927,23 +1859,6 @@ snapshots:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.8
       '@jridgewell/trace-mapping': 0.3.25
-
-  '@ark/schema@0.39.0':
-    dependencies:
-      '@ark/util': 0.39.0
-
-  '@ark/util@0.39.0': {}
-
-  '@arrirpc/schema@0.74.1':
-    dependencies:
-      '@arrirpc/type-defs': 0.74.1
-      '@standard-schema/spec': 1.0.0
-      scule: 1.3.0
-      uncrypto: 0.1.3
-
-  '@arrirpc/type-defs@0.74.1':
-    dependencies:
-      scule: 1.3.0
 
   '@asamuzakjp/css-color@2.8.3':
     dependencies:
@@ -2386,14 +2301,6 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.30.1':
     optional: true
 
-  '@sinclair/typebox@0.34.16': {}
-
-  '@sinclair/typemap@0.8.14(@sinclair/typebox@0.34.16)(valibot@1.0.0-beta.15(typescript@5.7.3))(zod@3.24.1)':
-    dependencies:
-      '@sinclair/typebox': 0.34.16
-      valibot: 1.0.0-beta.15(typescript@5.7.3)
-      zod: 3.24.1
-
   '@standard-schema/spec@1.0.0': {}
 
   '@tanstack/query-core@5.64.1': {}
@@ -2628,11 +2535,6 @@ snapshots:
     dependencies:
       dequal: 2.0.3
 
-  arktype@2.0.4:
-    dependencies:
-      '@ark/schema': 0.39.0
-      '@ark/util': 0.39.0
-
   array-union@2.1.0: {}
 
   assertion-error@2.0.1: {}
@@ -2729,8 +2631,6 @@ snapshots:
       ms: 2.1.3
 
   decimal.js@10.4.3: {}
-
-  decoders@2.6.0: {}
 
   deep-eql@5.0.2: {}
 
@@ -2934,8 +2834,6 @@ snapshots:
       asynckit: 0.4.0
       combined-stream: 1.0.8
       mime-types: 2.1.35
-
-  formgator@0.1.0: {}
 
   fs-extra@7.0.1:
     dependencies:
@@ -3384,8 +3282,6 @@ snapshots:
 
   scheduler@0.25.0: {}
 
-  scule@1.3.0: {}
-
   semver@7.6.3: {}
 
   shebang-command@2.0.0:
@@ -3567,8 +3463,6 @@ snapshots:
 
   typescript@5.7.3: {}
 
-  uncrypto@0.1.3: {}
-
   undici-types@6.20.0: {}
 
   universalify@0.1.2: {}
@@ -3576,10 +3470,6 @@ snapshots:
   uri-js@4.4.1:
     dependencies:
       punycode: 2.3.1
-
-  valibot@1.0.0-beta.15(typescript@5.7.3):
-    optionalDependencies:
-      typescript: 5.7.3
 
   vite-node@3.0.1(@types/node@22.10.7)(jiti@2.4.2):
     dependencies:
