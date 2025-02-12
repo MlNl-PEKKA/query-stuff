@@ -156,7 +156,7 @@ export class QueryStuffUndefinedInput<
   ) {
     return fn(new QueryStuffUndefinedInput(this._ctx, this._middlewares));
   }
-  use<TOverride extends UnknownRecord>(
+  unstable_use<TOverride extends UnknownRecord>(
     fn: MiddlewareFn<Prettify<CtxOpts<TContext, TOverrides>>["ctx"], TOverride>,
   ): QueryStuffUndefinedInput<
     TContext,
@@ -434,7 +434,7 @@ export class QueryStuffDefinedRecordInput<
       >,
     ) => T,
   ) {
-    return this.validate((input: TInput) =>
+    return this.validate((input) =>
       fn(
         new QueryStuffUndefinedInput(
           {

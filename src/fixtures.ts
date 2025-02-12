@@ -54,10 +54,12 @@ export const NODES = new QueryStuffUndefinedInput().group((q) => ({
     .input(z.object({ inputMutation: z.boolean() }))
     .mutation(async (opts) => ({ ...opts.input, mutation: true })),
   middlewareQuery: q
-    .use(middlewareQuery.middleware)
+    .unstable_use(middlewareQuery.middleware)
     .query((opts) => ({ ...opts.ctx, query: true })),
   middlewareMutation: q
-    .use(async ({ next }) => await next({ ctx: { middlewareMutation: true } }))
+    .unstable_use(
+      async ({ next }) => await next({ ctx: { middlewareMutation: true } }),
+    )
     .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
   group: q.input(z.object({ group: z.boolean() })).group((q) => ({
     query: q.query((opts) => ({ ...opts.ctx, query: true })),
@@ -73,10 +75,10 @@ export const NODES = new QueryStuffUndefinedInput().group((q) => ({
         mutation: true,
       })),
     middlewareQuery: q
-      .use(middlewareQuery.middleware)
+      .unstable_use(middlewareQuery.middleware)
       .query((opts) => ({ ...opts.ctx, query: true })),
     middlewareMutation: q
-      .use(
+      .unstable_use(
         async ({ next }) => await next({ ctx: { middlewareMutation: true } }),
       )
       .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
@@ -94,74 +96,77 @@ export const NODES = new QueryStuffUndefinedInput().group((q) => ({
           mutation: true,
         })),
       middlewareQuery: q
-        .use(middlewareQuery.middleware)
+        .unstable_use(middlewareQuery.middleware)
         .query((opts) => ({ ...opts.ctx, query: true })),
       middlewareMutation: q
-        .use(
+        .unstable_use(
           async ({ next }) => await next({ ctx: { middlewareMutation: true } }),
         )
         .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
-      middlewareGroup: q.use(middlewareGroup.middleware).group((q) => ({
-        query: q.query((opts) => ({ ...opts.ctx, query: true })),
-        mutation: q.mutation(async (opts) => ({
-          ...opts.ctx,
-          mutation: true,
-        })),
-        inputQuery: q
-          .input(z.object({ inputQuery: z.boolean() }))
-          .query((opts) => ({ ...opts.ctx, ...opts.input, query: true })),
-        inputMutation: q
-          .input(z.object({ inputMutation: z.boolean() }))
-          .mutation(async (opts) => ({
+      middlewareGroup: q
+        .unstable_use(middlewareGroup.middleware)
+        .group((q) => ({
+          query: q.query((opts) => ({ ...opts.ctx, query: true })),
+          mutation: q.mutation(async (opts) => ({
             ...opts.ctx,
-            ...opts.input,
             mutation: true,
           })),
-        middlewareQuery: q
-          .use(middlewareQuery.middleware)
-          .query((opts) => ({ ...opts.ctx, query: true })),
-        middlewareMutation: q
-          .use(
-            async ({ next }) =>
-              await next({ ctx: { middlewareMutation: true } }),
-          )
-          .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
-        MIDDLEWARE_GROUP: q
-          .use(
-            async ({ next }) => await next({ ctx: { MIDDLEWARE_GROUP: true } }),
-          )
-          .group((q) => ({
-            query: q.query((opts) => ({ ...opts.ctx, query: true })),
-            mutation: q.mutation(async (opts) => ({
+          inputQuery: q
+            .input(z.object({ inputQuery: z.boolean() }))
+            .query((opts) => ({ ...opts.ctx, ...opts.input, query: true })),
+          inputMutation: q
+            .input(z.object({ inputMutation: z.boolean() }))
+            .mutation(async (opts) => ({
               ...opts.ctx,
+              ...opts.input,
               mutation: true,
             })),
-            inputQuery: q
-              .input(z.object({ inputQuery: z.boolean() }))
-              .query((opts) => ({ ...opts.ctx, ...opts.input, query: true })),
-            inputMutation: q
-              .input(z.object({ inputMutation: z.boolean() }))
-              .mutation(async (opts) => ({
+          middlewareQuery: q
+            .unstable_use(middlewareQuery.middleware)
+            .query((opts) => ({ ...opts.ctx, query: true })),
+          middlewareMutation: q
+            .unstable_use(
+              async ({ next }) =>
+                await next({ ctx: { middlewareMutation: true } }),
+            )
+            .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+          MIDDLEWARE_GROUP: q
+            .unstable_use(
+              async ({ next }) =>
+                await next({ ctx: { MIDDLEWARE_GROUP: true } }),
+            )
+            .group((q) => ({
+              query: q.query((opts) => ({ ...opts.ctx, query: true })),
+              mutation: q.mutation(async (opts) => ({
                 ...opts.ctx,
-                ...opts.input,
                 mutation: true,
               })),
-            middlewareQuery: q
-              .use(
-                async ({ next }) =>
-                  await next({ ctx: { middlewareQuery: true } }),
-              )
-              .query((opts) => ({ ...opts.ctx, query: true })),
-            middlewareMutation: q
-              .use(
-                async ({ next }) =>
-                  await next({ ctx: { middlewareMutation: true } }),
-              )
-              .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
-          })),
-      })),
+              inputQuery: q
+                .input(z.object({ inputQuery: z.boolean() }))
+                .query((opts) => ({ ...opts.ctx, ...opts.input, query: true })),
+              inputMutation: q
+                .input(z.object({ inputMutation: z.boolean() }))
+                .mutation(async (opts) => ({
+                  ...opts.ctx,
+                  ...opts.input,
+                  mutation: true,
+                })),
+              middlewareQuery: q
+                .unstable_use(
+                  async ({ next }) =>
+                    await next({ ctx: { middlewareQuery: true } }),
+                )
+                .query((opts) => ({ ...opts.ctx, query: true })),
+              middlewareMutation: q
+                .unstable_use(
+                  async ({ next }) =>
+                    await next({ ctx: { middlewareMutation: true } }),
+                )
+                .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+            })),
+        })),
     })),
-    middlewareGroup: q.use(middlewareGroup.middleware).group((q) => ({
+    middlewareGroup: q.unstable_use(middlewareGroup.middleware).group((q) => ({
       query: q.query((opts) => ({ ...opts.ctx, query: true })),
       mutation: q.mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
       inputQuery: q
@@ -175,14 +180,70 @@ export const NODES = new QueryStuffUndefinedInput().group((q) => ({
           mutation: true,
         })),
       middlewareQuery: q
-        .use(middlewareQuery.middleware)
+        .unstable_use(middlewareQuery.middleware)
         .query((opts) => ({ ...opts.ctx, query: true })),
       middlewareMutation: q
-        .use(
+        .unstable_use(
           async ({ next }) => await next({ ctx: { middlewareMutation: true } }),
         )
         .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
-      MIDDLEWARE_GROUP: q.use(MIDDLEWARE_GROUP.middleware).group((q) => ({
+      MIDDLEWARE_GROUP: q
+        .unstable_use(MIDDLEWARE_GROUP.middleware)
+        .group((q) => ({
+          query: q.query((opts) => ({ ...opts.ctx, query: true })),
+          mutation: q.mutation(async (opts) => ({
+            ...opts.ctx,
+            mutation: true,
+          })),
+          inputQuery: q
+            .input(z.object({ inputQuery: z.boolean() }))
+            .query((opts) => ({ ...opts.ctx, ...opts.input, query: true })),
+          inputMutation: q
+            .input(z.object({ inputMutation: z.boolean() }))
+            .mutation(async (opts) => ({
+              ...opts.ctx,
+              ...opts.input,
+              mutation: true,
+            })),
+          middlewareQuery: q
+            .unstable_use(
+              async ({ next }) =>
+                await next({ ctx: { middlewareQuery: true } }),
+            )
+            .query((opts) => ({ ...opts.ctx, query: true })),
+          middlewareMutation: q
+            .unstable_use(
+              async ({ next }) =>
+                await next({ ctx: { middlewareMutation: true } }),
+            )
+            .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+        })),
+    })),
+  })),
+  middlewareGroup: q.unstable_use(middlewareGroup.middleware).group((q) => ({
+    query: q.query((opts) => ({ ...opts.ctx, query: true })),
+    mutation: q.mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+    inputQuery: q
+      .input(z.object({ inputQuery: z.boolean() }))
+      .query((opts) => ({ ...opts.ctx, ...opts.input, query: true })),
+    inputMutation: q
+      .input(z.object({ inputMutation: z.boolean() }))
+      .mutation(async (opts) => ({
+        ...opts.ctx,
+        ...opts.input,
+        mutation: true,
+      })),
+    middlewareQuery: q
+      .unstable_use(middlewareQuery.middleware)
+      .query((opts) => ({ ...opts.ctx, query: true })),
+    middlewareMutation: q
+      .unstable_use(
+        async ({ next }) => await next({ ctx: { middlewareMutation: true } }),
+      )
+      .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
+    MIDDLEWARE_GROUP: q
+      .unstable_use(MIDDLEWARE_GROUP.middleware)
+      .group((q) => ({
         query: q.query((opts) => ({ ...opts.ctx, query: true })),
         mutation: q.mutation(async (opts) => ({
           ...opts.ctx,
@@ -199,68 +260,18 @@ export const NODES = new QueryStuffUndefinedInput().group((q) => ({
             mutation: true,
           })),
         middlewareQuery: q
-          .use(
-            async ({ next }) => await next({ ctx: { middlewareQuery: true } }),
-          )
+          .unstable_use(middlewareQuery.middleware)
           .query((opts) => ({ ...opts.ctx, query: true })),
         middlewareMutation: q
-          .use(
+          .unstable_use(
             async ({ next }) =>
               await next({ ctx: { middlewareMutation: true } }),
           )
           .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
       })),
-    })),
-  })),
-  middlewareGroup: q.use(middlewareGroup.middleware).group((q) => ({
-    query: q.query((opts) => ({ ...opts.ctx, query: true })),
-    mutation: q.mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
-    inputQuery: q
-      .input(z.object({ inputQuery: z.boolean() }))
-      .query((opts) => ({ ...opts.ctx, ...opts.input, query: true })),
-    inputMutation: q
-      .input(z.object({ inputMutation: z.boolean() }))
-      .mutation(async (opts) => ({
-        ...opts.ctx,
-        ...opts.input,
-        mutation: true,
-      })),
-    middlewareQuery: q
-      .use(middlewareQuery.middleware)
-      .query((opts) => ({ ...opts.ctx, query: true })),
-    middlewareMutation: q
-      .use(
-        async ({ next }) => await next({ ctx: { middlewareMutation: true } }),
-      )
-      .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
-    MIDDLEWARE_GROUP: q.use(MIDDLEWARE_GROUP.middleware).group((q) => ({
-      query: q.query((opts) => ({ ...opts.ctx, query: true })),
-      mutation: q.mutation(async (opts) => ({
-        ...opts.ctx,
-        mutation: true,
-      })),
-      inputQuery: q
-        .input(z.object({ inputQuery: z.boolean() }))
-        .query((opts) => ({ ...opts.ctx, ...opts.input, query: true })),
-      inputMutation: q
-        .input(z.object({ inputMutation: z.boolean() }))
-        .mutation(async (opts) => ({
-          ...opts.ctx,
-          ...opts.input,
-          mutation: true,
-        })),
-      middlewareQuery: q
-        .use(middlewareQuery.middleware)
-        .query((opts) => ({ ...opts.ctx, query: true })),
-      middlewareMutation: q
-        .use(
-          async ({ next }) => await next({ ctx: { middlewareMutation: true } }),
-        )
-        .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
-    })),
   })),
   EXTENDED_MIDDLEWARE_GROUP: q
-    .use(EXTENDED_MIDDLEWARE_GROUP.middleware)
+    .unstable_use(EXTENDED_MIDDLEWARE_GROUP.middleware)
     .group((q) => ({
       query: q.query((opts) => ({ ...opts.ctx, query: true })),
       mutation: q.mutation(async (opts) => ({
@@ -278,16 +289,16 @@ export const NODES = new QueryStuffUndefinedInput().group((q) => ({
           mutation: true,
         })),
       middlewareQuery: q
-        .use(middlewareQuery.middleware)
+        .unstable_use(middlewareQuery.middleware)
         .query((opts) => ({ ...opts.ctx, query: true })),
       middlewareMutation: q
-        .use(
+        .unstable_use(
           async ({ next }) => await next({ ctx: { middlewareMutation: true } }),
         )
         .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
     })),
   EXTENDED_DESCENDANT_MIDDLEWARE_GROUP: q
-    .use(EXTENDED_DESCENDANT_MIDDLEWARE_GROUP.middleware)
+    .unstable_use(EXTENDED_DESCENDANT_MIDDLEWARE_GROUP.middleware)
     .group((q) => ({
       query: q.query((opts) => ({ ...opts.ctx, query: true })),
       mutation: q.mutation(async (opts) => ({
@@ -305,10 +316,10 @@ export const NODES = new QueryStuffUndefinedInput().group((q) => ({
           mutation: true,
         })),
       middlewareQuery: q
-        .use(middlewareQuery.middleware)
+        .unstable_use(middlewareQuery.middleware)
         .query((opts) => ({ ...opts.ctx, query: true })),
       middlewareMutation: q
-        .use(
+        .unstable_use(
           async ({ next }) => await next({ ctx: { middlewareMutation: true } }),
         )
         .mutation(async (opts) => ({ ...opts.ctx, mutation: true })),
