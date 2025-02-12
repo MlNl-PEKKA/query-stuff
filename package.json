@@ -34,7 +34,8 @@
     "type_check": "tsc"
   },
   "keywords": [
-    "typescript"
+    "typescript",
+    "tanstack/react-query"
   ],
   "license": "MIT",
   "peerDependencies": {

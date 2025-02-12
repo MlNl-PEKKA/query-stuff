@@ -6,6 +6,6 @@ export default defineConfig({
   dts: true,
   sourcemap: true,
   entry: ["src/*.ts", "!src/*.test.{ts,tsx}", "!src/fixtures.ts"],
-  format: ["cjs", "esm"],
+  format: "esm",
   outDir: "lib",
 });
